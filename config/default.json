@@ -1,6 +1,6 @@
 {
-    "appSecret": "",
-    "pageAccessToken": "",
-    "validationToken": "",
-    "serverURL": ""
+    "appSecret": "b67c17ff9035427fd64bdd183a22e2bb",
+    "pageAccessToken": "EAADsqRpFqBYBABfCTpMRL2ZBZCvqMZBZBDFheqfunQTes453e00ZAA1VVFZCWirz4r2uF4fPreptK1l7GVKqDoA6XPuMlx2prCiKmMXiYUtLeRtaZCDigdyMYaLv5DzW4znj2ALAQRXvbnZCoILOZC6r35DBkISkrmDZCUkfZCaaUdbZAUZCD38mW4gBi",
+    "validationToken": "12345",
+    "serverURL": "https://native-fb-botv1.herokuapp.com/"
 }
