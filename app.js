@@ -531,7 +531,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: messageText,
+      text: 'response from native bot = ' + messageText,
       metadata: "DEVELOPER_DEFINED_METADATA"
     }
   };
