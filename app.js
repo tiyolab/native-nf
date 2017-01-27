@@ -64,6 +64,7 @@ console.log('tiyo said server running');
  *
  */
 app.get('/webhook', function(req, res) {
+	console.log("tiyo said state in get");
   if (req.query['hub.mode'] === 'subscribe' &&
       req.query['hub.verify_token'] === VALIDATION_TOKEN) {
     console.log("Validating webhook");
@@ -83,7 +84,7 @@ app.get('/webhook', function(req, res) {
  *
  */
 app.post('/webhook', function (req, res) {
-	console.log('receive requests');
+	console.log("tiyo said state in post");
   var data = req.body;
 
   // Make sure this is a page subscription
