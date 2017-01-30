@@ -87,7 +87,9 @@ app.get('/webhook', function(req, res) {
  *
  */
 app.post('/webhook', function (req, res) {
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log("tiyo said state in post");
+	console.log("ip = " + ip);
   var data = req.body;
 
   // Make sure this is a page subscription
