@@ -118,7 +118,7 @@ app.post('/webhook', function (req, res) {
 		if(errQuery){
 			console.log(errQuery);
 		}else{
-			console.log(respQuery[0]);
+			console.log(respQuery.records);
 		}
 	});
 	
