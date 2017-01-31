@@ -1,6 +1,6 @@
 {
-    "appSecret": "b736ec6db6928e7288d0c290e3386631",
-    "pageAccessToken": "EAACqzabk1bgBALSrYcaWZBqM9ZCZB7NVRuxOZAKIBLIDBCpgSy6tZAi2ZA9CxwK7Xu48pCWJzUO2Hmq0hCZBlQJEpUBfdSBfC1jbBtfJlKTdrfNQnfXk03I6WvUr9rwFxX6jec3dcdZCeWeRVPF4o6WgZCOO5pTZA1Kiamoj3DtdXm6gZDZD",
-    "validationToken": "12345",
-    "serverURL": "https://native-fb-botv1.herokuapp.com/"
+    "appSecret": "d5e79d3c37be21dbe96afca771582b94",
+    "pageAccessToken": "EAAKPYk39Y4wBAM1Ix9iI1NR917ogNKJfpLCVslCZC4z4d2oUYZCGqcpVBvzetQG2RmDzbjZATqzEdBUJyzs7hZAiMYLzDY9DO9la55gJB9zxkOFvBcptXiES5t34Qw3oFr3EbYZBONfalRVHFCfvXYxgScP94s7iBSorXZC3EwfL4WQSL4HZBXr",
+    "validationToken": "mortgage-testv1-stratus360",
+    "serverURL": "https://mortgage-testv1.herokuapp.com/"
 }
