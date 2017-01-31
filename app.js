@@ -79,7 +79,7 @@ org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995
     console.log('Access Token: ' + resp.access_token);
     oauth = resp;
 	
-	org.query("select Id, Name from user", oauth, function(errQuery, respQuery){
+	org.query({query : "select Id, Name from user", oauth : oauth}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
