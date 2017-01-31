@@ -78,6 +78,9 @@ org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995
   } else {
     console.log('Access Token: ' + resp.access_token);
     oauth = resp;
+	org.query("select Id, Name from user", oauth, function(err, resp){
+		console.log(resp);
+	});
   }
 });
 
@@ -113,10 +116,6 @@ app.post('/webhook', function (req, res) {
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log("tiyo said state in post");
 	var data = req.body;
-  
-	org.query("select Id, Name from user", oauth, function(err, resp){
-		console.log(resp);
-	});
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
