@@ -18,8 +18,11 @@ const
   https = require('https'),  
   request = require('request');
 
+var oauth;
+var nforce = require('nforce');
+  
 var app = express();
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
@@ -58,6 +61,26 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 
 console.log('tiyo said server running');
 
+// use the nforce package to create a connection to salesforce.com
+var org = nforce.createConnection({
+  clientId: '3MVG9YDQS5WtC11rPPnDcisY1IxDsekPGj0vXsxGSP4BGRKf28MxnXp2vFuwfYql8y0wB7TwnkLdwBk0W6N4q',
+  clientSecret: '2874640950902301743',
+  redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
+  apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
+  environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
+  mode: 'multi' // optional, 'single' or 'multi' user mode, multi default 
+});
+
+// authenticate using username-password oauth flow
+org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995@' }, function(err, resp){
+  if(err) {
+    console.log('Error: ' + err.message);
+  } else {
+    console.log('Access Token: ' + resp.access_token);
+    oauth = resp;
+  }
+});
+
 /*
  * Use your own validation token. Check that the token used in the Webhook 
  * setup is the same token used here.
@@ -89,8 +112,11 @@ app.get('/webhook', function(req, res) {
 app.post('/webhook', function (req, res) {
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log("tiyo said state in post");
-	console.log("ip = " + ip);
-  var data = req.body;
+	var data = req.body;
+  
+	org.query("select Id, Name from user", oauth, function(err, resp){
+		console.log(resp);
+	});
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
