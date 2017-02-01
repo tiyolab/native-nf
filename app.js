@@ -355,9 +355,9 @@ function sendShowBrokerMessage(recipientId){
 					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
 					  buttons: [
 						{
-						  type: "phone_number",
-						  phone_number: phone,
-						  title: "Call"
+						  type: "postback",
+						  title: "Call",
+						  payload: "test"
 						},
 						{
 						  type: "postback",
