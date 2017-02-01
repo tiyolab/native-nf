@@ -362,6 +362,7 @@ function loginMessage(recipientId) {
 			  template_type: "generic",
 			  elements: [
 				{
+					title: "Login",
 				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
 				  buttons: [
 					{
