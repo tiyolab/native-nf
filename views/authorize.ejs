@@ -11,10 +11,10 @@ LICENSE file in the root directory of this source tree.
 	<body>
 			<table>
 				<tr>
-					<td>Username</td><td>:</td><td><input type="text" placeholder="Username" name="username"/></td></tr>
-					<td>Password</td><td>:</td><td><input type="password" placeholder="Password" name="password"/></td></tr>
-					<input type="hidden" name="redirect" value="<%= redirectURI %>"/>
-					<input type="hidden" name="sid" value="<%= senderID %>"/>
+					<td>Username</td><td>:</td><td><input type="text" placeholder="Username" id="username"/></td></tr>
+					<td>Password</td><td>:</td><td><input type="password" placeholder="Password" id="password"/></td></tr>
+					<input type="hidden" id="redirect" value="<%= redirectURI %>"/>
+					<input type="hidden" id="sid" value="<%= senderID %>"/>
 					<td></td><td></td><td><input type="Submit" value="Log in" onclick="send()"/></td></tr>
 			</table>
 		<script>
