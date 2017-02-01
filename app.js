@@ -332,7 +332,7 @@ function loginMessage(recipientId) {
  * show broker list
  */
 function sendShowBrokerMessage(recipientId){
-	org.query({query : "select Id, Name, BillingAddress, Website, Phone from Account limit 10", oauth : mySession[recipientId]}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId]}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
