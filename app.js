@@ -127,7 +127,8 @@ app.post('/auth', function(req, res){
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
 			oauth = resp;
-			
+			req.session[data.sid] = resp;
+			console.log('token = ' + req.session[data.sid].access_token);
 			// Authorization Code should be generated per user by the developer. This will 
 			// be passed to the Account Linking callback.
 			//var authCode = "1234567890";
@@ -147,9 +148,11 @@ app.post('/auth', function(req, res){
  */
 app.get('/authorize', function(req, res) {
   var redirectURI = req.query.redirect_uri;
+  var senderID = req.query.sid;
   
   res.render('authorize', {
-    redirectURI: redirectURI
+    redirectURI: redirectURI,
+	senderID: senderID
   });
 });
 
@@ -352,7 +355,7 @@ function loginMessage(recipientId) {
 				  buttons: [
 					{
 						type: "account_link",
-						url: SERVER_URL + "/authorize"
+						url: SERVER_URL + "/authorize?sid="+recipientId
 					}
 				  ]
 				}
