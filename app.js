@@ -23,7 +23,7 @@ var nforce = require('nforce');
   
 var app = express();
 var session = require('express-session');
-var redisStore = require('connect-redis')(express);
+var redisStore = require('connect-redis')(session);
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
