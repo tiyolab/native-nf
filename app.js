@@ -282,8 +282,7 @@ function receivedMessage(event) {
   var timeOfMessage = event.timestamp;
   var message = event.message;
 
-  console.log("Received message for user %d and page %d at %d with message:", 
-    senderID, recipientID, timeOfMessage);
+  console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
   console.log(JSON.stringify(message));
 
   var isEcho = message.is_echo;
@@ -298,8 +297,7 @@ function receivedMessage(event) {
 
   if (isEcho) {
     // Just logging message echoes to console
-    console.log("Received echo for message %s and app %d with metadata %s", 
-      messageId, appId, metadata);
+    console.log("Received echo for message %s and app %d with metadata %s", messageId, appId, metadata);
     return;
   } else if (quickReply) {
     var quickReplyPayload = quickReply.payload;
@@ -317,7 +315,7 @@ function receivedMessage(event) {
     // the text we received.
 	switch (messageText) {
 		case 'account linking':
-			sendAccountLinking(senderID);
+			loginMessage(senderID);
 			break;
 
 		default:
@@ -357,7 +355,7 @@ function loginMessage(recipientId) {
 		recipient: {
 		  id: recipientId
 		},
-		messages: [
+		message: [
 		{
 		  attachment: {
 			type: "template",
