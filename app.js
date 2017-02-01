@@ -103,6 +103,7 @@ app.get('/webhook', function(req, res) {
 
 
 app.get('/auth/sfdc', function(req, res){
+	console.log('auth uri = ' + org.getAuthUri);
 	res.redirect(org.getAuthUri);
 });
 
