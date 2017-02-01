@@ -131,16 +131,18 @@ app.post('/auth', function(req, res){
 					request('https://graph.facebook.com/v2.6/'+ body.recipient +'?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token='+PAGE_ACCESS_TOKEN, function(errP, respP, bodyP){
 						
 						if (!errP && respP.statusCode == 200) {
-							mySession[data.sid].oauth = resp;
-							mySession[data.sid].psid = body.recipient;
-							mySession[data.sid].pgid = body.id;
-							
-							mySession[data.sid].first_name = bodyP.first_name;
-							mySession[data.sid].last_name = bodyP.last_name;
-							mySession[data.sid].profile_pic = bodyP.profile_pic;
-							mySession[data.sid].locale = bodyP.locale;
-							mySession[data.sid].timezone = bodyP.timezone;
-							mySession[data.sid].gender = bodyP.gender;
+							var senderData = {
+								oauth: resp,
+								psid: body.recipient,
+								pgid: body.id,
+								first_name: bodyP.first_name,
+								last_name: bodyP.last_name,
+								profile_pic: bodyP.profile_pic,
+								locale: bodyP.locale,
+								timezone: bodyP.timezone,
+								gender: bodyP.gender
+							}
+							mySession[data.sid] = senderData;
 							
 							console.log(mySession[data.sid]);
 							
