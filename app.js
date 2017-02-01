@@ -184,7 +184,7 @@ app.post('/webhook', function (req, res) {
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
-				console.log('session = ' + req.session);
+				console.log('session = ' + req.session[0]);
 				if(req.session){
 					if(req.session[messagingEvent.sender.id]){
 						if (messagingEvent.message) {
