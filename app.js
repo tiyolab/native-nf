@@ -35,7 +35,7 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(session({
 	store: new RedisStore({
-		host: 'localhost',
+		host: 'https://mortgage-testv1.herokuapp.com/',
 		port: app.get('port'),
 		db: 2
 	}),
