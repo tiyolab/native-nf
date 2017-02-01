@@ -34,7 +34,7 @@ LICENSE file in the root directory of this source tree.
 				xhr.onreadystatechange = function() {
 					if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
 						console.log('test');
-						self.close();
+						//self.close();
 					}
 				}
 				xhr.send(data.join('&'));
