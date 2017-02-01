@@ -29,6 +29,7 @@ var RedisStore = require('connect-redis')(session);
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
+app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(express.static('public'));
 
 app.use(cookieParser());
@@ -135,6 +136,7 @@ app.get('/auth/sfdc/callback', function(req, res){
 
 app.post('/auth', function(req, res){
 	var data = req.body;
+	console.log(res.body);
 	console.log('username = ' + data.username);
 	console.log('password = ' + data.password);
 	console.log('redirect = ' + data.redirect);
@@ -145,6 +147,7 @@ app.post('/auth', function(req, res){
 	
 	// Redirect users to this URI on successful login
 	var redirectURISuccess = data.redirect + "&authorization_code=" + authCode;
+	res.sendStatus(200);
 });
 
 /*
