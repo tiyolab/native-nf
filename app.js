@@ -352,7 +352,7 @@ function sendTextMessage(recipientId, messageText) {
  * Send a message with the account linking call-to-action in order need login
  *
  */
-function sendAccountLinking(recipientId) {
+function loginMessage(recipientId) {
 	var messageData = {
 		recipient: {
 		  id: recipientId
