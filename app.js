@@ -119,6 +119,17 @@ app.post('/auth', function(req, res){
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
 			//oauth = resp;
+			
+			//get linking callback
+			request(data.redirect + "&authorization_code=12345", function (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					console.log('response linking');
+					console.log(body);
+				}else{
+					console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+				}
+			});
+			
 			mySession[data.sid] = resp;
 			sendTextMessage(data.sid, 'Login success, you can perform your last action');
 		}
@@ -355,9 +366,9 @@ function sendShowBrokerMessage(recipientId){
 					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
 					  buttons: [
 						{
-						  type: "postback",
+						  type: "phone_number",
 						  title: "Call",
-						  payload: "test"
+						  payload: phone
 						},
 						{
 						  type: "postback",
