@@ -20,7 +20,7 @@ const
 
 var oauth;
 var nforce = require('nforce');
-  
+var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -133,6 +133,17 @@ app.get('/auth/sfdc/callback', function(req, res){
 	});
 });
 
+app.get('/auth', function(req, res){
+	fs.readFile('./public/auth.html', function(err, html){
+		if(!err){
+			res.writeHeader(200, {'Content-Type':'text/html'});
+			res.write(html);
+			res.end();
+		}else{
+			console.log(err);
+		}
+	});
+});
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
