@@ -22,10 +22,23 @@ var oauth;
 var nforce = require('nforce');
   
 var app = express();
+var redisStore = require('connect-redis')(express);
+
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
+
+app.use(express.cookieParser());
+app.use(express.session({
+	store: new RedisStore({
+		host: 'localhost',
+		port: app.get('port'),
+		db: 2,
+		pass: '4789YongeStreet'
+	}),
+	secret: 'd5e79d3c37be21dbe96afca771582b94'
+}));
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -127,42 +140,53 @@ app.get('/auth/sfdc/callback', function(req, res){
  *
  */
 app.post('/webhook', function (req, res) {
-	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 	console.log("tiyo said state in post");
 	var data = req.body;
 	
-	org.query({query : "select Id, Name from user", oauth : oauth}, function(errQuery, respQuery){
+	/*org.query({query : "select Id, Name from user", oauth : oauth}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
 			console.log(respQuery.records);
 		}
-	});
+	});*/
 	
-  // Make sure this is a page subscription
-  if (data.object == 'page') {
-    // Iterate over each entry
-    // There may be multiple if batched
-    data.entry.forEach(function(pageEntry) {
-      var pageID = pageEntry.id;
-      var timeOfEvent = pageEntry.time;
+	// Make sure this is a page subscription
+	if (data.object == 'page') {
+		// Iterate over each entry
+		// There may be multiple if batched
+		data.entry.forEach(function(pageEntry) {
+			var pageID = pageEntry.id;
+			var timeOfEvent = pageEntry.time;
 
-      // Iterate over each messaging event
-      pageEntry.messaging.forEach(function(messagingEvent) {
-        if (messagingEvent.message) {
-          receivedMessage(messagingEvent);
-        } else {
-          console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-        }
-      });
-    });
+			// Iterate over each messaging event
+			pageEntry.messaging.forEach(function(messagingEvent) {
+				if(req.session.oauth[messagingEvent.sender.id]){
+					if (messagingEvent.message) {
+						receivedMessage(messagingEvent);
+					} else {
+						console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+					}
+				}else{
+					if (messagingEvent.message) {
+						sendTextMessage(messagingEvent.sender.id, 'need login');
+					}
+				}
+				
+				/*if (messagingEvent.message) {
+					receivedMessage(messagingEvent);
+				} else {
+					console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+				}*/
+			});
+		});
 
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know you've 
-    // successfully received the callback. Otherwise, the request will time out.
-    res.sendStatus(200);
-  }
+		// Assume all went well.
+		//
+		// You must send back a 200, within 20 seconds, to let us know you've 
+		// successfully received the callback. Otherwise, the request will time out.
+		res.sendStatus(200);
+	}
 });
 
 /*
