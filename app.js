@@ -340,16 +340,16 @@ function sendShowBrokerMessage(recipientId){
 			var elementsAccount = [];
 			respQuery.records.forEach(function(ac){
 				var phone = '';
-                if(ac.phone){
-                    phone = ac.phone;
+                if(ac.get('Phone')){
+                    phone = ac.get('Phone');
                 }
                 
                 
                 var street = '';
-                if(ac.billingstreet){
-                	street = billingstreet;
+                if(ac.get('BillingStreet')){
+                	street = ac.get('BillingStreet');
                 }
-                elementsAccount.push('{"title":"'+ ac.name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.id +'"}}]}');
+                elementsAccount.push('{"title":"'+ ac.get('Name') +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.get('Website') +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.getId() +'"}}]}');
 			});
 			//var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';
 			
