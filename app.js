@@ -349,12 +349,29 @@ function sendShowBrokerMessage(recipientId){
                 if(ac.get('BillingStreet')){
                 	street = ac.get('BillingStreet');
                 }
-                elementsAccount.push('{"title":"'+ ac.get('Name') +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.get('Website') +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.getId() +'"}}]}');
+                elementsAccount.push(
+					{
+					  title: ac.get('Name'),
+					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
+					  buttons: [
+						{
+						  type: "phone_number",
+						  phone_number: phone,
+						  title: "Call"
+						},
+						{
+						  type: "postback",
+						  title: "Refer Me",
+						  payload: "test"
+						}
+					  ]
+					}
+				);
 			});
 			//var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';
 			
-			var elements = JSON.parse('['+elementsAccount.join(',')+']');
-			console.log(elements);
+			//var elements = JSON.parse('['+elementsAccount.join(',')+']');
+			console.log(elementsAccount);
 			
 			var messageData = {
 				recipient: {
@@ -365,7 +382,7 @@ function sendShowBrokerMessage(recipientId){
 					type: "template",
 					payload: {
 					  template_type: "generic",
-					  elements: elements
+					  elements: elementsAccount
 					}
 				  }
 				}
