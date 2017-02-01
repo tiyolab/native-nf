@@ -22,6 +22,7 @@ var oauth;
 var nforce = require('nforce');
   
 var app = express();
+var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 
@@ -30,7 +31,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
 
-app.use(express.cookieParser());
+app.use(cookieParser());
 app.use(session({
 	store: new RedisStore({
 		host: 'localhost',
