@@ -124,7 +124,7 @@ app.post('/auth', function(req, res){
 				if (!error && response.statusCode == 200) {
 					console.log(body);
 					console.log(body.recipient);
-					body = json.parse(body);
+					body = JSON.parse(body);
 					console.log(body.recipient);
 					
 					//get sender profile
