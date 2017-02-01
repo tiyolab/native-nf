@@ -336,23 +336,25 @@ function sendShowBrokerMessage(recipientId){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
+			console.log(respQuery.records);
 			var elementsAccount = [];
 			respQuery.records.forEach(function(ac){
 				var phone = '';
-                if(ac.Phone){
-                    phone = ac.Phone;
+                if(ac.phone){
+                    phone = ac.phone;
                 }
                 
                 
                 var street = '';
-                if(ac.BillingStreet){
-                	street = BillingStreet;
+                if(ac.billingstreet){
+                	street = billingstreet;
                 }
-                elementsAccount.push('{"title":"'+ ac.Name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.Website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.Id +'"}}]}');
+                elementsAccount.push('{"title":"'+ ac.name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.id +'"}}]}');
 			});
 			//var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';
 			
-			console.log(JSON.parse(elementsAccount.join(',')));
+			var elements = JSON.parse('['+elementsAccount.join(',')+']');
+			console.log(elements);
 			
 			var messageData = {
 				recipient: {
@@ -363,9 +365,7 @@ function sendShowBrokerMessage(recipientId){
 					type: "template",
 					payload: {
 					  template_type: "generic",
-					  elements: [
-						JSON.parse(elementsAccount.join(','))
-					  ]
+					  elements: elements
 					}
 				  }
 				}
