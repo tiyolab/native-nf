@@ -114,11 +114,13 @@ app.post('/auth', function(req, res){
 	org.authenticate({ username: data.username, password: data.password }, function(err, resp){
 		if(err) {
 			console.log('Error: ' + err.message);
+			sendTextMessage(data.sid, 'Login failed. ' + err.message);
 		} else {
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
-			oauth = resp;
+			//oauth = resp;
 			mySession[data.sid] = resp;
+			sendTextMessage(data.sid, 'Login success, you can perform your last action');
 		}
 	});
 	res.sendStatus(200);
