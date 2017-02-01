@@ -34,12 +34,11 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 app.use(session({
-	/*store: new RedisStore({
+	store: new RedisStore({
 		host: 'localhost',
 		port: app.get('port'),
-		db: 2,
-		pass: '4789YongeStreet'
-	}),*/
+		db: 2
+	}),
 	secret: 'd5e79d3c37be21dbe96afca771582b94'
 }));
 
