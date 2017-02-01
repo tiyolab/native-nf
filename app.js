@@ -163,7 +163,7 @@ app.post('/webhook', function (req, res) {
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
-				if(req.session.oauth[messagingEvent.sender.id]){
+				if(req.session.oauth != 'undefined' && req.session.oauth[messagingEvent.sender.id]){
 					if (messagingEvent.message) {
 						receivedMessage(messagingEvent);
 					} else {
