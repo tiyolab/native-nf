@@ -344,7 +344,7 @@ function sendShowBrokerMessage(recipientId){
                 }
                 
                 
-                String street = '';
+                var street = '';
                 if(ac.BillingStreet){
                 	street = BillingStreet;
                 }
