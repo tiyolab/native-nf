@@ -72,14 +72,14 @@ var org = nforce.createConnection({
 });
 
 // authenticate using username-password oauth flow
-org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995@' }, function(err, resp){
+/*org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995@' }, function(err, resp){
   if(err) {
     console.log('Error: ' + err.message);
   } else {
     console.log('Access Token: ' + resp.access_token);
     oauth = resp;
   }
-});
+});*/
 
 /*
  * Use your own validation token. Check that the token used in the Webhook 
@@ -99,6 +99,21 @@ app.get('/webhook', function(req, res) {
     console.error("Failed validation. Make sure the validation tokens match.");
     res.sendStatus(403);          
   }  
+});
+
+
+app.get('/auth/sfdc', function(req, res){
+	res.redirect(org.getAuthUri);
+});
+
+app.get('/auth/sfdc/callback', function(req, res){
+	org.authenticate({code: req.query.code}, function(err, resp){
+		if(err){
+			console.log(err.message);
+		}else{
+			console.log('token = ' + resp.access_token);
+		}
+	});
 });
 
 
