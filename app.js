@@ -118,24 +118,22 @@ app.post('/auth', function(req, res){
 		} else {
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
-			//oauth = resp;
 			
-			//get linking callback
-			/*request(data.redirect + "&authorization_code=12345", function (error, response, body) {
+			//get sender id
+			request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
 					console.log('response linking');
 					console.log(body);
+					
+					mySession[data.sid] = resp;
+					sendTextMessage(data.sid, 'Login success, you can perform your last action');
 				}else{
 					console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 				}
 			});
-			
-			mySession[data.sid] = resp;
-			sendTextMessage(data.sid, 'Login success, you can perform your last action');*/
-			res.redirect(data.redirect + "&authorization_code=12345");
 		}
 	});
-	//res.sendStatus(200);
+	res.sendStatus(200);
 });
 
 /*
@@ -144,11 +142,11 @@ app.post('/auth', function(req, res){
  * 
  */
 app.get('/authorize', function(req, res) {
-  var redirectURI = req.query.redirect_uri;
+  var alt = req.query.account_linking_token;
   var senderID = req.query.sid;
   
   res.render('authorize', {
-    redirectURI: redirectURI,
+    alt: alt,
 	senderID: senderID
   });
 });
