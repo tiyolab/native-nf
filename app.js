@@ -122,15 +122,14 @@ app.post('/auth', function(req, res){
 			//get sender id
 			request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					console.log(body);
-					console.log(body.recipient);
 					body = JSON.parse(body);
-					console.log(body.recipient);
 					
 					//get sender profile
 					request('https://graph.facebook.com/v2.6/'+ body.recipient +'?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token='+PAGE_ACCESS_TOKEN, function(errP, respP, bodyP){
 						
 						if (!errP && respP.statusCode == 200) {
+							bodyP = JSON.parse(bodyP);
+							
 							var senderData = {
 								oauth: resp,
 								psid: body.recipient,
