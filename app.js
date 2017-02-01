@@ -22,6 +22,7 @@ var oauth;
 var nforce = require('nforce');
   
 var app = express();
+var session = require('express-session');
 var redisStore = require('connect-redis')(express);
 
 app.set('port', process.env.PORT || 1107);
@@ -30,7 +31,7 @@ app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
 
 app.use(express.cookieParser());
-app.use(express.session({
+app.use(session({
 	store: new RedisStore({
 		host: 'localhost',
 		port: app.get('port'),
