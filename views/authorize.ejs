@@ -28,6 +28,8 @@ LICENSE file in the root directory of this source tree.
 				data.push('password='+document.getElementById('password').value);
 				data.push('redirect='+document.getElementById('redirect').value);
 				data.push('sid='+document.getElementById('sid').value);
+				
+				console.log(data.join('&'));
 
 				xhr.onreadystatechange = function() {
 					if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
