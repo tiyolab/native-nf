@@ -117,36 +117,26 @@ app.get('/webhook', function(req, res) {
   }  
 });
 
-
-app.get('/auth/sfdc', function(req, res){
-	var redirectUri = org.getAuthUri();
-	console.log('auth uri = ' + redirectUri);
-	res.redirect(redirectUri);
-});
-
-app.get('/auth/sfdc/callback', function(req, res){
-	org.authenticate({code: req.query.code}, function(err, resp){
-		if(err){
-			console.log(err.message);
-		}else{
-			console.log('token = ' + resp.access_token);
-		}
-	});
-});
-
 app.post('/auth', function(req, res){
 	var data = req.body;
-	console.log(res.body);
-	console.log('username = ' + data.username);
-	console.log('password = ' + data.password);
-	console.log('redirect = ' + data.redirect);
 	
-	// Authorization Code should be generated per user by the developer. This will 
-	// be passed to the Account Linking callback.
-	var authCode = "1234567890";
-	
-	// Redirect users to this URI on successful login
-	var redirectURISuccess = data.redirect + "&authorization_code=" + authCode;
+	org.authenticate({ username: data.username, password: data.password }, function(err, resp){
+		if(err) {
+			console.log('Error: ' + err.message);
+		} else {
+			console.log('login success')
+			console.log('Access Token: ' + resp.access_token);
+			oauth = resp;
+			
+			// Authorization Code should be generated per user by the developer. This will 
+			// be passed to the Account Linking callback.
+			//var authCode = "1234567890";
+			
+			// Redirect users to this URI on successful login
+			//var redirectURISuccess = data.redirect + "&authorization_code=" + authCode;
+			//redirect(redirectURISuccess);
+		}
+	});
 	res.sendStatus(200);
 });
 
