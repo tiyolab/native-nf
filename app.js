@@ -355,8 +355,7 @@ function loginMessage(recipientId) {
 		recipient: {
 		  id: recipientId
 		},
-		message: [
-		{
+		message:{
 		  attachment: {
 			type: "template",
 			payload: {
@@ -375,7 +374,6 @@ function loginMessage(recipientId) {
 			}
 		  }
 		}
-	  ]
 	}
 
   callSendAPI(messageData);
