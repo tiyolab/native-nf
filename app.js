@@ -133,7 +133,7 @@ app.get('/auth/sfdc/callback', function(req, res){
 	});
 });
 
-app.get('/auth', function(req, res){
+app.post('/auth', function(req, res){
 	var data = req.body;
 	console.log('username = ' + data.username);
 	console.log('password = ' + data.password);
