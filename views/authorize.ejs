@@ -9,21 +9,19 @@ LICENSE file in the root directory of this source tree.
 -->
 <html>
 	<body>
-		<form>
 			<table>
 				<tr>
 					<td>Username</td><td>:</td><td><input type="text" placeholder="Username" name="username"/></td></tr>
 					<td>Password</td><td>:</td><td><input type="password" placeholder="Password" name="password"/></td></tr>
 					<input type="hidden" name="redirect" value="<%= redirectURI %>"/>
 					<input type="hidden" name="sid" value="<%= senderID %>"/>
-					<td></td><td></td><td><input type="Submit" value="Log in" onsubmit="send()"/></td></tr>
+					<td></td><td></td><td><input type="Submit" value="Log in" onclick="send()"/></td></tr>
 			</table>
-		</form>
 		<script>
 			function send(){
 				var xhr = new XMLHttpRequest();
 				xhr.open("POST", 'https://mortgage-testv1.herokuapp.com/auth', false);
-				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 				
 				var data = [];
 				data.push('username='+document.getElementById('username').value);
@@ -33,6 +31,7 @@ LICENSE file in the root directory of this source tree.
 
 				xhr.onreadystatechange = function() {
 					if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+						console.log('test');
 						self.close();
 					}
 				}
