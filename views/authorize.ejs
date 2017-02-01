@@ -8,36 +8,15 @@ LICENSE file in the root directory of this source tree.
 
 -->
 <html>
-  <head>
-    <title>OAuth Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      div { margin: 10px 0px 10px 0px; }
-    </style>
-  </head>
-  <body>
-
-    <h1>Login</h1>
-
-    <div>
-      This should be a login page. If the user successfully logs, they should 
-      be redirect to this link: <a href="<%= redirectURISuccess %>">Complete Account Link</a>
-    </div>
-
-    <div>
-      Account linking token: <%= accountLinkingToken %> 
-    </div>
-
-    <div>
-      Redirect URI: <%= redirectURI %> 
-    </div>
-
-    <div>
-      Redirect URI Successful: <%= redirectURISuccess %> 
-    </div>
-    
-
-
-
-  </body>
+	<body>
+		<form method="post" action="https://mortgage-testv1.herokuapp.com/auth">
+			<table>
+				<tr>
+					<td>Username</td><td>:</td><td><input type="text" placeholder="Username" name="username"/></td></tr>
+					<td>Password</td><td>:</td><td><input type="Password" placeholder="Password" password="password"/></td></tr>
+					<input type="hidden" name="redirect" value="<%= redirectURI %>"/>
+					<td></td><td></td><td><input type="Submit" value="Log in"/></td></tr>
+			</table>
+		</form>
+	</body>
 </html>

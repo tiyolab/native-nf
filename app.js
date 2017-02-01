@@ -134,15 +134,17 @@ app.get('/auth/sfdc/callback', function(req, res){
 });
 
 app.get('/auth', function(req, res){
-	fs.readFile('./public/auth.html', function(err, html){
-		if(!err){
-			res.writeHeader(200, {'Content-Type':'text/html'});
-			res.write(html);
-			res.end();
-		}else{
-			console.log(err);
-		}
-	});
+	var data = req.body;
+	console.log('username = ' + data.username);
+	console.log('password = ' + data.password);
+	console.log('redirect = ' + data.redirect);
+	
+	// Authorization Code should be generated per user by the developer. This will 
+	// be passed to the Account Linking callback.
+	var authCode = "1234567890";
+	
+	// Redirect users to this URI on successful login
+	var redirectURISuccess = data.redirect + "&authorization_code=" + authCode;
 });
 
 /*
@@ -151,20 +153,10 @@ app.get('/auth', function(req, res){
  * 
  */
 app.get('/authorize', function(req, res) {
-  var accountLinkingToken = req.query.account_linking_token;
   var redirectURI = req.query.redirect_uri;
-
-  // Authorization Code should be generated per user by the developer. This will 
-  // be passed to the Account Linking callback.
-  var authCode = "1234567890";
-
-  // Redirect users to this URI on successful login
-  var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
+  
   res.render('authorize', {
-    accountLinkingToken: accountLinkingToken,
-    redirectURI: redirectURI,
-    redirectURISuccess: redirectURISuccess
+    redirectURI: redirectURI
   });
 });
 
