@@ -26,7 +26,7 @@ LICENSE file in the root directory of this source tree.
 				var data = [];
 				data.push('username='+document.getElementById('username').value);
 				data.push('password='+document.getElementById('password').value);
-				data.push('redirect='+document.getElementById('redirect').value);
+				data.push('alt='+document.getElementById('alt').value);
 				data.push('sid='+document.getElementById('sid').value);
 				
 				console.log(data.join('&'));
@@ -34,7 +34,7 @@ LICENSE file in the root directory of this source tree.
 				xhr.onreadystatechange = function() {
 					if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
 						console.log('test');
-						//self.close();
+						self.close();
 					}
 				}
 				xhr.send(data.join('&'));
