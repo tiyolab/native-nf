@@ -121,7 +121,7 @@ app.post('/auth', function(req, res){
 			//oauth = resp;
 			
 			//get linking callback
-			request(data.redirect + "&authorization_code=12345", function (error, response, body) {
+			/*request(data.redirect + "&authorization_code=12345", function (error, response, body) {
 				if (!error && response.statusCode == 200) {
 					console.log('response linking');
 					console.log(body);
@@ -131,7 +131,8 @@ app.post('/auth', function(req, res){
 			});
 			
 			mySession[data.sid] = resp;
-			sendTextMessage(data.sid, 'Login success, you can perform your last action');
+			sendTextMessage(data.sid, 'Login success, you can perform your last action');*/
+			res.redirect(data.redirect + "&authorization_code=12345");
 		}
 	});
 	res.sendStatus(200);
