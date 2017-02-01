@@ -146,6 +146,29 @@ app.get('/auth', function(req, res){
 });
 
 /*
+ * This path is used for account linking. The account linking call-to-action
+ * (sendAccountLinking) is pointed to this URL. 
+ * 
+ */
+app.get('/authorize', function(req, res) {
+  var accountLinkingToken = req.query.account_linking_token;
+  var redirectURI = req.query.redirect_uri;
+
+  // Authorization Code should be generated per user by the developer. This will 
+  // be passed to the Account Linking callback.
+  var authCode = "1234567890";
+
+  // Redirect users to this URI on successful login
+  var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+
+  res.render('authorize', {
+    accountLinkingToken: accountLinkingToken,
+    redirectURI: redirectURI,
+    redirectURISuccess: redirectURISuccess
+  });
+});
+
+/*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
  * webhook. Be sure to subscribe your app to your page to receive callbacks
  * for your page. 
@@ -184,11 +207,11 @@ app.post('/webhook', function (req, res) {
 						}
 					}else{
 						if (messagingEvent.message) {
-							sendTextMessage(messagingEvent.sender.id, 'need login');
+							loginMessage(messagingEvent.sender.id);
 						}
 					}
 				}else{
-					sendTextMessage(messagingEvent.sender.id, 'need login');
+					loginMessage(messagingEvent.sender.id);
 				}
 				
 				
@@ -292,7 +315,14 @@ function receivedMessage(event) {
     // If we receive a text message, check to see if it matches any special
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
-    sendTextMessage(senderID, messageText);
+	switch (messageText) {
+		case 'account linking':
+			sendAccountLinking(senderID);
+			break;
+
+		default:
+			sendTextMessage(senderID, messageText);
+	}
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
   }
@@ -316,6 +346,43 @@ function sendTextMessage(recipientId, messageText) {
 
   callSendAPI(messageData);
 }
+
+
+/*
+ * Send a message with the account linking call-to-action in order need login
+ *
+ */
+function sendAccountLinking(recipientId) {
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		messages: [
+		{
+		  attachment: {
+			type: "template",
+			payload: {
+			  template_type: "generic",
+			  elements: [
+				{
+				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  buttons: [
+					{
+						type: "account_link",
+						url: SERVER_URL + "/authorize"
+					}
+				  ]
+				}
+			  ]
+			}
+		  }
+		}
+	  ]
+	}
+
+  callSendAPI(messageData);
+}
+
 
 /*
  * Call the Send API. The message data goes in the body. If successful, we'll 
