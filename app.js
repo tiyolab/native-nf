@@ -135,7 +135,7 @@ app.post('/auth', function(req, res){
 			res.redirect(data.redirect + "&authorization_code=12345");
 		}
 	});
-	res.sendStatus(200);
+	//res.sendStatus(200);
 });
 
 /*
