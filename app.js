@@ -336,7 +336,8 @@ function sendShowBrokerMessage(recipientId){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
-			/*respQuery.records.forEach(function(ac){
+			var elementsAccount = [];
+			respQuery.records.forEach(function(ac){
 				var phone = '';
                 if(ac.Phone){
                     phone = ac.Phone;
@@ -344,16 +345,32 @@ function sendShowBrokerMessage(recipientId){
                 
                 
                 String street = '';
-                if(ac.BillingAddress){
-                	System.Address address = ac.BillingAddress;    
-                    if(address.getStreet() != null){
-                        street = address.getStreet();   
-                    }
+                if(ac.BillingStreet){
+                	street = BillingStreet;
                 }
-                elements.add('{"title":"'+ ac.Name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.Website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.Id +'"}}]}');
+                elementsAccount.push('{"title":"'+ ac.Name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.Website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.Id +'"}}]}');
 			});
-			var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';*/
-			console.log(respQuery.records);
+			//var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';
+			
+			console.log(JSON.parse(elementsAccount.join(',')));
+			
+			var messageData = {
+				recipient: {
+				  id: recipientId
+				},
+				message:{
+				  attachment: {
+					type: "template",
+					payload: {
+					  template_type: "generic",
+					  elements: [
+						JSON.parse(elementsAccount.join(','))
+					  ]
+					}
+				  }
+				}
+			}
+			callSendAPI(messageData);
 		}
 	});
 }
