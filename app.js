@@ -10,6 +10,8 @@
 /* jshint node: true, devel: true */
 'use strict';
 
+var mySession = [];
+
 const 
   bodyParser = require('body-parser'),
   config = require('config'),
@@ -126,8 +128,8 @@ app.post('/auth', function(req, res){
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
 			oauth = resp;
-			req.session[data.sid] = resp;
-			console.log('token = ' + req.session[data.sid].access_token);
+			mySession[data.sid] = resp;
+			console.log('token = ' + mySession[data.sid].access_token);
 			// Authorization Code should be generated per user by the developer. This will 
 			// be passed to the Account Linking callback.
 			//var authCode = "1234567890";
@@ -184,9 +186,9 @@ app.post('/webhook', function (req, res) {
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
-				console.log('session = ' + req.session[0]);
-				if(req.session){
-					if(req.session[messagingEvent.sender.id]){
+				console.log('session = ' + mySession);
+				if(mySession){
+					if(mySession[messagingEvent.sender.id]){
 						if (messagingEvent.message) {
 							receivedMessage(messagingEvent);
 						} else {
