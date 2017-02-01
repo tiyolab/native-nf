@@ -163,17 +163,23 @@ app.post('/webhook', function (req, res) {
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
-				if(req.session.oauth != 'undefined' && req.session.oauth[messagingEvent.sender.id]){
-					if (messagingEvent.message) {
-						receivedMessage(messagingEvent);
-					} else {
-						console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+				console.log('session = ' + req.session);
+				if(req.session){
+					if(req.session.oauth[messagingEvent.sender.id]){
+						if (messagingEvent.message) {
+							receivedMessage(messagingEvent);
+						} else {
+							console.log("Webhook received unknown messagingEvent: ", messagingEvent);
+						}
+					}else{
+						if (messagingEvent.message) {
+							sendTextMessage(messagingEvent.sender.id, 'need login');
+						}
 					}
 				}else{
-					if (messagingEvent.message) {
-						sendTextMessage(messagingEvent.sender.id, 'need login');
-					}
+					sendTextMessage(messagingEvent.sender.id, 'need login');
 				}
+				
 				
 				/*if (messagingEvent.message) {
 					receivedMessage(messagingEvent);
