@@ -88,16 +88,6 @@ var org = nforce.createConnection({
   mode: 'multi' // optional, 'single' or 'multi' user mode, multi default 
 });
 
-// authenticate using username-password oauth flow
-/*org.authenticate({ username: 'tiyo7035@recruiter.app', password: 'TIYO11juli1995@' }, function(err, resp){
-  if(err) {
-    console.log('Error: ' + err.message);
-  } else {
-    console.log('Access Token: ' + resp.access_token);
-    oauth = resp;
-  }
-});*/
-
 /*
  * Use your own validation token. Check that the token used in the Webhook 
  * setup is the same token used here.
@@ -129,14 +119,6 @@ app.post('/auth', function(req, res){
 			console.log('Access Token: ' + resp.access_token);
 			oauth = resp;
 			mySession[data.sid] = resp;
-			console.log('token = ' + mySession[data.sid].access_token);
-			// Authorization Code should be generated per user by the developer. This will 
-			// be passed to the Account Linking callback.
-			//var authCode = "1234567890";
-			
-			// Redirect users to this URI on successful login
-			//var redirectURISuccess = data.redirect + "&authorization_code=" + authCode;
-			//redirect(redirectURISuccess);
 		}
 	});
 	res.sendStatus(200);
@@ -168,14 +150,6 @@ app.post('/webhook', function (req, res) {
 	console.log("tiyo said state in post");
 	var data = req.body;
 	
-	/*org.query({query : "select Id, Name from user", oauth : oauth}, function(errQuery, respQuery){
-		if(errQuery){
-			console.log(errQuery);
-		}else{
-			console.log(respQuery.records);
-		}
-	});*/
-	
 	// Make sure this is a page subscription
 	if (data.object == 'page') {
 		// Iterate over each entry
@@ -186,29 +160,11 @@ app.post('/webhook', function (req, res) {
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
-				console.log('session = ' + mySession);
-				if(mySession){
-					if(mySession[messagingEvent.sender.id]){
-						if (messagingEvent.message) {
-							receivedMessage(messagingEvent);
-						} else {
-							console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-						}
-					}else{
-						if (messagingEvent.message) {
-							loginMessage(messagingEvent.sender.id);
-						}
-					}
-				}else{
-					loginMessage(messagingEvent.sender.id);
-				}
-				
-				
-				/*if (messagingEvent.message) {
+				if (messagingEvent.message) {
 					receivedMessage(messagingEvent);
 				} else {
 					console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-				}*/
+				}
 			});
 		});
 
@@ -302,13 +258,14 @@ function receivedMessage(event) {
     // If we receive a text message, check to see if it matches any special
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
-	switch (messageText) {
-		case 'account linking':
+	if(messageText.search(/broker/i) > -1){
+		if(mySession[senderID]){
+			sendShowBrokerMessage(senderID);
+		}else{
 			loginMessage(senderID);
-			break;
-
-		default:
-			sendTextMessage(senderID, messageText);
+		}
+	}else{
+		sendTextMessage(senderID, messageText);
 	}
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
@@ -369,6 +326,36 @@ function loginMessage(recipientId) {
   callSendAPI(messageData);
 }
 
+/*
+ * show broker list
+ */
+function sendShowBrokerMessage(recipientId){
+	org.query({query : "Id, Name, BillingAddress, Website, Phone from Account limit 10", oauth : mySession[recipientId]}, function(errQuery, respQuery){
+		if(errQuery){
+			console.log(errQuery);
+		}else{
+			/*respQuery.records.forEach(function(ac){
+				var phone = '';
+                if(ac.Phone){
+                    phone = ac.Phone;
+                }
+                
+                
+                String street = '';
+                if(ac.BillingAddress){
+                	System.Address address = ac.BillingAddress;    
+                    if(address.getStreet() != null){
+                        street = address.getStreet();   
+                    }
+                }
+                elements.add('{"title":"'+ ac.Name +'","subtitle":"Address: '+ street.replace('\n', '').replace('\r','') +'Website: '+ ac.Website +'","buttons":[{"type":"phone_number","phone_number":"'+ phone +'","title":"Call"}, {"type":"show_block","block_name":"Create lead","title":"Refer Me", "set_attributes":{"account_id":"'+ ac.Id +'"}}]}');
+			});
+			var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';*/
+			console.log(respQuery.records);
+		}
+	});
+}
+
 
 /*
  * Call the Send API. The message data goes in the body. If successful, we'll 
@@ -388,7 +375,7 @@ function callSendAPI(messageData) {
       var messageId = body.message_id;
 
       if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
+		  console.log("Successfully sent message with id %s to recipient %s", 
           messageId, recipientId);
       } else {
       console.log("Successfully called Send API for recipient %s", 
