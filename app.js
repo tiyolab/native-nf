@@ -122,13 +122,33 @@ app.post('/auth', function(req, res){
 			//get sender id
 			request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					console.log('response linking');
-					console.log(body);
 					
-					mySession[data.sid] = resp;
-					sendTextMessage(data.sid, 'Login success, you can perform your last action');
+					//get sender profile
+					request('https://graph.facebook.com/v2.6/'+ body.recipient +'?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token='+PAGE_ACCESS_TOKEN, function(errP, respP, bodyP){
+						
+						if (!errP && respP.statusCode == 200) {
+							mySession[data.sid].oauth = resp;
+							mySession[data.sid].psid = body.recipient;
+							mySession[data.sid].pgid = body.id;
+							
+							mySession[data.sid].first_name = bodyP.first_name;
+							mySession[data.sid].last_name = bodyP.last_name;
+							mySession[data.sid].profile_pic = bodyP.profile_pic;
+							mySession[data.sid].locale = bodyP.locale;
+							mySession[data.sid].timezone = bodyP.timezone;
+							mySession[data.sid].gender = bodyP.gender;
+							
+							console.log(mySession[data.sid]);
+							
+							sendTextMessage(data.sid, 'Login success, you can perform your last action');
+						}else{
+							console.error("Failed calling Send API", respP.statusCode, respP.statusMessage, bodyP.error);
+							sendTextMessage(data.sid, 'Login failed. ' + errP);
+						}
+					});
 				}else{
 					console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+					sendTextMessage(data.sid, 'Login failed. ' + error);
 				}
 			});
 		}
@@ -271,7 +291,7 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
 	if(messageText.search(/broker/i) > -1){
-		if(mySession[senderID]){
+		if(mySession[senderID].oauth){
 			sendShowBrokerMessage(senderID);
 		}else{
 			loginMessage(senderID);
@@ -342,7 +362,7 @@ function loginMessage(recipientId) {
  * show broker list
  */
 function sendShowBrokerMessage(recipientId){
-	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId]}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId].oauth}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
