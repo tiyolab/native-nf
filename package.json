@@ -18,7 +18,7 @@
     "request": "^2.72.0",
 	"nforce": "*",
 	"connect-redis": "1.4.x",
-	"express-sessions": "*"
+	"express-session": "*"
   },
   "engines": {
     "node": "~4.1.2"
