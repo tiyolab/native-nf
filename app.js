@@ -181,9 +181,11 @@ app.get('/authorize', function(req, res) {
  */
 
 var FB_REDIRECT_URI = 'fboauth3';
+var FB_APP_ID = '720602331440012';
+var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
  
 app.get('/ssoauth', function(req, res){
-	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id=720602331440012&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
 	res.redirect(requestUri);
 });
 
@@ -191,14 +193,15 @@ app.get('/ssoauth', function(req, res){
  * ouath facebook response
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
-	console.log('response');
-	console.log(req.query);
-	res.sendStatus(200);
 	//confirm identity
-	/*var uri = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=720602331440012&redirect_uri='+SERVER_URL+'/confirm_identity&client_secret=d5e79d3c37be21dbe96afca771582b94&code=11111';
+	var uri = 'graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
 	request('https://graph.facebook.com/v2.6/', function(err, resp, body){
-		
-	});*/
+		if (!err && resp.statusCode == 200) {
+			body = JSON.parse(body);
+			console.log(body);
+		}
+		res.sendStatus(200);
+	});
 });
 
 
