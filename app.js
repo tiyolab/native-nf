@@ -176,6 +176,28 @@ app.get('/authorize', function(req, res) {
   });
 });
 
+/**
+ * oauth to facebook 
+ */
+app.get('/ssoauth', function(req, res){
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id=720602331440012&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/ownlogin';
+	res.redirect(requestUri);
+});
+
+/**
+ * ouath facebook response
+ */
+app.get('/ownlogin', function(req, res){
+	console.log('response');
+	console.log(req);
+	//confirm identity
+	/*var uri = 'https://graph.facebook.com/v2.8/oauth/access_token?client_id=720602331440012&redirect_uri='+SERVER_URL+'/confirm_identity&client_secret=d5e79d3c37be21dbe96afca771582b94&code=11111';
+	request('https://graph.facebook.com/v2.6/', function(err, resp, body){
+		
+	});*/
+});
+
+
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
  * webhook. Be sure to subscribe your app to your page to receive callbacks
@@ -211,6 +233,15 @@ app.post('/webhook', function (req, res) {
 		// successfully received the callback. Otherwise, the request will time out.
 		res.sendStatus(200);
 	}
+});
+
+
+app.get('/testsso', function(req, res){
+	console.log(res);
+});
+
+app.post('/testsso', function(req, res){
+	console.log(res);
 });
 
 /*
