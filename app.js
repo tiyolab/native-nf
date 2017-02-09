@@ -194,11 +194,15 @@ app.get('/ssoauth', function(req, res){
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
 	//confirm identity
+	console.log(req.query);
+	console.log(req.query.access_token);
 	var uri = 'graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
 	request('https://graph.facebook.com/v2.6/', function(err, resp, body){
 		if (!err && resp.statusCode == 200) {
 			body = JSON.parse(body);
 			console.log(body);
+		}else{
+			console.error("Failed calling Send API", resp.statusCode, resp.statusMessage, body.error);
 		}
 		res.sendStatus(200);
 	});
