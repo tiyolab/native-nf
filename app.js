@@ -185,7 +185,7 @@ var FB_APP_ID = '720602331440012';
 var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
  
 app.get('/ssoauth', function(req, res){
-	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
 	res.redirect(requestUri);
 });
 
