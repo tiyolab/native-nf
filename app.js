@@ -180,7 +180,7 @@ app.get('/authorize', function(req, res) {
  * oauth to facebook 
  */
 
-var FB_REDIRECT_URI = 'fboauth1';
+var FB_REDIRECT_URI = 'fboauth2';
  
 app.get('/ssoauth', function(req, res){
 	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id=720602331440012&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
