@@ -187,7 +187,7 @@ app.get('/ssoauth', function(req, res){
 /**
  * ouath facebook response
  */
-app.get('/ownlogin', function(req, res){
+app.get('/fbauth', function(req, res){
 	console.log('response');
 	console.log(req);
 	//confirm identity
