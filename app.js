@@ -234,7 +234,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 					}, function(errNU, respNU, bodyNU){
 						if (!errNU && respNU.statusCode == 200) {
 							console.log(bodyNU);
-							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/apex/MortgageTestV1Page?u'
+							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
 							+bodyNU.username+'&p='+bodyNU.password);
 						}else{
 							console.log(bodyNU);
