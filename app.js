@@ -217,10 +217,29 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 				var gender = bodyP.gender;
 				var locale = bodyP.locale;
 				
-				console.log(bodyP);
+				//console.log(bodyP);
+				//create new user
+				request({
+					method	: 'POST',
+					url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+					json	: {
+						userid: userId,
+						name: name,
+						firstname: firstName,
+						lastname: lastName
+					}
+				}, function(errNU, respNU, bodyNU){
+					if (!errNU && respNU.statusCode == 200) {
+						bodyNU = JSON.parse(bodyNU);
+						console.log(bodyNU);
+					}else{
+						console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
+					}
+					
+				});
 			});
 		}else{
-			console.error("Failed calling Send API", resp.statusCode, resp.statusMessage, body.error);
+			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
 		}
 		res.sendStatus(200);
 	});
