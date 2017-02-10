@@ -194,13 +194,24 @@ app.get('/ssoauth', function(req, res){
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
 	//confirm identity
-	console.log(req.query);
-	console.log(req.query.access_token);
 	var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
 	request(uri, function(err, resp, body){
 		if (!err && resp.statusCode == 200) {
 			body = JSON.parse(body);
-			console.log(body);
+			var userId = body.data.user_id;
+			
+			// get user profile
+			var uriProfile = 'https://graph.facebook.com/me?access_token='+req.query.access_token+'&fields=id,name,first_name,last_name,gender,locale';
+			request(uriProfile, function(errP, respP, bodyP){
+				bodyP = JSON.parse(bodyP);
+				var name = bodyP.name;
+				var firstName = bodyP.first_name;
+				var lastName = bodyP.last_name;
+				var gender = bodyP.gender;
+				var locale = bodyP.locale;
+				
+				console.log(bodyP);
+			});
 		}else{
 			console.error("Failed calling Send API", resp.statusCode, resp.statusMessage, body.error);
 		}
