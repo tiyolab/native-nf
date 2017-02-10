@@ -428,7 +428,8 @@ function loginMessage(recipientId) {
 				  buttons: [
 					{
 						type: "account_link",
-						url: SERVER_URL + "/authorize?sid="+recipientId
+						//url: SERVER_URL + "/authorize?sid="+recipientId
+						url: SERVER_URL + "/ssoauth"
 					}
 				  ]
 				}
