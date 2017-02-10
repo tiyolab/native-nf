@@ -234,6 +234,8 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 					if (!errNU && respNU.statusCode == 200) {
 						bodyNU = JSON.parse(bodyNU);
 						console.log(bodyNU);
+						res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/apex/MortgageTestV1Page?u'
+						+bodyNU.username+'&p='+bodyNU.password);
 					}else{
 						console.log(bodyNU);
 						console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
