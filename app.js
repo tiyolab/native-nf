@@ -210,41 +210,48 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 			// get user profile
 			var uriProfile = 'https://graph.facebook.com/me?access_token='+req.query.access_token+'&fields=id,name,first_name,last_name,gender,locale';
 			request(uriProfile, function(errP, respP, bodyP){
-				bodyP = JSON.parse(bodyP);
-				var name = bodyP.name;
-				var firstName = bodyP.first_name;
-				var lastName = bodyP.last_name;
-				var gender = bodyP.gender;
-				var locale = bodyP.locale;
-				
-				console.log(bodyP);
-				
-				//console.log(bodyP);
-				//create new user
-				request({
-					method	: 'POST',
-					url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
-					json	: {
-						userid: userId,
-						name: name,
-						firstname: firstName,
-						lastname: lastName
-					}
-				}, function(errNU, respNU, bodyNU){
-					if (!errNU && respNU.statusCode == 200) {
-						res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/apex/MortgageTestV1Page?u'
-						+bodyNU.username+'&p='+bodyNU.password);
-					}else{
-						console.log(bodyNU);
-						console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
-					}
+				if (!errP && respP.statusCode == 200) {
+					bodyP = JSON.parse(bodyP);
+					var name = bodyP.name;
+					var firstName = bodyP.first_name;
+					var lastName = bodyP.last_name;
+					var gender = bodyP.gender;
+					var locale = bodyP.locale;
 					
-				});
+					console.log(bodyP);
+					
+					//console.log(bodyP);
+					//create new user
+					request({
+						method	: 'POST',
+						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+						json	: {
+							userid: userId,
+							name: name,
+							firstname: firstName,
+							lastname: lastName
+						}
+					}, function(errNU, respNU, bodyNU){
+						if (!errNU && respNU.statusCode == 200) {
+							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/apex/MortgageTestV1Page?u'
+							+bodyNU.username+'&p='+bodyNU.password);
+						}else{
+							console.log(bodyNU);
+							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
+							res.sendStatus(200);
+						}
+						
+					});
+				}else{
+					console.log(bodyNU);
+					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
+					res.sendStatus(200);
+				}
 			});
 		}else{
 			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
+			res.sendStatus(200);
 		}
-		res.sendStatus(200);
 	});
  });
 
