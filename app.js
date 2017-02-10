@@ -194,7 +194,8 @@ app.get('/ssoauth', function(req, res){
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
 	console.log(req);
-	res.sendStatus(200);
+	res.render('bridgeuri');
+	//res.sendStatus(200);
 	//confirm identity
 	/*var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
 	request(uri, function(err, resp, body){
