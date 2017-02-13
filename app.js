@@ -238,24 +238,41 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 					}, function(errNU, respNU, bodyNU){
 						if (!errNU && respNU.statusCode == 200) {
 							console.log(bodyNU);
-							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
-							+bodyNU.username+'&p='+bodyNU.password);
+							
+							// authenticate
+							org.authenticate({username:bodyNU.username, password:bodyNU.password}, function(errAuth, respAuth){
+								if(errAuth){
+									console.log('Error: ' + errAuth.message);
+									sendTextMessage(req.query.senderid, 'Login failed.');
+								}else{
+									var userData = {
+										oauth: respAuth,
+										psid: req.query.senderid,
+										firstName: firstName,
+										lastName: lastName,
+										locale: locale,
+										gender: gender
+									}
+									mySession[req.query.senderid] = userData;
+									
+									res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
+									+bodyNU.username+'&p='+bodyNU.password);
+								}
+							});
 						}else{
 							console.log(bodyNU);
 							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
-							res.sendStatus(200);
+							sendTextMessage(req.query.senderid, 'Login failed.');
 						}
-						
 					});
 				}else{
-					console.log(bodyNU);
 					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
-					res.sendStatus(200);
+					sendTextMessage(req.query.senderid, 'Login failed.');
 				}
 			});
 		}else{
 			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
-			res.sendStatus(200);
+			sendTextMessage(req.query.senderid, 'Login failed.');
 		}
 	});
  });
