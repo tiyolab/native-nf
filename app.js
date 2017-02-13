@@ -93,7 +93,7 @@ var org = nforce.createConnection({
 //org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
 
 org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/setup/secur/RemoteAccessAuthorizationPage.apexp';
-org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/setup/secur/RemoteAccessAuthorizationPage.apexp';
 
 console.log(org);
 
