@@ -82,8 +82,8 @@ console.log('tiyo said server running');
 var org = nforce.createConnection({
   clientId: '3MVG9YDQS5WtC11rPPnDcisY1IxDsekPGj0vXsxGSP4BGRKf28MxnXp2vFuwfYql8y0wB7TwnkLdwBk0W6N4q',
   clientSecret: '2874640950902301743',
-  //redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
-  redirectUri: 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral',
+  redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
+  //redirectUri: 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral',
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
   mode: 'multi' // optional, 'single' or 'multi' user mode, multi default 
