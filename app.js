@@ -88,6 +88,8 @@ var org = nforce.createConnection({
   mode: 'multi' // optional, 'single' or 'multi' user mode, multi default 
 });
 
+console.log(org);
+
 /*
  * Use your own validation token. Check that the token used in the Webhook 
  * setup is the same token used here.
@@ -244,6 +246,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 								if(errAuth){
 									console.log('Error: ' + errAuth.message);
 									sendTextMessage(req.query.senderid, 'Login failed.');
+									res.sendStatus(200);
 								}else{
 									var userData = {
 										oauth: respAuth,
@@ -260,19 +263,21 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 								}
 							});
 						}else{
-							console.log(bodyNU);
 							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
 							sendTextMessage(req.query.senderid, 'Login failed.');
+							res.sendStatus(200);
 						}
 					});
 				}else{
 					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
 					sendTextMessage(req.query.senderid, 'Login failed.');
+					res.sendStatus(200);
 				}
 			});
 		}else{
 			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
 			sendTextMessage(req.query.senderid, 'Login failed.');
+			res.sendStatus(200);
 		}
 	});
  });
