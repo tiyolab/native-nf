@@ -269,6 +269,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 								}
 							});
 						}else{
+							console.log(bodyNU);
 							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
 							sendTextMessage(req.query.senderid, 'Login failed.');
 							res.sendStatus(200);
