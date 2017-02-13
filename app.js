@@ -185,7 +185,8 @@ var FB_APP_ID = '720602331440012';
 var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
  
 app.get('/ssoauth', function(req, res){
-	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI;
+	var senderID = req.query.senderid;
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI+'?senderid='+senderID;
 	res.redirect(requestUri);
 });
 
@@ -193,7 +194,9 @@ app.get('/ssoauth', function(req, res){
  * bridge ouath facebook response
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
-	res.render('bridgeuri');
+	res.render('bridgeuri', {
+		senderID: req.query.senderid
+	});
 });
 
 /**
@@ -229,7 +232,8 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 							userid: userId,
 							name: name,
 							firstname: firstName,
-							lastname: lastName
+							lastname: lastName,
+							senderid: req.query.senderid
 						}
 					}, function(errNU, respNU, bodyNU){
 						if (!errNU && respNU.statusCode == 200) {
@@ -440,7 +444,7 @@ function loginMessage(recipientId) {
 					{
 						type: "account_link",
 						//url: SERVER_URL + "/authorize?sid="+recipientId
-						url: SERVER_URL + "/ssoauth"
+						url: SERVER_URL + "/ssoauth?senderid="+recipientId
 					}
 				  ]
 				}

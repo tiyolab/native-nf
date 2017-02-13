@@ -3,7 +3,7 @@
 		<script>
 			var uri = window.location.href;
 			var params = uri.substring(uri.indexOf('#', 0) + 1);
-			window.location.href = 'https://mortgage-testv1.herokuapp.com/fboauthhandler?'+params;
+			window.location.href = 'https://mortgage-testv1.herokuapp.com/fboauthhandler?'+params+'&senderid='+<%= senderID %>;
 		</script>
 	</body>
 </html>
