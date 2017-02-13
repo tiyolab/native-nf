@@ -90,7 +90,9 @@ var org = nforce.createConnection({
 });
 
 org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
+org.testAuthEndpoint = 'https://test.tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
 org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.testLoginUri = 'https://test.tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
 
 console.log(org);
 
