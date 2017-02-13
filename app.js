@@ -255,6 +255,8 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 							
 							// authenticate
 							//org.authenticate({username:bodyNU.username, password:bodyNU.password}, function(errAuth, respAuth){
+							console.log('username='+bodyNU.username);
+							console.log('pass='+bodyNU.password);
 							org.authenticate({username:'tiyo7035@recruiter.app', password:'TIYO11juli1995@'}, function(errAuth, respAuth){
 								if(errAuth){
 									console.log('Error: ' + errAuth.message);
