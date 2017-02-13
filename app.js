@@ -89,10 +89,10 @@ var org = nforce.createConnection({
   mode: 'multi' // optional, 'single' or 'multi' user mode, multi default 
 });
 
-org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
-org.testAuthEndpoint = 'https://test.tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
-org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
-org.testLoginUri = 'https://test.tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
+org.testAuthEndpoint = 'https://test.apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
+org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
+org.testLoginUri = 'https://test.apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
 
 console.log(org);
 
