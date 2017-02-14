@@ -89,11 +89,11 @@ var org = nforce.createConnection({
   mode: 'multi', // optional, 'single' or 'multi' user mode, multi default'
 });
 
-//org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
-//org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
+org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
 
-org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
-org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
+//org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
+//org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
 
 console.log(org);
 
@@ -129,7 +129,11 @@ app.post('/auth', function(req, res){
 			console.log('Access Token: ' + resp.access_token);
 			console.log(resp);
 			
-			var nOauth = {access_token:resp.access_token};
+			var nOauth = {
+				access_token:resp.access_token,
+				token_type: 'Bearer',
+				instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
+			};
 			
 			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
 				console.log(errQuery);
