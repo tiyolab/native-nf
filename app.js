@@ -261,8 +261,22 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 						if (!errNU && respNU.statusCode == 200) {
 							console.log(bodyNU);
 							
+							var userData = {
+								oauth: {
+									access_token:'',
+									token_type: 'Bearer',
+									instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
+								},
+								psid: req.query.senderid,
+								firstName: firstName,
+								lastName: lastName,
+								locale: locale,
+								gender: gender
+							}
+							mySession[req.query.senderid] = userData;
+							
 							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
-									+bodyNU.username+'&p='+bodyNU.password);
+									+bodyNU.username+'&p='+bodyNU.password+'&sid='+req.query.senderid);
 							
 							/*
 							// authenticate
@@ -309,6 +323,19 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 		}
 	});
  });
+ 
+// handling incoming session id from salesforce related facebook sender id
+app.post('/setsessionid', function(req, res){
+	var data = req.body;
+	var sessionId = data.sessionid;
+	var senderId = data.senderid;
+	
+	console.log('data from salesforce');
+	console.log(data);
+	
+	mySession[senderId].oauth.access_token = sessionId;
+	res.sendStatus(200);
+});
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
