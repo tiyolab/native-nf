@@ -132,9 +132,10 @@ app.post('/auth', function(req, res){
 		} else {
 			console.log('login success')
 			console.log('Access Token: ' + resp.access_token);
+			console.log(resp);
 			
 			//get sender id
-			request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
+			/*request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
 					body = JSON.parse(body);
 					
@@ -169,7 +170,7 @@ app.post('/auth', function(req, res){
 					console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 					sendTextMessage(data.sid, 'Login failed. ' + error);
 				}
-			});
+			});*/
 		}
 	});
 	res.sendStatus(200);
