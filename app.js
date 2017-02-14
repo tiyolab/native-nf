@@ -134,6 +134,13 @@ app.post('/auth', function(req, res){
 			console.log('Access Token: ' + resp.access_token);
 			console.log(resp);
 			
+			var nOauth = {access_token:resp.access_token};
+			
+			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : nOauth}, function(errQuery, respQuery){
+				console.log(errQuery);
+				console.log(respQuery.records);
+			});
+			
 			//get sender id
 			/*request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
