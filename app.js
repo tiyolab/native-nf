@@ -92,8 +92,8 @@ var org = nforce.createConnection({
 //org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
 //org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
 
-//org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
-//org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
+org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
 
 //org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
 //org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
