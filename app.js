@@ -134,7 +134,7 @@ app.post('/auth', function(req, res){
 			
 			var nOauth = {access_token:resp.access_token};
 			
-			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : nOauth}, function(errQuery, respQuery){
+			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
 				console.log(errQuery);
 				console.log(respQuery.records);
 			});
