@@ -130,7 +130,8 @@ app.post('/auth', function(req, res){
 			console.log(resp);
 			
 			var nOauth = {
-				access_token:resp.access_token,
+				//access_token:resp.access_token,
+				access_token:'00D6F000001N2Q8!AQwAQM_lfDOHhMq9OVUVRbwdmaEACvqQEEl8jIIHSTe2RGpUmIQ0qeBlniFhNFwu29TCwVis1qTd3up78OWudipsiFV.zCJ.',
 				token_type: 'Bearer',
 				instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
 			};
