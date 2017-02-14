@@ -86,9 +86,7 @@ var org = nforce.createConnection({
   //redirectUri: 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral',
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
-  mode: 'multi', // optional, 'single' or 'multi' user mode, multi default
-  authEndpoint: 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize',
-  loginUri: 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token'
+  mode: 'multi', // optional, 'single' or 'multi' user mode, multi default'
 });
 
 //org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
