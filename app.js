@@ -209,6 +209,7 @@ var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
 app.get('/ssoauth', function(req, res){
 	var senderID = req.query.senderid;
 	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI+'?senderid='+senderID;
+	sendTextMessage(req.query.senderid, 'Please wait until we finish authenticate you:-)');
 	res.redirect(requestUri);
 });
 
