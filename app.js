@@ -335,6 +335,9 @@ app.post('/setsessionid', function(req, res){
 	console.log(data);
 	
 	mySession[senderId].oauth.access_token = sessionId;
+	
+	sendTextMessage(senderId, "we have finished authenticate you. Have fun.");
+	
 	res.sendStatus(200);
 });
 
@@ -491,7 +494,7 @@ function sendTextMessage(recipientId, messageText) {
       id: recipientId
     },
     message: {
-      text: 'response from native bot = ' + messageText,
+      text: messageText,
       metadata: "DEVELOPER_DEFINED_METADATA"
     }
   };
