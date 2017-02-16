@@ -666,6 +666,9 @@ function sendShowBrokerMessage(recipientId){
 	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId].oauth}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
+			if(errQuery.errorCode == 'INVALID_SESSION_ID'){
+				console.log(errQuery.message);
+			}
 		}else{
 			console.log(respQuery.records);
 			var elementsAccount = [];
