@@ -199,7 +199,7 @@ app.get('/authorize', function(req, res) {
  */
 
 var FB_REDIRECT_URI = 'fboauth3';
-var FB_REDIRECT_URI_C = 'fboauth1c';
+var FB_REDIRECT_URI_C = 'fboauth2c';
 var FB_APP_ID = '720602331440012';
 var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
 
@@ -380,9 +380,8 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 						if (!errNU && respNU.statusCode == 200) {
 							console.log(bodyNU);
 							
-							res.setHeader('Content-Type', 'application/json');
-							res.send(JSON.stringify({ username: bodyNU.username, password: bodyNU.password}));
-							res.sendStatus(200);
+							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
+									+bodyNU.username+'&p='+bodyNU.password);
 						}else{
 							console.log(bodyNU);
 							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
