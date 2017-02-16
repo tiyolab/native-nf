@@ -665,9 +665,15 @@ function joinMessage(recipientId) {
 function sendShowBrokerMessage(recipientId){
 	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId].oauth}, function(errQuery, respQuery){
 		if(errQuery){
-			console.log(errQuery);
 			if(errQuery.errorCode == 'INVALID_SESSION_ID'){
-				console.log(errQuery.message);
+				// check is already joined
+				isJoined(senderID, function(isJoin){
+					if(isJoin){
+						authenticate(senderID);
+					}else{
+						joinMessage(senderID);
+					}
+				});
 			}
 		}else{
 			console.log(respQuery.records);
