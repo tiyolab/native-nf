@@ -588,7 +588,7 @@ function authenticate(senderId){
 					{
 						type: "web_url",
 						url: SERVER_URL + "/ssoauth?senderid="+senderId,
-						title:"Join"
+						title:"Authenticate"
 					}
 				  ]
 				}
