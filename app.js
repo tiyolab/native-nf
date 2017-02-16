@@ -475,6 +475,10 @@ function receivedMessage(event) {
 		}else{
 			loginMessage(senderID);
 		}
+	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
+		sendTextMessage(senderID, 'Hi');
+	}else if(messageText.search(/help/i) > -1){
+		sendTextMessage(senderID, '"Show Broker" to show all our brokers in the area');
 	}else{
 		sendTextMessage(senderID, messageText);
 	}
