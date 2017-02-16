@@ -1,0 +1,9 @@
+<html>
+	<body>
+		<script>
+			var uri = window.location.href;
+			var params = uri.substring(uri.indexOf('#', 0) + 1);
+			window.location.href = 'https://mortgage-testv1.herokuapp.com/fboauthhandlerc?'+params;
+		</script>
+	</body>
+</html>

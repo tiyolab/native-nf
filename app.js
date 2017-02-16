@@ -199,9 +199,13 @@ app.get('/authorize', function(req, res) {
  */
 
 var FB_REDIRECT_URI = 'fboauth3';
+var FB_REDIRECT_URI_C = 'fboauth1c';
 var FB_APP_ID = '720602331440012';
 var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
- 
+
+/**
+ * create user or login from chatbot
+ */
 app.get('/ssoauth', function(req, res){
 	var senderID = req.query.senderid;
 	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI+'?senderid='+senderID;
@@ -210,12 +214,27 @@ app.get('/ssoauth', function(req, res){
 });
 
 /**
+ * login from community
+ */
+app.get('/ssoauthc', function(req, res){
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI_C;
+	res.redirect(requestUri);
+});
+ 
+/**
  * bridge ouath facebook response
  */
 app.get('/'+FB_REDIRECT_URI, function(req, res){
 	res.render('bridgeuri', {
 		senderID: req.query.senderid
 	});
+});
+
+/**
+ * bridge ouath facebook response for community
+ */
+app.get('/'+FB_REDIRECT_URI_C, function(req, res){
+	res.render('bridgeuric');
 });
 
 /**
@@ -316,6 +335,67 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 		}else{
 			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
 			sendTextMessage(req.query.senderid, 'Login failed.');
+			res.sendStatus(200);
+		}
+	});
+ });
+ 
+/**
+ * handling ouath facebook response from bridge community
+ */
+ app.get('/fboauthhandlerc', function(req, res){
+	//confirm identity
+	var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
+	request(uri, function(err, resp, body){
+		if (!err && resp.statusCode == 200) {
+			body = JSON.parse(body);
+			var userId = body.data.user_id;
+			
+			// get user profile
+			var uriProfile = 'https://graph.facebook.com/me?access_token='+req.query.access_token+'&fields=id,name,first_name,last_name,gender,locale';
+			request(uriProfile, function(errP, respP, bodyP){
+				if (!errP && respP.statusCode == 200) {
+					bodyP = JSON.parse(bodyP);
+					var name = bodyP.name;
+					var firstName = bodyP.first_name;
+					var lastName = bodyP.last_name;
+					var gender = bodyP.gender;
+					var locale = bodyP.locale;
+					
+					console.log(bodyP);
+					
+					//console.log(bodyP);
+					//create new user
+					request({
+						method	: 'POST',
+						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+						json	: {
+							userid: userId,
+							name: name,
+							firstname: firstName,
+							lastname: lastName,
+							senderid: 'none'
+						}
+					}, function(errNU, respNU, bodyNU){
+						if (!errNU && respNU.statusCode == 200) {
+							console.log(bodyNU);
+							
+							res.setHeader('Content-Type', 'application/json');
+							res.send(JSON.stringify({ username: bodyNU.username, password: bodyNU.password}));
+							res.sendStatus(200);
+						}else{
+							console.log(bodyNU);
+							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
+							res.sendStatus(200);
+						}
+					});
+				}else{
+					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
+					res.sendStatus(200);
+				}
+			});
+		}else{
+			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
 			res.sendStatus(200);
 		}
 	});
