@@ -564,7 +564,7 @@ function isJoined(senderId, callback){
 				callback(false);
 			}
 		}else{
-			console.error("error is joined", res.statusCode, res.statusMessage, body.error);
+			console.error("error joined", res.statusCode, res.statusMessage, body.error);
 			callback(false);
 		}
 	});
