@@ -573,7 +573,7 @@ function isJoined(senderId, callback){
 function authenticate(senderId){
 	var messageData = {
 		recipient: {
-		  id: recipientId
+		  id: senderId
 		},
 		message:{
 		  attachment: {
@@ -587,7 +587,7 @@ function authenticate(senderId){
 				  buttons: [
 					{
 						type: "web_url",
-						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
+						url: SERVER_URL + "/ssoauth?senderid="+senderId,
 						title:"Join"
 					}
 				  ]
