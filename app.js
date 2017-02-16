@@ -292,33 +292,8 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 							mySession[req.query.senderid] = userData;
 							
 							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
-									+bodyNU.username+'&p='+bodyNU.password+'&sid='+req.query.senderid);
-							
-							/*
-							// authenticate
-							//org.authenticate({username:bodyNU.username, password:bodyNU.password}, function(errAuth, respAuth){
-							console.log('username='+bodyNU.username);
-							console.log('pass='+bodyNU.password);
-							org.authenticate({username:'tiyo7035@recruiter.app', password:'TIYO11juli1995@'}, function(errAuth, respAuth){
-								if(errAuth){
-									console.log('Error: ' + errAuth.message);
-									sendTextMessage(req.query.senderid, 'Login failed.');
-									res.sendStatus(200);
-								}else{
-									var userData = {
-										oauth: respAuth,
-										psid: req.query.senderid,
-										firstName: firstName,
-										lastName: lastName,
-										locale: locale,
-										gender: gender
-									}
-									mySession[req.query.senderid] = userData;
-									
-									res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
 									+bodyNU.username+'&p='+bodyNU.password);
-								}
-							});*/
+							
 						}else{
 							console.log(bodyNU);
 							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
@@ -453,15 +428,6 @@ app.post('/webhook', function (req, res) {
 	}
 });
 
-
-app.get('/testsso', function(req, res){
-	console.log(res);
-});
-
-app.post('/testsso', function(req, res){
-	console.log(res);
-});
-
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
  * the App Dashboard, we can verify the signature that is sent with each 
@@ -545,7 +511,7 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
 	if(messageText.search(/broker/i) > -1){
-		if(mySession[senderID]){
+		if(mySession[senderId].oauth.access_token){
 			sendShowBrokerMessage(senderID);
 		}else{
 			loginMessage(senderID);
@@ -598,18 +564,18 @@ function loginMessage(recipientId) {
 			  template_type: "generic",
 			  elements: [
 				{
-					title: "You need to login in order to access our data",
+					title: "You need to join in order to access our data",
 				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
 				  buttons: [
-					{
+					/*{
 						type: "account_link",
 						url: SERVER_URL + "/authorize?sid="+recipientId
-					},
+					},*/
 					{
 						type: "web_url",
 						//url: SERVER_URL + "/authorize?sid="+recipientId
 						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
-						title:"ssoauth"
+						title:"Join"
 					}
 				  ]
 				}
