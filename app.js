@@ -83,7 +83,6 @@ var org = nforce.createConnection({
   clientId: '3MVG9YDQS5WtC11rPPnDcisY1IxDsekPGj0vXsxGSP4BGRKf28MxnXp2vFuwfYql8y0wB7TwnkLdwBk0W6N4q',
   clientSecret: '2874640950902301743',
   redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
-  //redirectUri: 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral',
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
   mode: 'multi', // optional, 'single' or 'multi' user mode, multi default'
@@ -91,9 +90,6 @@ var org = nforce.createConnection({
 
 org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
 org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
-
-//org.authEndpoint = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/authorize';
-//org.loginUri = 'https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/services/oauth2/token';
 
 console.log(org);
 
@@ -276,7 +272,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 							}
 							mySession[req.query.senderid] = userData;
 							
-							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
+							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
 									+bodyNU.username+'&p='+bodyNU.password+'&sid='+req.query.senderid);
 							
 							/*
@@ -300,7 +296,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 									}
 									mySession[req.query.senderid] = userData;
 									
-									res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortagegecentral/MortgageTestV1Page?u='
+									res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
 									+bodyNU.username+'&p='+bodyNU.password);
 								}
 							});*/
