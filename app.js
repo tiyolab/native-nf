@@ -699,9 +699,7 @@ function sendShowBrokerMessage(recipientId){
 					}
 				);
 			});
-			//var strElement = '{"messages":[{"attachment":{"type":"template","payload":{"template_type":"generic","elements":['+ String.join(elements, ',') +']}}}]}';
 			
-			//var elements = JSON.parse('['+elementsAccount.join(',')+']');
 			console.log(elementsAccount);
 			
 			var messageData = {
