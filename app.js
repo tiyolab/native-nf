@@ -511,8 +511,10 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
 	if(messageText.search(/broker/i) > -1){
-		if(mySession[senderId].oauth.access_token){
-			sendShowBrokerMessage(senderID);
+		if(mySession[senderId]){
+			if(mySession[senderId].oauth.access_token){
+				sendShowBrokerMessage(senderID);
+			}
 		}else{
 			loginMessage(senderID);
 		}
