@@ -267,6 +267,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 						method	: 'POST',
 						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
 						json	: {
+							action: 'create_user',
 							userid: userId,
 							name: name,
 							firstname: firstName,
@@ -345,6 +346,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 						method	: 'POST',
 						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
 						json	: {
+							action: 'create_user',
 							userid: userId,
 							name: name,
 							firstname: firstName,
@@ -514,9 +516,25 @@ function receivedMessage(event) {
 		if(mySession[senderID]){
 			if(mySession[senderID].oauth.access_token){
 				sendShowBrokerMessage(senderID);
+			}else{
+				// check is already joined
+				isJoined(function(isJoin){
+					if(isJoin){
+						authenticate(senderID);
+					}else{
+						joinMessage(senderID);
+					}
+				});
 			}
 		}else{
-			loginMessage(senderID);
+			// check is already joined
+			isJoined(function(isJoin){
+				if(isJoin){
+					authenticate(senderID);
+				}else{
+					joinMessage(senderID);
+				}
+			});
 		}
 	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 		sendTextMessage(senderID, 'Hi');
@@ -530,6 +548,58 @@ function receivedMessage(event) {
   }
 }
 
+function isJoined(senderId, callback){
+	request({
+		method	: 'POST',
+		url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+		json	: {
+			action: 'isjoined',
+			senderid: senderId
+		}
+	}, function(err, res, body){
+		if (!err && err.statusCode == 200) {
+			if(body.isjoined){
+				callback(true);
+			}else{
+				callback(false);
+			}
+		}else{
+			console.error("error is joined", res.statusCode, res.statusMessage, body.error);
+			callback(false);
+		}
+	});
+}
+
+function authenticate(senderId){
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		message:{
+		  attachment: {
+			type: "template",
+			payload: {
+			  template_type: "generic",
+			  elements: [
+				{
+					title: "We need to authenticate you. Please click button below",
+				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  buttons: [
+					{
+						type: "web_url",
+						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
+						title:"Join"
+					}
+				  ]
+				}
+			  ]
+			}
+		  }
+		}
+	}
+
+  callSendAPI(messageData);
+}
 
 /*
  * Send a text message using the Send API.
@@ -554,7 +624,7 @@ function sendTextMessage(recipientId, messageText) {
  * Send a message with the account linking call-to-action in order need login
  *
  */
-function loginMessage(recipientId) {
+function joinMessage(recipientId) {
 	var messageData = {
 		recipient: {
 		  id: recipientId
@@ -575,7 +645,6 @@ function loginMessage(recipientId) {
 					},*/
 					{
 						type: "web_url",
-						//url: SERVER_URL + "/authorize?sid="+recipientId
 						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
 						title:"Join"
 					}
