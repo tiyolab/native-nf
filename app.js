@@ -518,7 +518,7 @@ function receivedMessage(event) {
 				sendShowBrokerMessage(senderID);
 			}else{
 				// check is already joined
-				isJoined(function(isJoin){
+				isJoined(senderID, function(isJoin){
 					if(isJoin){
 						authenticate(senderID);
 					}else{
@@ -528,7 +528,7 @@ function receivedMessage(event) {
 			}
 		}else{
 			// check is already joined
-			isJoined(function(isJoin){
+			isJoined(senderID, function(isJoin){
 				if(isJoin){
 					authenticate(senderID);
 				}else{
