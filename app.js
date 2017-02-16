@@ -667,11 +667,11 @@ function sendShowBrokerMessage(recipientId){
 		if(errQuery){
 			if(errQuery.errorCode == 'INVALID_SESSION_ID'){
 				// check is already joined
-				isJoined(senderID, function(isJoin){
+				isJoined(recipientId, function(isJoin){
 					if(isJoin){
-						authenticate(senderID);
+						authenticate(recipientId);
 					}else{
-						joinMessage(senderID);
+						joinMessage(recipientId);
 					}
 				});
 			}
