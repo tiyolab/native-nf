@@ -557,7 +557,7 @@ function isJoined(senderId, callback){
 			senderid: senderId
 		}
 	}, function(err, res, body){
-		if (!err && err.statusCode == 200) {
+		if (!err && res.statusCode == 200) {
 			if(body.isjoined){
 				callback(true);
 			}else{
