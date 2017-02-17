@@ -333,7 +333,22 @@ function receivedMessage(event) {
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(mySession);
 		if(mySession[senderID]){
-			sendTextMessage(senderID, 'process to open case');
+			var nCase = nforce.createSObject('Case');
+			nCase.set('OwnerId', '' + mySession[senderID].s_user_id);
+			nCase.set('AccountId', '' + mySession[senderID].s_account_id);
+			nCase.set('ContactId', '' + mySession[senderID].s_contact_id);
+			nCase.set('Status', 'New');
+			nCase.set('Origin', 'Web');
+			nCase.set('Subject', timeOfMessage + '');
+			
+			org.insert({sobject: nCase}, function(err, res){
+				if(!err){
+					sendTextMessage(senderID, 'Case created with subject = ' + timeOfMessage);
+				}else{
+					console.log(err);
+					sendTextMessage(senderID, 'Failed create new case');
+				}
+			});
 		}else{
 			authMessage(senderID);
 		}
