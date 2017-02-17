@@ -329,7 +329,7 @@ function receivedMessage(event) {
 	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 		sendTextMessage(senderID, 'Hi');
 	}else if(messageText.search(/help/i) > -1){
-		sendTextMessage(senderID, '"Show Broker" to show all our brokers in the area');
+		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.\n2. "Open Case" to open new case.');
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(mySession);
 		if(mySession[senderID]){
