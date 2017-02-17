@@ -81,8 +81,8 @@ var org = nforce.createConnection({
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
   mode: 'single', // optional, 'single' or 'multi' user mode, multi default'
-  username: 'nforce@administrator.com',
-  password: 'FBbot@12345'
+  username: 'apiai@api.ai',
+  password: 'Jakarta12345'
 });
 
 org.authenticate({ username: org.username, password: org.password}, function(err, resp){
