@@ -144,7 +144,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 			var senderId = req.query.senderid;
 			var FBUserId = body.data.user_id;
 			
-			org.query({query: "select UserId, ContactId, AccountId from User where Fb_Id__c = '" + FBUserId + "'"}, function(errQ, respQ){
+			org.query({query: "select Id, ContactId, AccountId from User where Fb_Id__c = '" + FBUserId + "'"}, function(errQ, respQ){
 				if(errQ){
 					console.log(errQ);
 					sendTextMessage(req.query.senderid, 'we failed to authenticate you');
@@ -153,7 +153,9 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 						respQ.records.forEach(function(data){
 							mySession[senderId] = {
 								fb_user_id: FBUserId,
-								s_user_id: data.get('UserId')
+								s_user_id: data.get('Id'),
+								s_account_id: data.get('AccountId'),
+								s_contact_id: data.get('ContactId')
 							}
 						});
 						console.log(mySession);
