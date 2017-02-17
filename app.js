@@ -112,29 +112,6 @@ app.get('/webhook', function(req, res) {
 
 app.post('/auth', function(req, res){
 	var data = req.body;
-	
-	/*org.authenticate({ username: data.username, password: data.password }, function(err, resp){
-		if(err) {
-			console.log('Error: ' + err.message);
-			sendTextMessage(data.sid, 'Login failed. ' + err.message);
-		} else {
-			console.log('login success')
-			console.log('Access Token: ' + resp.access_token);
-			console.log(resp);
-			
-			var nOauth = {
-				//access_token:resp.access_token,
-				access_token:'00D6F000001N2Q8!AQwAQM_lfDOHhMq9OVUVRbwdmaEACvqQEEl8jIIHSTe2RGpUmIQ0qeBlniFhNFwu29TCwVis1qTd3up78OWudipsiFV.zCJ.',
-				token_type: 'Bearer',
-				instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
-			};
-			
-			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
-				console.log(errQuery);
-				console.log(respQuery.records);
-			});
-		}
-	});*/
 	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10"}, function(errQuery, respQuery){
 				console.log(errQuery);
 				console.log(respQuery.records);
