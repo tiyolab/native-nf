@@ -281,6 +281,7 @@ function receivedMessage(event) {
  *
  */
 function sendTextMessage(recipientId, messageText) {
+	console.log('sender id adalah '+recipientId);
   var messageData = {
     recipient: {
       id: recipientId
