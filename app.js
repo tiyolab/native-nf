@@ -36,12 +36,7 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 app.use(session({
-	/*store: new RedisStore({
-		host: '',
-		port: app.get('port'),
-		db: 2
-	}),*/
-	secret: ''
+	secret: 'd5e79d3c37be21dbe96afca771582b94'
 }));
 
 /*
@@ -80,16 +75,15 @@ console.log('tiyo said server running');
 
 // use the nforce package to create a connection to salesforce.com
 var org = nforce.createConnection({
-  clientId: '',
-  clientSecret: '',
+  clientId: '3MVG9YDQS5WtC11rPPnDcisY1IxDsekPGj0vXsxGSP4BGRKf28MxnXp2vFuwfYql8y0wB7TwnkLdwBk0W6N4q',
+  clientSecret: '2874640950902301743',
   redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
-  mode: 'multi', // optional, 'single' or 'multi' user mode, multi default'
+  mode: 'single', // optional, 'single' or 'multi' user mode, multi default'
+  username: 'nforce@administrator.com',
+  password: 'FBbot@12345'
 });
-
-org.authEndpoint = '';
-org.loginUri = '';
 
 console.log(org);
 
@@ -116,7 +110,7 @@ app.get('/webhook', function(req, res) {
 app.post('/auth', function(req, res){
 	var data = req.body;
 	
-	org.authenticate({ username: data.username, password: data.password }, function(err, resp){
+	/*org.authenticate({ username: data.username, password: data.password }, function(err, resp){
 		if(err) {
 			console.log('Error: ' + err.message);
 			sendTextMessage(data.sid, 'Login failed. ' + err.message);
@@ -127,271 +121,24 @@ app.post('/auth', function(req, res){
 			
 			var nOauth = {
 				//access_token:resp.access_token,
-				access_token:'',
+				access_token:'00D6F000001N2Q8!AQwAQM_lfDOHhMq9OVUVRbwdmaEACvqQEEl8jIIHSTe2RGpUmIQ0qeBlniFhNFwu29TCwVis1qTd3up78OWudipsiFV.zCJ.',
 				token_type: 'Bearer',
-				instance_url: ''
+				instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
 			};
 			
 			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
 				console.log(errQuery);
 				console.log(respQuery.records);
 			});
-			
-			//get sender id
-			/*request('https://graph.facebook.com/v2.6/me?access_token='+PAGE_ACCESS_TOKEN+'&fields=recipient&account_linking_token='+data.alt, function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					body = JSON.parse(body);
-					
-					//get sender profile
-					request('https://graph.facebook.com/v2.6/'+ body.recipient +'?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token='+PAGE_ACCESS_TOKEN, function(errP, respP, bodyP){
-						
-						if (!errP && respP.statusCode == 200) {
-							bodyP = JSON.parse(bodyP);
-							
-							var senderData = {
-								oauth: resp,
-								psid: body.recipient,
-								pgid: body.id,
-								first_name: bodyP.first_name,
-								last_name: bodyP.last_name,
-								profile_pic: bodyP.profile_pic,
-								locale: bodyP.locale,
-								timezone: bodyP.timezone,
-								gender: bodyP.gender
-							}
-							mySession[data.sid] = senderData;
-							
-							console.log(mySession[data.sid]);
-							
-							sendTextMessage(data.sid, 'Login success, you can perform your last action');
-						}else{
-							console.error("Failed calling Send API", respP.statusCode, respP.statusMessage, bodyP.error);
-							sendTextMessage(data.sid, 'Login failed. ' + errP);
-						}
-					});
-				}else{
-					console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-					sendTextMessage(data.sid, 'Login failed. ' + error);
-				}
-			});*/
 		}
-	});
+	});*/
+	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
+				console.log(errQuery);
+				console.log(respQuery.records);
+			});
 	res.sendStatus(200);
 });
 
-/*
- * This path is used for account linking. The account linking call-to-action
- * (sendAccountLinking) is pointed to this URL. 
- * 
- */
-app.get('/authorize', function(req, res) {
-  var alt = req.query.account_linking_token;
-  var senderID = req.query.sid;
-  
-  res.render('authorize', {
-    alt: alt,
-	senderID: senderID
-  });
-});
-
-/**
- * oauth to facebook 
- */
-
-var FB_REDIRECT_URI = '';
-var FB_REDIRECT_URI_C = '';
-var FB_APP_ID = '';
-var FB_APP_SECRET = '';
-
-/**
- * create user or login from chatbot
- */
-app.get('/ssoauth', function(req, res){
-	var senderID = req.query.senderid;
-	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI+'?senderid='+senderID;
-	sendTextMessage(req.query.senderid, 'Please wait until we finish authenticate you:-)');
-	res.redirect(requestUri);
-});
-
-/**
- * login from community
- */
-app.get('/ssoauthc', function(req, res){
-	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI_C;
-	res.redirect(requestUri);
-});
- 
-/**
- * bridge ouath facebook response
- */
-app.get('/'+FB_REDIRECT_URI, function(req, res){
-	res.render('bridgeuri', {
-		senderID: req.query.senderid
-	});
-});
-
-/**
- * bridge ouath facebook response for community
- */
-app.get('/'+FB_REDIRECT_URI_C, function(req, res){
-	res.render('bridgeuric');
-});
-
-/**
- * handling ouath facebook response from bridge
- */
- app.get('/fboauthhandler', function(req, res){
-	//confirm identity
-	var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
-	request(uri, function(err, resp, body){
-		if (!err && resp.statusCode == 200) {
-			body = JSON.parse(body);
-			var userId = body.data.user_id;
-			
-			// get user profile
-			var uriProfile = 'https://graph.facebook.com/me?access_token='+req.query.access_token+'&fields=id,name,first_name,last_name,gender,locale';
-			request(uriProfile, function(errP, respP, bodyP){
-				if (!errP && respP.statusCode == 200) {
-					bodyP = JSON.parse(bodyP);
-					var name = bodyP.name;
-					var firstName = bodyP.first_name;
-					var lastName = bodyP.last_name;
-					var gender = bodyP.gender;
-					var locale = bodyP.locale;
-					
-					console.log(bodyP);
-					
-					//console.log(bodyP);
-					//create new user
-					request({
-						method	: 'POST',
-						url		: '',
-						json	: {
-							action: 'create_user',
-							userid: userId,
-							name: name,
-							firstname: firstName,
-							lastname: lastName,
-							senderid: req.query.senderid
-						}
-					}, function(errNU, respNU, bodyNU){
-						if (!errNU && respNU.statusCode == 200) {
-							console.log(bodyNU);
-							
-							var userData = {
-								oauth: {
-									access_token:'',
-									token_type: 'Bearer',
-									instance_url: ''
-								},
-								psid: req.query.senderid,
-								firstName: firstName,
-								lastName: lastName,
-								locale: locale,
-								gender: gender
-							}
-							mySession[req.query.senderid] = userData;
-							
-							res.redirect(''
-									+bodyNU.username+'&p='+bodyNU.password);
-							
-						}else{
-							console.log(bodyNU);
-							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
-							sendTextMessage(req.query.senderid, 'Login failed.');
-							res.sendStatus(200);
-						}
-					});
-				}else{
-					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
-					sendTextMessage(req.query.senderid, 'Login failed.');
-					res.sendStatus(200);
-				}
-			});
-		}else{
-			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
-			sendTextMessage(req.query.senderid, 'Login failed.');
-			res.sendStatus(200);
-		}
-	});
- });
- 
-/**
- * handling ouath facebook response from bridge community
- */
- app.get('/fboauthhandlerc', function(req, res){
-	//confirm identity
-	var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
-	request(uri, function(err, resp, body){
-		if (!err && resp.statusCode == 200) {
-			body = JSON.parse(body);
-			var userId = body.data.user_id;
-			
-			// get user profile
-			var uriProfile = 'https://graph.facebook.com/me?access_token='+req.query.access_token+'&fields=id,name,first_name,last_name,gender,locale';
-			request(uriProfile, function(errP, respP, bodyP){
-				if (!errP && respP.statusCode == 200) {
-					bodyP = JSON.parse(bodyP);
-					var name = bodyP.name;
-					var firstName = bodyP.first_name;
-					var lastName = bodyP.last_name;
-					var gender = bodyP.gender;
-					var locale = bodyP.locale;
-					
-					console.log(bodyP);
-					
-					//console.log(bodyP);
-					//create new user
-					request({
-						method	: 'POST',
-						url		: '',
-						json	: {
-							action: 'create_user',
-							userid: userId,
-							name: name,
-							firstname: firstName,
-							lastname: lastName,
-							senderid: 'none'
-						}
-					}, function(errNU, respNU, bodyNU){
-						if (!errNU && respNU.statusCode == 200) {
-							console.log(bodyNU);
-							
-							res.redirect(''
-									+bodyNU.username+'&p='+bodyNU.password);
-						}else{
-							console.log(bodyNU);
-							console.error("Failed create new user", respNU.statusCode, respNU.statusMessage, bodyNU.error);
-							res.sendStatus(200);
-						}
-					});
-				}else{
-					console.error("Failed get profile", respP.statusCode, respP.statusMessage, bodyP.error);
-					res.sendStatus(200);
-				}
-			});
-		}else{
-			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
-			res.sendStatus(200);
-		}
-	});
- });
- 
-// handling incoming session id from salesforce related facebook sender id
-app.post('/setsessionid', function(req, res){
-	var data = req.body;
-	var sessionId = data.sessionid;
-	var senderId = data.senderid;
-	
-	console.log('data from salesforce');
-	console.log(data);
-	
-	mySession[senderId].oauth.access_token = sessionId;
-	
-	sendTextMessage(senderId, "we have finished authenticate you. Have fun.");
-	
-	res.sendStatus(200);
-});
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
@@ -513,29 +260,7 @@ function receivedMessage(event) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
 	if(messageText.search(/broker/i) > -1){
-		if(mySession[senderID]){
-			if(mySession[senderID].oauth.access_token){
-				sendShowBrokerMessage(senderID);
-			}else{
-				// check is already joined
-				isJoined(senderID, function(isJoin){
-					if(isJoin){
-						authenticate(senderID);
-					}else{
-						joinMessage(senderID);
-					}
-				});
-			}
-		}else{
-			// check is already joined
-			isJoined(senderID, function(isJoin){
-				if(isJoin){
-					authenticate(senderID);
-				}else{
-					joinMessage(senderID);
-				}
-			});
-		}
+		sendShowBrokerMessage(senderID);
 	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 		sendTextMessage(senderID, 'Hi');
 	}else if(messageText.search(/help/i) > -1){
@@ -546,59 +271,6 @@ function receivedMessage(event) {
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
   }
-}
-
-function isJoined(senderId, callback){
-	request({
-		method	: 'POST',
-		url		: '',
-		json	: {
-			action: 'isjoined',
-			senderid: senderId
-		}
-	}, function(err, res, body){
-		if (!err && res.statusCode == 200) {
-			if(body.isjoined){
-				callback(true);
-			}else{
-				callback(false);
-			}
-		}else{
-			console.error("error joined", res.statusCode, res.statusMessage, body.error);
-			callback(false);
-		}
-	});
-}
-
-function authenticate(senderId){
-	var messageData = {
-		recipient: {
-		  id: senderId
-		},
-		message:{
-		  attachment: {
-			type: "template",
-			payload: {
-			  template_type: "generic",
-			  elements: [
-				{
-					title: "We need to authenticate you. Please click button below",
-				  image_url: "",
-				  buttons: [
-					{
-						type: "web_url",
-						url: SERVER_URL + "/ssoauth?senderid="+senderId,
-						title:"Authenticate"
-					}
-				  ]
-				}
-			  ]
-			}
-		  }
-		}
-	}
-
-  callSendAPI(messageData);
 }
 
 /*
@@ -637,7 +309,7 @@ function joinMessage(recipientId) {
 			  elements: [
 				{
 					title: "You need to join in order to access our data",
-				  image_url: "",
+				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
 				  buttons: [
 					/*{
 						type: "account_link",
@@ -663,20 +335,10 @@ function joinMessage(recipientId) {
  * show broker list
  */
 function sendShowBrokerMessage(recipientId){
-	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : mySession[recipientId].oauth}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10"}, function(errQuery, respQuery){
 		if(errQuery){
-			if(errQuery.errorCode == 'INVALID_SESSION_ID'){
-				// check is already joined
-				isJoined(recipientId, function(isJoin){
-					if(isJoin){
-						authenticate(recipientId);
-					}else{
-						joinMessage(recipientId);
-					}
-				});
-			}
+			console.log(errQuery);
 		}else{
-			console.log(respQuery.records);
 			var elementsAccount = [];
 			respQuery.records.forEach(function(ac){
 				var phone = '';
