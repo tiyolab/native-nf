@@ -91,6 +91,68 @@ org.authenticate({ username: org.username, password: org.password}, function(err
 });
 
 /*
+ * This path is used for account linking. The account linking call-to-action
+ * (sendAccountLinking) is pointed to this URL. 
+ * 
+ */
+app.get('/authorize', function(req, res) {
+  var alt = req.query.account_linking_token;
+  var senderID = req.query.sid;
+  
+  res.render('authorize', {
+    alt: alt,
+	senderID: senderID
+  });
+});
+
+/**
+ * oauth to facebook 
+ */
+
+var FB_REDIRECT_URI = 'fboauth3';
+var FB_APP_ID = '720602331440012';
+var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
+
+/**
+ * create user or login from chatbot
+ */
+app.get('/ssoauth', function(req, res){
+	var senderID = req.query.senderid;
+	var requestUri = 'https://www.facebook.com/v2.8/dialog/oauth?client_id='+ FB_APP_ID +'&display=popup&response_type=code%20token&redirect_uri='+SERVER_URL+'/'+FB_REDIRECT_URI+'?senderid='+senderID;
+	sendTextMessage(req.query.senderid, 'Please wait until we finish authenticate you:-)');
+	res.redirect(requestUri);
+});
+
+/**
+ * bridge ouath facebook response
+ */
+app.get('/'+FB_REDIRECT_URI, function(req, res){
+	res.render('bridgeuri', {
+		senderID: req.query.senderid
+	});
+});
+
+/**
+ * handling ouath facebook response from bridge
+ */
+ app.get('/fboauthhandler', function(req, res){
+	//confirm identity
+	var uri = 'https://graph.facebook.com/debug_token?input_token='+ req.query.access_token +'&access_token='+ FB_APP_ID + '|' + FB_APP_SECRET;
+	request(uri, function(err, resp, body){
+		if (!err && resp.statusCode == 200) {
+			body = JSON.parse(body);
+			var userId = body.data.user_id;
+			
+			console.log('user id adalah = ' + userId);
+		}else{
+			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
+			sendTextMessage(req.query.senderid, 'Login failed.');
+			res.sendStatus(200);
+		}
+	});
+ });
+
+/*
  * Use your own validation token. Check that the token used in the Webhook 
  * setup is the same token used here.
  *
@@ -245,6 +307,8 @@ function receivedMessage(event) {
 		sendTextMessage(senderID, 'Hi');
 	}else if(messageText.search(/help/i) > -1){
 		sendTextMessage(senderID, '"Show Broker" to show all our brokers in the area');
+	}else if(messageText.search(/join/i) > -1){
+		joinMessage(senderID);
 	}else{
 		sendTextMessage(senderID, messageText);
 	}
