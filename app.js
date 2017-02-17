@@ -37,11 +37,11 @@ app.use(express.static('public'));
 app.use(cookieParser());
 app.use(session({
 	/*store: new RedisStore({
-		host: 'https://mortgage-testv1.herokuapp.com/',
+		host: '',
 		port: app.get('port'),
 		db: 2
 	}),*/
-	secret: 'd5e79d3c37be21dbe96afca771582b94'
+	secret: ''
 }));
 
 /*
@@ -80,16 +80,16 @@ console.log('tiyo said server running');
 
 // use the nforce package to create a connection to salesforce.com
 var org = nforce.createConnection({
-  clientId: '3MVG9YDQS5WtC11rPPnDcisY1IxDsekPGj0vXsxGSP4BGRKf28MxnXp2vFuwfYql8y0wB7TwnkLdwBk0W6N4q',
-  clientSecret: '2874640950902301743',
+  clientId: '',
+  clientSecret: '',
   redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
   apiVersion: 'v27.0',  // optional, defaults to current salesforce API version 
   environment: 'production',  // optional, salesforce 'sandbox' or 'production', production default 
   mode: 'multi', // optional, 'single' or 'multi' user mode, multi default'
 });
 
-org.authEndpoint = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/authorize';
-org.loginUri = 'https://tiyolab-developer-edition.ap4.force.com/services/oauth2/token';
+org.authEndpoint = '';
+org.loginUri = '';
 
 console.log(org);
 
@@ -127,9 +127,9 @@ app.post('/auth', function(req, res){
 			
 			var nOauth = {
 				//access_token:resp.access_token,
-				access_token:'00D6F000001N2Q8!AQwAQM_lfDOHhMq9OVUVRbwdmaEACvqQEEl8jIIHSTe2RGpUmIQ0qeBlniFhNFwu29TCwVis1qTd3up78OWudipsiFV.zCJ.',
+				access_token:'',
 				token_type: 'Bearer',
-				instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
+				instance_url: ''
 			};
 			
 			org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
@@ -198,10 +198,10 @@ app.get('/authorize', function(req, res) {
  * oauth to facebook 
  */
 
-var FB_REDIRECT_URI = 'fboauth3';
-var FB_REDIRECT_URI_C = 'fboauth2c';
-var FB_APP_ID = '720602331440012';
-var FB_APP_SECRET = 'd5e79d3c37be21dbe96afca771582b94';
+var FB_REDIRECT_URI = '';
+var FB_REDIRECT_URI_C = '';
+var FB_APP_ID = '';
+var FB_APP_SECRET = '';
 
 /**
  * create user or login from chatbot
@@ -265,7 +265,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 					//create new user
 					request({
 						method	: 'POST',
-						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+						url		: '',
 						json	: {
 							action: 'create_user',
 							userid: userId,
@@ -282,7 +282,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 								oauth: {
 									access_token:'',
 									token_type: 'Bearer',
-									instance_url: 'https://tiyolab-developer-edition.ap4.force.com'
+									instance_url: ''
 								},
 								psid: req.query.senderid,
 								firstName: firstName,
@@ -292,7 +292,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 							}
 							mySession[req.query.senderid] = userData;
 							
-							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
+							res.redirect(''
 									+bodyNU.username+'&p='+bodyNU.password);
 							
 						}else{
@@ -344,7 +344,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 					//create new user
 					request({
 						method	: 'POST',
-						url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+						url		: '',
 						json	: {
 							action: 'create_user',
 							userid: userId,
@@ -357,7 +357,7 @@ app.get('/'+FB_REDIRECT_URI_C, function(req, res){
 						if (!errNU && respNU.statusCode == 200) {
 							console.log(bodyNU);
 							
-							res.redirect('https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1/MortgageTestV1Page?u='
+							res.redirect(''
 									+bodyNU.username+'&p='+bodyNU.password);
 						}else{
 							console.log(bodyNU);
@@ -551,7 +551,7 @@ function receivedMessage(event) {
 function isJoined(senderId, callback){
 	request({
 		method	: 'POST',
-		url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+		url		: '',
 		json	: {
 			action: 'isjoined',
 			senderid: senderId
@@ -583,7 +583,7 @@ function authenticate(senderId){
 			  elements: [
 				{
 					title: "We need to authenticate you. Please click button below",
-				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  image_url: "",
 				  buttons: [
 					{
 						type: "web_url",
@@ -637,7 +637,7 @@ function joinMessage(recipientId) {
 			  elements: [
 				{
 					title: "You need to join in order to access our data",
-				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  image_url: "",
 				  buttons: [
 					/*{
 						type: "account_link",
