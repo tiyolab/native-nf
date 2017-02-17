@@ -132,7 +132,7 @@ app.post('/auth', function(req, res){
 			});
 		}
 	});*/
-	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10", oauth : resp}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10"}, function(errQuery, respQuery){
 				console.log(errQuery);
 				console.log(respQuery.records);
 			});
