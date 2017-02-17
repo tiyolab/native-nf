@@ -141,13 +141,34 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 	request(uri, function(err, resp, body){
 		if (!err && resp.statusCode == 200) {
 			body = JSON.parse(body);
-			var userId = body.data.user_id;
+			var senderId = req.query.senderid;
+			var FBUserId = body.data.user_id;
 			
-			console.log('user id adalah = ' + userId);
+			org.query({query: 'select UserId from ThirdPartyAccountLink where Handle = ' + FBUserId}, function(errQ, respQ){
+				if(errQ){
+					console.log(errQ);
+					sendTextMessage(req.query.senderid, 'we failed to authenticate you');
+				}else{
+					if(respQ.records.length > 0){
+						respQ.records.forEach(function(data){
+							mySession[senderId] = {
+								fb_user_id: FBUserId,
+								s_user_id: data.get('UserId')
+							}
+						});
+						console.log(mySession);
+						sendTextMessage(req.query.senderid, 'we success authenticate you. go ahead.');
+					}else{
+						joinMessage(senderId);
+					}
+				}
+				
+				res.render('fboauthhandler');
+			});
 		}else{
 			console.error("Failed login to fb", resp.statusCode, resp.statusMessage, body.error);
-			sendTextMessage(req.query.senderid, 'Login failed.');
-			res.sendStatus(200);
+			sendTextMessage(req.query.senderid, 'we failed to authenticate you');
+			res.render('fboauthhandler');
 		}
 	});
  });
@@ -307,8 +328,13 @@ function receivedMessage(event) {
 		sendTextMessage(senderID, 'Hi');
 	}else if(messageText.search(/help/i) > -1){
 		sendTextMessage(senderID, '"Show Broker" to show all our brokers in the area');
-	}else if(messageText.search(/join/i) > -1){
-		joinMessage(senderID);
+	}else if(messageText.search(/open case/i) > -1){
+		console.log(mySession);
+		if(mySession[senderID]){
+			sendTextMessage(senderID, 'process to open case');
+		}else{
+			authMessage(senderID);
+		}
 	}else{
 		sendTextMessage(senderID, messageText);
 	}
@@ -336,11 +362,41 @@ function sendTextMessage(recipientId, messageText) {
   callSendAPI(messageData);
 }
 
+function authMessage(recipientId) {
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		message:{
+		  attachment: {
+			type: "template",
+			payload: {
+			  template_type: "generic",
+			  elements: [
+				{
+					title: "We need to synchronize first, please click button below.",
+				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  buttons: [
+					{
+						type: "account_link",
+						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
+					}
+					/*{
+						type: "web_url",
+						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
+						title:"Join"
+					}*/
+				  ]
+				}
+			  ]
+			}
+		  }
+		}
+	}
 
-/*
- * Send a message with the account linking call-to-action in order need login
- *
- */
+  callSendAPI(messageData);
+}
+
 function joinMessage(recipientId) {
 	var messageData = {
 		recipient: {
@@ -353,16 +409,12 @@ function joinMessage(recipientId) {
 			  template_type: "generic",
 			  elements: [
 				{
-					title: "You need to join in order to access our data",
+					title: "it seem you are not our community member. feel free to join us by click button below.",
 				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
 				  buttons: [
-					/*{
-						type: "account_link",
-						url: SERVER_URL + "/authorize?sid="+recipientId
-					},*/
 					{
 						type: "web_url",
-						url: SERVER_URL + "/ssoauth?senderid="+recipientId,
+						url: 'https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1',
 						title:"Join"
 					}
 				  ]
