@@ -85,7 +85,10 @@ var org = nforce.createConnection({
   password: 'FBbot@12345'
 });
 
-console.log(org);
+org.authenticate({ username: org.username, password: org.password}, function(err, resp){
+  // the oauth object was stored in the connection object
+  if(!err) console.log('Cached Token: ' + org.oauth.access_token)
+});
 
 /*
  * Use your own validation token. Check that the token used in the Webhook 
