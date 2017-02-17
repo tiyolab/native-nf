@@ -1,6 +1,6 @@
 {
-    "appSecret": "b155d130e6172a024f38c300d2b30874",
-    "pageAccessToken": "EAAOHwDoZBe1MBAPf8ypVSkwHdtY4M7GtVVPjDmuaA1ShjvSkNFgPWPrgw9s7txD0qMoKZBT7ZBP8OdhgT4QYfnixe2TG1kFDPULeTFh7jp1hSoUIrdZCxVXlw1nppPEogZBPBRk3j4hECM0XfhkXwS4UlCoj85VzVqjU7OvSNvvbTZAf29Qinf",
+    "appSecret": "d5e79d3c37be21dbe96afca771582b94",
+    "pageAccessToken": "EAAKPYk39Y4wBAM1Ix9iI1NR917ogNKJfpLCVslCZC4z4d2oUYZCGqcpVBvzetQG2RmDzbjZATqzEdBUJyzs7hZAiMYLzDY9DO9la55gJB9zxkOFvBcptXiES5t34Qw3oFr3EbYZBONfalRVHFCfvXYxgScP94s7iBSorXZC3EwfL4WQSL4HZBXr",
     "validationToken": "mortgage-testv1-stratus360",
     "serverURL": "https://mortgage-testv1.herokuapp.com/"
 }
