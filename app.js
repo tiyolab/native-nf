@@ -144,7 +144,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 			var senderId = req.query.senderid;
 			var FBUserId = body.data.user_id;
 			
-			org.query({query: 'select UserId from ThirdPartyAccountLink where Handle = "' + FBUserId + '"'}, function(errQ, respQ){
+			org.query({query: "select UserId from ThirdPartyAccountLink where Handle = '" + FBUserId + "'"}, function(errQ, respQ){
 				if(errQ){
 					console.log(errQ);
 					sendTextMessage(req.query.senderid, 'we failed to authenticate you');
