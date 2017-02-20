@@ -28,7 +28,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongo')(session);
 var mongoSessionStore = new MongoDBStore({
-	uri: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+	url: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
 });
 
