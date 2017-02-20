@@ -238,11 +238,20 @@ app.post('/webhook', function (req, res) {
 		data.entry.forEach(function(pageEntry) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
+			
+			if(pageEntry.messaging.lenght > 0){
+				if(!req.session.data){
+					if(mySession[pageEntry.messaging[0].sender.id]){
+						req.session.data = mySession[pageEntry.messaging[0].sender.id];
+					}
+				}
+			}
+			
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
 				if (messagingEvent.message) {
-					receivedMessage(messagingEvent);
+					receivedMessage(messagingEvent, req);
 				} else {
 					console.log("Webhook received unknown messagingEvent: ", messagingEvent);
 				}
@@ -302,7 +311,7 @@ function verifyRequestSignature(req, res, buf) {
  * then we'll simply confirm that we've received the attachment.
  * 
  */
-function receivedMessage(event) {
+function receivedMessage(event, req) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
   var timeOfMessage = event.timestamp;
@@ -347,11 +356,12 @@ function receivedMessage(event) {
 		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.\n2. "Open Case" to open new case.');
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(mySession);
-		if(mySession[senderID]){
+		//if(mySession[senderID]){
+		if(req.session.data){
 			var nCase = nforce.createSObject('Case');
-			nCase.set('OwnerId', '' + mySession[senderID].s_user_id);
-			nCase.set('AccountId', '' + mySession[senderID].s_account_id);
-			nCase.set('ContactId', '' + mySession[senderID].s_contact_id);
+			nCase.set('OwnerId', '' + req.session.data.s_user_id);
+			nCase.set('AccountId', '' + req.session.data.s_account_id);
+			nCase.set('ContactId', '' + req.session.data.s_contact_id);
 			nCase.set('Status', 'New');
 			nCase.set('Origin', 'Web');
 			nCase.set('Subject', timeOfMessage + '');
@@ -368,9 +378,9 @@ function receivedMessage(event) {
 			authMessage(senderID);
 		}
 	}else if(messageText.search(/cancel community/i) > -1){
-		if(mySession[senderID]){
+		if(req.session.data){
 			sendTextMessage(senderID, "Please wait. we'll process your request.");
-			processCancelCommunity(mySession[senderID].s_user_id, senderID);
+			processCancelCommunity(req.session.data.s_user_id, senderID);
 		}else{
 			sendTextMessage(senderID, "You're not our community member yet.");
 		}
