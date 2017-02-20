@@ -27,16 +27,15 @@ var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-var mongoSessionStore = new MongoDBStore({
-	uri: 'mongodb://tiyo.lab:TIYO11juli1995~@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+/*var mongoSessionStore = new MongoDBStore({
+	uri: 'mongodb://tiyo.lab:TIYO11juli1995%40@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
 });
 
 //catch session stored
 mongoSessionStore.on('error', function(error){
-	console.log('error in connection to mongostore');
 	console.log(error);
-});
+});*/
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
@@ -240,21 +239,13 @@ app.post('/webhook', function (req, res) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
 			
-			console.log('==================');
-			console.log('message length ' + pageEntry.messaging.lenght);
-			console.log('session data = ');
-			console.log(req.session.data);
-			console.log('my session data = ');
-			console.log(mySession[pageEntry.messaging[0].sender.id]);
-			console.log('==================');
-			
-			if(pageEntry.messaging.lenght > 0){
+			/*if(pageEntry.messaging.lenght > 0){
 				if(!req.session.data){
 					if(mySession[pageEntry.messaging[0].sender.id]){
 						req.session.data = mySession[pageEntry.messaging[0].sender.id];
 					}
 				}
-			}
+			}*/
 			
 
 			// Iterate over each messaging event
@@ -365,12 +356,11 @@ function receivedMessage(event, req) {
 		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.\n2. "Open Case" to open new case.');
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(mySession);
-		//if(mySession[senderID]){
-		if(req.session.data){
+		if(mySession[senderID]){
 			var nCase = nforce.createSObject('Case');
-			nCase.set('OwnerId', '' + req.session.data.s_user_id);
-			nCase.set('AccountId', '' + req.session.data.s_account_id);
-			nCase.set('ContactId', '' + req.session.data.s_contact_id);
+			nCase.set('OwnerId', '' + mySession[senderID].s_user_id);
+			nCase.set('AccountId', '' + mySession[senderID].s_account_id);
+			nCase.set('ContactId', '' + mySession[senderID].s_contact_id);
 			nCase.set('Status', 'New');
 			nCase.set('Origin', 'Web');
 			nCase.set('Subject', timeOfMessage + '');
@@ -387,9 +377,9 @@ function receivedMessage(event, req) {
 			authMessage(senderID);
 		}
 	}else if(messageText.search(/cancel community/i) > -1){
-		if(req.session.data){
+		if(mySession[senderID]){
 			sendTextMessage(senderID, "Please wait. we'll process your request.");
-			processCancelCommunity(req.session.data.s_user_id, senderID);
+			processCancelCommunity(mySession[senderID].s_user_id, senderID);
 		}else{
 			sendTextMessage(senderID, "You're not our community member yet.");
 		}
