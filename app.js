@@ -26,8 +26,6 @@ var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var redis = require('redis');
-var redisClient = redis.createClient();
 var RedisStore = require('connect-redis')(session);
 
 app.set('port', process.env.PORT || 1107);
@@ -37,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(cookieParser());
+app.use(session({
+	secret: 'd5e79d3c37be21dbe96afca771582b94'
+}));
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -71,14 +72,6 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 }
 
 console.log('tiyo said server running');
-
-redisClient.on('connect', function(){
-	console.log('redis ready');
-	app.use(session({
-		store: new RedisStore(redisClient),
-		secret: 'd5e79d3c37be21dbe96afca771582b94'
-	}));
-});
 
 // use the nforce package to create a connection to salesforce.com
 var org = nforce.createConnection({
