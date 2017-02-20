@@ -26,7 +26,16 @@ var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
+var MongoDBStore = require('connect-mongodb-session')(session);
+var mongoSessionStore = new MongoDBStore({
+	uri: 'mongodb://tiyo.lab:TIYO11juli1995%40@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+	collection: 'session'
+});
+
+//catch session stored
+store.on('error', function(error){
+	console.log(error);
+});
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
@@ -36,7 +45,13 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 app.use(session({
-	secret: 'd5e79d3c37be21dbe96afca771582b94'
+	secret: 'd5e79d3c37be21dbe96afca771582b94',
+	cookie: {
+		maxAge: 1000 * 60 * 60 * 24 * 7
+	},
+	store: store,
+	resave: true,
+	saveUninitialized: true
 }));
 
 /*
