@@ -26,9 +26,9 @@ var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var MongoDBStore = require('connect-mongo')(session);
+var MongoDBStore = require('connect-mongodb-session')(session);
 var mongoSessionStore = new MongoDBStore({
-	url: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+	uri: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
 });
 
@@ -50,8 +50,8 @@ app.use(session({
 		maxAge: 1000 * 60 * 60 * 24 * 7
 	},
 	store: mongoSessionStore,
-	resave: true,
-	saveUninitialized: true
+	resave: false,
+	saveUninitialized: false
 }));
 
 /*
