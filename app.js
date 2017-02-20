@@ -527,6 +527,7 @@ function processCancelCommunity(sUserId, senderId){
 	}, function(err, res, body){
 		if (!err && res.statusCode == 200) {
 			if(body.status){
+				delete mySession[senderId];
 				sendTextMessage(senderId, "Success leaving community.");
 			}else{
 				sendTextMessage(senderId, "Failed to leave community.");
