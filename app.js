@@ -352,6 +352,13 @@ function receivedMessage(event) {
 		}else{
 			authMessage(senderID);
 		}
+	}else if(messageText.search(/cancel community/i) > -1){
+		if(mySession[senderID]){
+			sendTextMessage(senderID, "Please wait. we'll process your request.");
+			processCancelCommunity(mySession[senderID].s_user_id, senderID);
+		}else{
+			sendTextMessage(senderID, "You're not our community member yet.");
+		}
 	}else{
 		sendTextMessage(senderID, messageText);
 	}
@@ -506,6 +513,30 @@ function sendShowBrokerMessage(recipientId){
 	});
 }
 
+/**
+ * Process cancel community
+ */
+function processCancelCommunity(sUserId, senderId){
+	request({
+		method	: 'POST',
+		url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+		json	: {
+			action: 'cancelcommunity',
+			userid: sUserId
+		}
+	}, function(err, res, body){
+		if (!err && res.statusCode == 200) {
+			if(body.status){
+				sendTextMessage(senderId, "Success leaving community.");
+			}else{
+				sendTextMessage(senderId, "Failed to leave community.");
+			}
+		}else{
+			console.error("failed to exit community", res.statusCode, res.statusMessage, body.error);
+			sendTextMessage(senderId, "Failed to leave community.");
+		}
+	});
+}
 
 /*
  * Call the Send API. The message data goes in the body. If successful, we'll 
