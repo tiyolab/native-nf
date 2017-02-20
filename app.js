@@ -365,7 +365,8 @@ function receivedMessage(event, req) {
 	}else if(messageText.search(/help/i) > -1){
 		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
 		'\n2. "Open Case" to open new case.'+
-		'\n3. "Cancel Community" to leave from community.');
+		'\n3. "Open Community" to open Community.'+
+		'\n4. "Cancel Community" to leave from community.');
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(req.session);
 		
@@ -396,6 +397,8 @@ function receivedMessage(event, req) {
 		}else{
 			sendTextMessage(senderID, "You're not our community member yet.");
 		}
+	}else if(messageText.search(/open community/i) > -1){
+		openCommunity(senderID);
 	}else{
 		sendTextMessage(senderID, messageText);
 	}
@@ -477,6 +480,38 @@ function joinMessage(recipientId) {
 						type: "web_url",
 						url: 'https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1',
 						title:"Join"
+					}
+				  ]
+				}
+			  ]
+			}
+		  }
+		}
+	}
+
+  callSendAPI(messageData);
+}
+
+
+function openCommunity(recipientId) {
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		message:{
+		  attachment: {
+			type: "template",
+			payload: {
+			  template_type: "generic",
+			  elements: [
+				{
+					title: "Click button bellow to open community",
+				  image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+				  buttons: [
+					{
+						type: "web_url",
+						url: 'https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1',
+						title:"Open"
 					}
 				  ]
 				}
