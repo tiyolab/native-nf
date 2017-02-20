@@ -33,7 +33,7 @@ var mongoSessionStore = new MongoDBStore({
 });
 
 //catch session stored
-store.on('error', function(error){
+mongoSessionStore.on('error', function(error){
 	console.log(error);
 });
 
@@ -49,7 +49,7 @@ app.use(session({
 	cookie: {
 		maxAge: 1000 * 60 * 60 * 24 * 7
 	},
-	store: store,
+	store: mongoSessionStore,
 	resave: true,
 	saveUninitialized: true
 }));
