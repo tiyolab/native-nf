@@ -26,7 +26,7 @@ var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var MongoDBStore = require('connect-mongodb-session')(session);
+var MongoDBStore = require('connect-mongo')(session);
 var mongoSessionStore = new MongoDBStore({
 	uri: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
@@ -245,10 +245,12 @@ app.post('/webhook', function (req, res) {
 			console.log(mySession[pageEntry.messaging[0].sender.id]);
 			console.log("==============");
 			if(pageEntry.messaging.length > 0){
-				if(!req.session.data){
+				if(!req.session.sdata){
 					if(mySession[pageEntry.messaging[0].sender.id]){
-						req.session.data = mySession[pageEntry.messaging[0].sender.id];
+						req.session.sdata = mySession[pageEntry.messaging[0].sender.id];
 					}
+				}else{
+					console.log('already saved to session');
 				}
 			}
 			
@@ -362,11 +364,11 @@ function receivedMessage(event, req) {
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(req.session);
 		
-		if(req.session.data){
+		if(req.session.sdata){
 			var nCase = nforce.createSObject('Case');
-			nCase.set('OwnerId', '' + req.session.data.s_user_id);
-			nCase.set('AccountId', '' + req.session.data.s_account_id);
-			nCase.set('ContactId', '' + req.session.data.s_contact_id);
+			nCase.set('OwnerId', '' + req.session.sdata.s_user_id);
+			nCase.set('AccountId', '' + req.session.sdata.s_account_id);
+			nCase.set('ContactId', '' + req.session.sdata.s_contact_id);
 			nCase.set('Status', 'New');
 			nCase.set('Origin', 'Web');
 			nCase.set('Subject', timeOfMessage + '');

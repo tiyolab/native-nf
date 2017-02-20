@@ -21,7 +21,8 @@
 	"express-session": "*",
 	"redis": "*",
 	"cookie-parser": "*",
-	"connect-mongodb-session": "*"
+	"connect-mongodb-session": "*",
+	"connect-mongo": "*"
   },
   "engines": {
     "node": "~4.1.2"
