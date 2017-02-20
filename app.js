@@ -360,7 +360,9 @@ function receivedMessage(event, req) {
 	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 		sendTextMessage(senderID, 'Hi');
 	}else if(messageText.search(/help/i) > -1){
-		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.\n2. "Open Case" to open new case.');
+		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
+		'\n2. "Open Case" to open new case.'+
+		'\n3. "Cancel Community" to leave from community.');
 	}else if(messageText.search(/open case/i) > -1){
 		console.log(req.session);
 		
