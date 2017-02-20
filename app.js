@@ -44,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(cookieParser());
-app.use(session({
+/*app.use(session({
 	secret: 'd5e79d3c37be21dbe96afca771582b94',
 	cookie: {
 		maxAge: 1000 * 60 * 60 * 24 * 7
@@ -52,7 +52,7 @@ app.use(session({
 	store: mongoSessionStore,
 	resave: true,
 	saveUninitialized: true
-}));
+}));*/
 
 /*
  * Be sure to setup your config values before running this code. You can 
