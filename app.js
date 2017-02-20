@@ -27,15 +27,15 @@ var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
-/*var mongoSessionStore = new MongoDBStore({
-	uri: 'mongodb://tiyo.lab:TIYO11juli1995%40@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+var mongoSessionStore = new MongoDBStore({
+	uri: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
 });
 
 //catch session stored
 mongoSessionStore.on('error', function(error){
 	console.log(error);
-});*/
+});
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
@@ -44,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(cookieParser());
-/*app.use(session({
+app.use(session({
 	secret: 'd5e79d3c37be21dbe96afca771582b94',
 	cookie: {
 		maxAge: 1000 * 60 * 60 * 24 * 7
@@ -52,7 +52,7 @@ app.use(cookieParser());
 	store: mongoSessionStore,
 	resave: true,
 	saveUninitialized: true
-}));*/
+}));
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -239,13 +239,13 @@ app.post('/webhook', function (req, res) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
 			
-			/*if(pageEntry.messaging.lenght > 0){
+			if(pageEntry.messaging.lenght > 0){
 				if(!req.session.data){
 					if(mySession[pageEntry.messaging[0].sender.id]){
 						req.session.data = mySession[pageEntry.messaging[0].sender.id];
 					}
 				}
-			}*/
+			}
 			
 
 			// Iterate over each messaging event
@@ -355,12 +355,13 @@ function receivedMessage(event, req) {
 	}else if(messageText.search(/help/i) > -1){
 		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.\n2. "Open Case" to open new case.');
 	}else if(messageText.search(/open case/i) > -1){
-		console.log(mySession);
-		if(mySession[senderID]){
+		console.log(req.session);
+		
+		if(req.session.data){
 			var nCase = nforce.createSObject('Case');
-			nCase.set('OwnerId', '' + mySession[senderID].s_user_id);
-			nCase.set('AccountId', '' + mySession[senderID].s_account_id);
-			nCase.set('ContactId', '' + mySession[senderID].s_contact_id);
+			nCase.set('OwnerId', '' + req.session.data.s_user_id);
+			nCase.set('AccountId', '' + req.session.data.s_account_id);
+			nCase.set('ContactId', '' + req.session.data.s_contact_id);
 			nCase.set('Status', 'New');
 			nCase.set('Origin', 'Web');
 			nCase.set('Subject', timeOfMessage + '');
