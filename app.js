@@ -28,7 +28,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
 var mongoSessionStore = new MongoDBStore({
-	uri: 'mongodb://tiyo.lab:TIYO11juli1995%40@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
+	uri: 'mongodb://tiyo.lab:TIYO11juli1995~@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
 	collection: 'session'
 });
 
