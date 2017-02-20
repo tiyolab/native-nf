@@ -37,10 +37,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(cookieParser());
-app.use(session({
-	store: new RedisStore(redisClient),
-	secret: 'd5e79d3c37be21dbe96afca771582b94'
-}));
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -78,6 +74,10 @@ console.log('tiyo said server running');
 
 redisClient.on('connect', function(){
 	console.log('redis ready');
+	app.use(session({
+		store: new RedisStore(redisClient),
+		secret: 'd5e79d3c37be21dbe96afca771582b94'
+	}));
 });
 
 // use the nforce package to create a connection to salesforce.com
