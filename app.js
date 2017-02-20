@@ -239,11 +239,11 @@ app.post('/webhook', function (req, res) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
 			
-			console.log("==============");
+			console.log("=============");
 			console.log("message length = " + pageEntry.messaging.length);
 			console.log("my session");
 			console.log(mySession[pageEntry.messaging[0].sender.id]);
-			console.log("==============");
+			console.log("=============");
 			if(pageEntry.messaging.length > 0){
 				if(!req.session.sdata){
 					if(mySession[pageEntry.messaging[0].sender.id]){
