@@ -34,6 +34,7 @@ var mongoSessionStore = new MongoDBStore({
 
 //catch session stored
 mongoSessionStore.on('error', function(error){
+	console.log('error in connection to mongostore');
 	console.log(error);
 });
 
