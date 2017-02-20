@@ -239,7 +239,8 @@ app.post('/webhook', function (req, res) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
 			
-			req.session.reqdata = req;
+			console.log("req========================req");
+			console.log(req);
 			
 			console.log("=============");
 			console.log("message length = " + pageEntry.messaging.length);
