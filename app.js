@@ -174,7 +174,7 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 							}
 						});
 						console.log(mySession);
-						sendTextMessage(req.query.senderid, 'we success authenticate you. go ahead.');
+						sendTextMessage(req.query.senderid, 'Successfully authenticated you.');
 					}else{
 						joinMessage(senderId);
 					}
