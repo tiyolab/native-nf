@@ -341,7 +341,7 @@ function receivedMessage(event, req) {
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
 	var msgState = [];
-	if(mySession[senderID]){
+	if(mySession[senderID] && mySession[senderID]['state'] != ''){
 		msgState = mySession[senderID]['state'].split('/');
 	}
 	
