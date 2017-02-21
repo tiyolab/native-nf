@@ -171,7 +171,8 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 								s_user_id: data.get('Id'),
 								s_account_id: data.get('AccountId'),
 								s_contact_id: data.get('ContactId'),
-								state: ''
+								state: '',
+								data: {}
 							}
 						});
 						console.log(mySession);
