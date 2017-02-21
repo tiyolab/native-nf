@@ -345,6 +345,8 @@ function receivedMessage(event, req) {
 		msgState = mySession[senderID].state.split('/');
 	}
 	
+	console.log(mySession[senderID].state);
+	
 	if(msgState.length > 0){
 		if(msgState[0] == 'open_case'){
 			if(msgState[1] == 'subject'){
@@ -387,6 +389,7 @@ function receivedMessage(event, req) {
 		}else if(messageText.search(/open case/i) > -1){
 			if(mySession[senderID]){
 				mySession[senderID].state = 'open_case/subject';
+				console.log(mySession[senderID]);
 				sendTextMessage(senderID, 'Subject');
 			}else{
 				authMessage(senderID);
