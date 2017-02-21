@@ -345,8 +345,6 @@ function receivedMessage(event, req) {
 		msgState = mySession[senderID]['state'].split('/');
 	}
 	
-	console.log(mySession[senderID]['state']);
-	
 	if(msgState.length > 0){
 		if(msgState[0] == 'open_case'){
 			if(msgState[1] == 'subject'){
