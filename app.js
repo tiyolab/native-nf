@@ -342,16 +342,16 @@ function receivedMessage(event, req) {
     // the text we received.
 	var msgState = [];
 	if(mySession[senderID]){
-		msgState = mySession[senderID].state.split('/');
+		msgState = mySession[senderID]['state'].split('/');
 	}
 	
-	console.log(mySession[senderID].state);
+	console.log(mySession[senderID]['state']);
 	
 	if(msgState.length > 0){
 		if(msgState[0] == 'open_case'){
 			if(msgState[1] == 'subject'){
 				mySession[senderID]['data']['subject'] = messageText;
-				mySession[senderID].state = 'open_case/description';
+				mySession[senderID]['state'] = 'open_case/description';
 				
 				sendTextMessage(senderID, 'Description');
 			}else if(msgState[1] == 'description'){
@@ -373,6 +373,7 @@ function receivedMessage(event, req) {
 						console.log(err);
 						sendTextMessage(senderID, 'Failed open new case.');
 					}
+					mySession[senderID]['state'] = '';
 				});
 			}
 		}
@@ -388,7 +389,7 @@ function receivedMessage(event, req) {
 			'\n4. "Cancel Community" to leave from community.');
 		}else if(messageText.search(/open case/i) > -1){
 			if(mySession[senderID]){
-				mySession[senderID].state = 'open_case/subject';
+				mySession[senderID]['state'] = 'open_case/subject';
 				console.log(mySession[senderID]);
 				sendTextMessage(senderID, 'Subject');
 			}else{
