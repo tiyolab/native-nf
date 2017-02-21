@@ -239,25 +239,6 @@ app.post('/webhook', function (req, res) {
 		data.entry.forEach(function(pageEntry) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
-			
-			//console.log("req========================req");
-			//console.log(req.sessionID);
-			
-			//console.log("=============");
-			//console.log("message length = " + pageEntry.messaging.length);
-			//console.log("my session");
-			//console.log(mySession[pageEntry.messaging[0].sender.id]);
-			//console.log("=============");
-			/*if(pageEntry.messaging.length > 0){
-				if(!req.session.sdata){
-					if(mySession[pageEntry.messaging[0].sender.id]){
-						req.session.sdata = mySession[pageEntry.messaging[0].sender.id];
-					}
-				}else{
-					console.log('already saved to session');
-				}
-			}*/
-			
 
 			// Iterate over each messaging event
 			pageEntry.messaging.forEach(function(messagingEvent) {
@@ -385,10 +366,10 @@ function receivedMessage(event, req) {
 				
 				org.insert({sobject: nCase}, function(err, res){
 					if(!err){
-						sendTextMessage(senderID, 'Case created with subject = ' + timeOfMessage);
+						sendTextMessage(senderID, 'Successfully open new case.');
 					}else{
 						console.log(err);
-						sendTextMessage(senderID, 'Failed create new case');
+						sendTextMessage(senderID, 'Failed open new case.');
 					}
 				});
 			}
