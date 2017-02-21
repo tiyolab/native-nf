@@ -170,7 +170,8 @@ app.get('/'+FB_REDIRECT_URI, function(req, res){
 								fb_user_id: FBUserId,
 								s_user_id: data.get('Id'),
 								s_account_id: data.get('AccountId'),
-								s_contact_id: data.get('ContactId')
+								s_contact_id: data.get('ContactId'),
+								state: ''
 							}
 						});
 						console.log(mySession);
@@ -239,15 +240,15 @@ app.post('/webhook', function (req, res) {
 			var pageID = pageEntry.id;
 			var timeOfEvent = pageEntry.time;
 			
-			console.log("req========================req");
-			console.log(req.sessionID);
+			//console.log("req========================req");
+			//console.log(req.sessionID);
 			
-			console.log("=============");
-			console.log("message length = " + pageEntry.messaging.length);
-			console.log("my session");
-			console.log(mySession[pageEntry.messaging[0].sender.id]);
-			console.log("=============");
-			if(pageEntry.messaging.length > 0){
+			//console.log("=============");
+			//console.log("message length = " + pageEntry.messaging.length);
+			//console.log("my session");
+			//console.log(mySession[pageEntry.messaging[0].sender.id]);
+			//console.log("=============");
+			/*if(pageEntry.messaging.length > 0){
 				if(!req.session.sdata){
 					if(mySession[pageEntry.messaging[0].sender.id]){
 						req.session.sdata = mySession[pageEntry.messaging[0].sender.id];
@@ -255,7 +256,7 @@ app.post('/webhook', function (req, res) {
 				}else{
 					console.log('already saved to session');
 				}
-			}
+			}*/
 			
 
 			// Iterate over each messaging event
@@ -358,49 +359,69 @@ function receivedMessage(event, req) {
     // If we receive a text message, check to see if it matches any special
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
-	if(messageText.search(/broker/i) > -1){
-		sendShowBrokerMessage(senderID);
-	}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
-		sendTextMessage(senderID, 'Hi');
-	}else if(messageText.search(/help/i) > -1){
-		sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
-		'\n2. "Open Case" to open new case.'+
-		'\n3. "Open Community" to open Community.'+
-		'\n4. "Cancel Community" to leave from community.');
-	}else if(messageText.search(/open case/i) > -1){
-		console.log(req.session);
-		
-		if(req.session.sdata){
-			var nCase = nforce.createSObject('Case');
-			nCase.set('OwnerId', '' + req.session.sdata.s_user_id);
-			nCase.set('AccountId', '' + req.session.sdata.s_account_id);
-			nCase.set('ContactId', '' + req.session.sdata.s_contact_id);
-			nCase.set('Status', 'New');
-			nCase.set('Origin', 'Web');
-			nCase.set('Subject', timeOfMessage + '');
-			
-			org.insert({sobject: nCase}, function(err, res){
-				if(!err){
-					sendTextMessage(senderID, 'Case created with subject = ' + timeOfMessage);
-				}else{
-					console.log(err);
-					sendTextMessage(senderID, 'Failed create new case');
-				}
-			});
-		}else{
-			authMessage(senderID);
+	var msgState = [];
+	if(mySession[senderID]){
+		msgState = mySession[senderID].state.split('/');
+	}
+	
+	if(msgState.length > 0){
+		if(msgState[0] == 'open_case'){
+			if(msgState[1] == 'subject'){
+				mySession[senderID]['data']['subject'] = messageText;
+				mySession[senderID].state = 'open_case/description';
+				
+				sendTextMessage(senderID, 'Description');
+			}else if(msgState[1] == 'description'){
+				mySession[senderID]['data']['description'] = messageText;
+				
+				var nCase = nforce.createSObject('Case');
+				nCase.set('OwnerId', '' + mySession[senderID].s_user_id);
+				nCase.set('AccountId', '' + mySession[senderID].s_account_id);
+				nCase.set('ContactId', '' + mySession[senderID].s_contact_id);
+				nCase.set('Status', 'New');
+				nCase.set('Origin', 'Web');
+				nCase.set('Subject', mySession[senderID]['data']['subject']);
+				nCase.set('Description', mySession[senderID]['data']['description']);
+				
+				org.insert({sobject: nCase}, function(err, res){
+					if(!err){
+						sendTextMessage(senderID, 'Case created with subject = ' + timeOfMessage);
+					}else{
+						console.log(err);
+						sendTextMessage(senderID, 'Failed create new case');
+					}
+				});
+			}
 		}
-	}else if(messageText.search(/cancel community/i) > -1){
-		if(mySession[senderID]){
-			sendTextMessage(senderID, "Please wait. we'll process your request.");
-			processCancelCommunity(mySession[senderID].s_user_id, senderID);
-		}else{
-			sendTextMessage(senderID, "You're not our community member yet.");
-		}
-	}else if(messageText.search(/open community/i) > -1){
-		openCommunity(senderID);
 	}else{
-		sendTextMessage(senderID, messageText);
+		if(messageText.search(/broker/i) > -1){
+			sendShowBrokerMessage(senderID);
+		}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
+			sendTextMessage(senderID, 'Hi');
+		}else if(messageText.search(/help/i) > -1){
+			sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
+			'\n2. "Open Case" to open new case.'+
+			'\n3. "Open Community" to open Community.'+
+			'\n4. "Cancel Community" to leave from community.');
+		}else if(messageText.search(/open case/i) > -1){
+			if(mySession[senderID]){
+				mySession[senderID].state = 'open_case/subject';
+				sendTextMessage(senderID, 'Subject');
+			}else{
+				authMessage(senderID);
+			}
+		}else if(messageText.search(/cancel community/i) > -1){
+			if(mySession[senderID]){
+				sendTextMessage(senderID, "Please wait. we'll process your request.");
+				processCancelCommunity(mySession[senderID].s_user_id, senderID);
+			}else{
+				sendTextMessage(senderID, "You're not our community member yet.");
+			}
+		}else if(messageText.search(/open community/i) > -1){
+			openCommunity(senderID);
+		}else{
+			sendTextMessage(senderID, messageText);
+		}
 	}
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
