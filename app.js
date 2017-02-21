@@ -337,17 +337,10 @@ function receivedMessage(event, req) {
   }
 
   if (messageText) {
-
-    // If we receive a text message, check to see if it matches any special
-    // keywords and send back the corresponding example. Otherwise, just echo
-    // the text we received.
 	var msgState = [];
 	if(mySession[senderID] && mySession[senderID]['state'] != ''){
 		msgState = mySession[senderID]['state'].split('/');
 	}
-	
-	console.log('msg state');
-	console.log(msgState);
 	
 	if(msgState.length > 0){
 		if(msgState[0] == 'open_case'){
@@ -391,9 +384,7 @@ function receivedMessage(event, req) {
 			'\n4. "Cancel Community" to leave from community.');
 		}else if(messageText.search(/open case/i) > -1){
 			if(mySession[senderID]){
-				console.log('i am here');
 				mySession[senderID]['state'] = 'open_case/subject';
-				console.log(mySession[senderID]);
 				sendTextMessage(senderID, 'Subject');
 			}else{
 				authMessage(senderID);
@@ -537,7 +528,7 @@ function openCommunity(recipientId) {
  * show broker list
  */
 function sendShowBrokerMessage(recipientId){
-	org.query({query : "select Id, Name, BillingStreet, Website, Phone from Account limit 10"}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Phone from Account limit 10"}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
@@ -557,6 +548,7 @@ function sendShowBrokerMessage(recipientId){
 					{
 					  title: ac.get('Name'),
 					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
+					  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8"
 					  buttons: [
 						{
 						  type: "phone_number",
