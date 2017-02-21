@@ -548,7 +548,7 @@ function sendShowBrokerMessage(recipientId){
 					{
 					  title: ac.get('Name'),
 					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
-					  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8"
+					  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8",
 					  buttons: [
 						{
 						  type: "phone_number",
