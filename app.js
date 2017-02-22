@@ -606,7 +606,7 @@ function sendAskForLocation(recipientId){
 			id:	recipientId
 		},
 		  message:{
-			text:"Please share your location to find broker by your location.",
+			text:"Please share your location to find broker in radius 20Km around your location.",
 			quick_replies:[
 				{
 					content_type:"location",
