@@ -692,10 +692,10 @@ function sendShowBrokerMessageByLocation(location, recipientId){
 
 function harvesine(point1, point2){
 	var R = 3956; // metres
-	var lat1 = point1.lat.toRadians();
-	var lat2 = point2.lat.toRadians();
-	var dtLat = (lat2-lat1).toRadians();
-	var dtLng = (point2.lng-point1.lng).toRadians();
+	var lat1 = point1.lat;
+	var lat2 = point2.lat;
+	var dtLat = (lat2-lat1);
+	var dtLng = (point2.lng-point1.lng);
 
 	var a = Math.sin(dtLat/2) * Math.sin(dtLat/2) +
         Math.cos(lat1) * Math.cos(lat2) *
