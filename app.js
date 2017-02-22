@@ -405,17 +405,19 @@ function receivedMessage(event, req) {
 		}
 	}
   } else if (messageAttachments) {
-    if(messageAttachments.type == 'location'){
-		console.log('location');
-		console.log({
-			lat: messageAttachments.payload.coordinates.lat,
-			lng: messageAttachments.payload.coordinates.long
-		});
-		sendShowBrokerMessageByLocation({
-			lat: messageAttachments.payload.coordinates.lat,
-			lng: messageAttachments.payload.coordinates.long
-		}, senderID);
-	}
+	messageAttachments.forEach(function(attachment){
+		if(attachment.type == 'location'){
+			console.log('location');
+			console.log({
+				lat: attachment.payload.coordinates.lat,
+				lng: attachment.payload.coordinates.long
+			});
+			sendShowBrokerMessageByLocation({
+				lat: attachment.payload.coordinates.lat,
+				lng: attachment.payload.coordinates.long
+			}, senderID);
+		}
+	});
   }
 }
 
