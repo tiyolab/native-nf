@@ -321,6 +321,7 @@ function receivedMessage(event, req) {
   // You may get a text or attachment but not both
   var messageText = message.text;
   var messageAttachments = message.attachments;
+  console.log(messageAttachments);
   var quickReply = message.quick_reply;
 
   if (isEcho) {
@@ -405,7 +406,11 @@ function receivedMessage(event, req) {
 	}
   } else if (messageAttachments) {
     if(messageAttachments.type == 'location'){
-		
+		console.log('location');
+		console.log({
+			lat: messageAttachments.payload.coordinates.lat,
+			lng: messageAttachments.payload.coordinates.long
+		});
 		sendShowBrokerMessageByLocation({
 			lat: messageAttachments.payload.coordinates.lat,
 			lng: messageAttachments.payload.coordinates.long
