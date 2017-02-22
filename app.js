@@ -622,13 +622,13 @@ function sendAskForLocation(recipientId){
  * show broker list by nearest location
  */
 function sendShowBrokerMessageByLocation(location, recipientId){
-	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account"}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, BillingCity, BillingCountry, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account"}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
 			var elementsAccount = [];
 			respQuery.records.forEach(function(ac){
-				var phone = '';
+				var phone = '-';
                 if(ac.get('Phone')){
                     phone = ac.get('Phone');
                 }
@@ -636,7 +636,15 @@ function sendShowBrokerMessageByLocation(location, recipientId){
                 
                 var street = '';
                 if(ac.get('BillingStreet')){
-                	street = ac.get('BillingStreet');
+                	street += ac.get('BillingStreet') + ', ';
+                }
+				
+				if(ac.get('BillingCity')){
+                	street += ac.get('BillingCity') + ', ';
+                }
+				
+				if(ac.get('BillingCountry')){
+                	street += ac.get('BillingCountry');
                 }
 				
 				var distance = harvesine(location, {
@@ -650,7 +658,7 @@ function sendShowBrokerMessageByLocation(location, recipientId){
 					elementsAccount.push(
 						{
 						  title: ac.get('Name'),
-						  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
+						  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" \nPhone: "+ phone,
 						  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8",
 						  buttons: [
 							{
