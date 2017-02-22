@@ -622,7 +622,7 @@ function sendAskForLocation(recipientId){
  * show broker list by nearest location
  */
 function sendShowBrokerMessageByLocation(location, recipientId){
-	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account limit 10"}, function(errQuery, respQuery){
+	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account"}, function(errQuery, respQuery){
 		if(errQuery){
 			console.log(errQuery);
 		}else{
@@ -669,13 +669,9 @@ function sendShowBrokerMessageByLocation(location, recipientId){
 				}
 			});
 			
-			console.log(elementsAccount);
-			
-			var messageData = {
-				recipient: {
-				  id: recipientId
-				},
-				message:{
+			var messageToSend = {};
+			if(elementsAccount.length > 0){
+				messageToSend = {
 				  attachment: {
 					type: "template",
 					payload: {
@@ -684,6 +680,17 @@ function sendShowBrokerMessageByLocation(location, recipientId){
 					}
 				  }
 				}
+			}else{
+				messageToSend = {
+					text: messageText
+				}
+			}
+			
+			var messageData = {
+				recipient: {
+				  id: recipientId
+				},
+				message: messageToSend
 			}
 			callSendAPI(messageData);
 		}
