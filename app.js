@@ -374,7 +374,8 @@ function receivedMessage(event, req) {
 		}
 	}else{
 		if(messageText.search(/broker/i) > -1){
-			sendShowBrokerMessage(senderID);
+			//sendShowBrokerMessage(senderID);
+			sendAskForLocation(senderID);
 		}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 			sendTextMessage(senderID, 'Hi');
 		}else if(messageText.search(/help/i) > -1){
@@ -403,7 +404,13 @@ function receivedMessage(event, req) {
 		}
 	}
   } else if (messageAttachments) {
-    sendTextMessage(senderID, "Message with attachment received");
+    if(messageAttachments.type == 'location'){
+		
+		sendShowBrokerMessageByLocation({
+			lat: messageAttachments.payload.coordinates.lat,
+			lng: messageAttachments.payload.coordinates.long
+		}, senderID);
+	}
   }
 }
 
@@ -584,6 +591,112 @@ function sendShowBrokerMessage(recipientId){
 			callSendAPI(messageData);
 		}
 	});
+}
+
+function sendAskForLocation(recipientId){
+	var messageData = {
+		recipient:{
+			id:	recipientId
+		},
+		  message:{
+			text:"Please share your location to find broker by your location.",
+			quick_replies:[
+				{
+					content_type:"location",
+				}
+			]
+		}
+	}
+
+  callSendAPI(messageData);
+}
+
+/*
+ * show broker list by nearest location
+ */
+function sendShowBrokerMessageByLocation(location, recipientId){
+	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account limit 10"}, function(errQuery, respQuery){
+		if(errQuery){
+			console.log(errQuery);
+		}else{
+			var elementsAccount = [];
+			respQuery.records.forEach(function(ac){
+				var phone = '';
+                if(ac.get('Phone')){
+                    phone = ac.get('Phone');
+                }
+                
+                
+                var street = '';
+                if(ac.get('BillingStreet')){
+                	street = ac.get('BillingStreet');
+                }
+				
+				var distance = harvesine(location, {
+					lat:ac.get('Location__Latitude__s'), 
+					lng:ac.get('Location__Longitude__s')
+				});
+				
+				console.log(ac.get('Name') + ' distance = ' + distance);
+				
+				if(distance <= 20){
+					elementsAccount.push(
+						{
+						  title: ac.get('Name'),
+						  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
+						  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8",
+						  buttons: [
+							{
+							  type: "phone_number",
+							  title: "Call",
+							  payload: phone
+							},
+							{
+							  type: "postback",
+							  title: "Refer Me",
+							  payload: "test"
+							}
+						  ]
+						}
+					);
+				}
+			});
+			
+			console.log(elementsAccount);
+			
+			var messageData = {
+				recipient: {
+				  id: recipientId
+				},
+				message:{
+				  attachment: {
+					type: "template",
+					payload: {
+					  template_type: "generic",
+					  elements: elementsAccount
+					}
+				  }
+				}
+			}
+			callSendAPI(messageData);
+		}
+	});
+}
+
+function harvesine(point1, point2){
+	var R = 3956; // metres
+	var lat1 = point1.lat.toRadians();
+	var lat2 = point2.lat.toRadians();
+	var dtLat = (lat2-lat1).toRadians();
+	var dtLng = (point2.lng-point1.lng).toRadians();
+
+	var a = Math.sin(dtLat/2) * Math.sin(dtLat/2) +
+        Math.cos(lat1) * Math.cos(lat2) *
+        Math.sin(dtLng/2) * Math.sin(dtLng/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	var d = R * c;
+	return d;
 }
 
 /**
