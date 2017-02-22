@@ -690,7 +690,7 @@ function sendShowBrokerMessageByLocation(location, recipientId){
 				}
 			}else{
 				messageToSend = {
-					text: messageText
+					text: "No broker available near 20Km arround you"
 				}
 			}
 			
