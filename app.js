@@ -20,7 +20,7 @@ const
   express = require('express'),
   https = require('https'),  
   request = require('request'),
-  myRequest = request('my_request');
+  myRequest = require('./my_modules/my_request');
 
 var oauth;
 var nforce = require('nforce');
