@@ -5,11 +5,15 @@ exports.handleRequest = (app, db) => {
 	 * 
 	 */
 	app.get('/configure', function(req, res){
-		var configuration = db.app_configuration.findOne({
+		var collection = db.collection('app_configuration');
+		var configuration = collection.findOne({
 			app_name: req.header.host
+		}, function(err, item){
+			console.log('result');
+			console.log(item);
 		});
 		console.log(req.header.host);
-		console.log(conviguration);
+		console.log(configuration);
 		res.render('configure');
 	});
 	
