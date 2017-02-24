@@ -30,16 +30,16 @@ exports.configure = (db) => {
 				console.log(item.salesforce_app.sf_consumer_key);
 				app_name 					= item.app_name;
 				host 						= item.host;
-				sf_consumer_key 			= item.salesforce_app.sf_consumer_key;
-				sf_consumer_secret 			= item.salesforce_app.sf_consumer_secret;
-				sf_username 				= item.salesforce_app.sf_username; 
-				sf_password 				= item.salesforce_app.sf_password;
-				fb_app_name 				= item.facebook_app.fb_app_name;
-				fb_app_id 					= item.facebook_app.fb_app_id;
-				fb_app_secret 				= item.facebook_app.fb_app_secret;
-				fb_webhook_validation_token = item.facebook_app.fb_webhook_validation_token;
-				fb_page_name	 			= item.facebook_app.fb_page_name;
-				fb_page_access_token 		= item.facebook_app.fb_page_access_token;
+				sf_consumer_key 			= item.salesforce_app.consumer_key;
+				sf_consumer_secret 			= item.salesforce_app.consumer_secret;
+				sf_username 				= item.salesforce_app.username; 
+				sf_password 				= item.salesforce_app.password;
+				fb_app_name 				= item.facebook_app.app_name;
+				fb_app_id 					= item.facebook_app.app_id;
+				fb_app_secret 				= item.facebook_app.app_secret;
+				fb_webhook_validation_token = item.facebook_app.webhook_validation_token;
+				fb_page_name	 			= item.facebook_app.page_name;
+				fb_page_access_token 		= item.facebook_app.page_access_token;
 			}else{
 				console.log('ERR: configuration not exists, configure by access /configure');
 				return;
