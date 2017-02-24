@@ -7,6 +7,7 @@ exports.handleRequest = (app, db) => {
 	 * 
 	 */
 	app.get('/configure', function(req, res){
+		console.log(os.hostname());
 		var collection = db.collection('app_configuration');
 		collection.findOne({
 			hostname: os.hostname()
