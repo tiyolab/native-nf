@@ -11,7 +11,7 @@
 'use strict';
 
 var mySession = [];
-var isMongoLoaded = false;
+globalConfig = null;
 
 const 
   bodyParser = require('body-parser'),
@@ -41,10 +41,13 @@ app.use(cookieParser());
 MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb', function(err, db){
 	if(err){console.log(err);return;}
 	
-	myConfig.configure(db);
-	myRequest.handleRequest(app, db);
-	
-	console.log('app secret = ' + myConfig.SF_CONSUMER_KEY);
+	myConfig.configure(db, function(config){
+		if(config){
+			globalConfig = config;
+			myRequest.handleRequest(app, db, globalConfig);
+		}
+	});
+	myRequest.handleConfigure(app, db, globalConfig);
 });
 
 /*

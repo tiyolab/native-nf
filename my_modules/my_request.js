@@ -2,7 +2,7 @@
 
 let os = require('os');
 let _package = require('../package.json');
-exports.handleRequest = (app, db) => {
+exports.handleConfigure = (app, db, globalConfig) => {
 	/**
 	 * This section for configuration only
 	 * 
@@ -47,5 +47,9 @@ exports.handleRequest = (app, db) => {
 				res.render('configure_change', data);
 			});
 		}
+		
+		globalConfig = data;
 	});
 }
+
+exports.handleRequest = (app, db, config) => {};
