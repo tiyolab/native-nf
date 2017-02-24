@@ -1,6 +1,7 @@
 "use strict";
 
 let os = require('os');
+let _package = require('./package.json');
 var 
 	app_name, 
 	host, 
@@ -18,7 +19,7 @@ var
 exports.configure = (db) => {
 	var collection = db.collection('app_configuration');
 	collection.findOne({
-		hostname: os.hostname()
+		my_app_name: _package.name
 	}, function(err, item){
 		if(err){
 			console.log('ERR: cannot load configuration');

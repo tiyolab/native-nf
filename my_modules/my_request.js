@@ -1,16 +1,16 @@
 "use strict";
 
 let os = require('os');
+let _package = require('./package.json');
 exports.handleRequest = (app, db) => {
 	/**
 	 * This section for configuration only
 	 * 
 	 */
 	app.get('/configure', function(req, res){
-		console.log(os.hostname());
 		var collection = db.collection('app_configuration');
 		collection.findOne({
-			hostname: os.hostname()
+			my_app_name: _package.name
 		}, function(err, item){
 			if(item){
 				item['status'] = -1;
@@ -26,7 +26,8 @@ exports.handleRequest = (app, db) => {
 		var data = req.body;
 		
 		data['host'] = req.headers.host;
-		data['hostname'] = os.hostname();
+		data['my_app_name'] = _package.name;
+		
 		if(data.status_record === 'new'){
 			collection.insert(data, {w:1}, function(err, result){
 				if(err){
@@ -37,7 +38,7 @@ exports.handleRequest = (app, db) => {
 				res.render('configure_change', data);
 			});
 		}else if(data.status_record === 'old'){
-			collection.update({hostname: os.hostname()}, {$set: data}, {w:1}, function(err, result){
+			collection.update({my_app_name: _package.name}, {$set: data}, {w:1}, function(err, result){
 				if(err){
 					data['status']= 0;
 				}else {
