@@ -1,7 +1,7 @@
 "use strict";
 
 let os = require('os');
-let _package = require('./package.json');
+let _package = require('../package.json');
 exports.handleRequest = (app, db) => {
 	/**
 	 * This section for configuration only
