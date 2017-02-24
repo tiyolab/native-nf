@@ -1,6 +1,7 @@
 "use strict";
 
 let os = require('os');
+let ObjectID = require('mongodb').ObjectID;
 var 
 	app_name, 
 	host, 
