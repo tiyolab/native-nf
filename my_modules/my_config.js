@@ -1,7 +1,6 @@
 "use strict";
 
 let os = require('os');
-let mongo = require('mongodb');
 var 
 	app_name, 
 	host, 
@@ -17,12 +16,9 @@ var
 	fb_page_access_token;
 	
 exports.configure = (db) => {
-	console.log('host = '+os.hostname());
-	console.log('id = '+new mongo.ObjectID(os.hostname()));
-	
 	var collection = db.collection('app_configuration');
 	collection.findOne({
-		_id: new ObjectId(os.hostname())
+		hostname: os.hostname()
 	}, function(err, item){
 		if(err){
 			console.log('ERR: cannot load configuration');
