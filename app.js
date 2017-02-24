@@ -11,7 +11,7 @@
 'use strict';
 
 var mySession = [];
-globalConfig = null;
+var globalConfig = null;
 
 const 
   bodyParser = require('body-parser'),
