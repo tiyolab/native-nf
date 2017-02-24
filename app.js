@@ -40,7 +40,7 @@ app.use(cookieParser());
 MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb', function(err, db){
 	if(err){console.log(err);return;}
 	
-	console.log(require('os').getHostname());
+	console.log(require('os').hostname());
 	
 	//myConfig.configure(db);
 	myRequest.handleRequest(app, db);
