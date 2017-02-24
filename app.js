@@ -45,6 +45,7 @@ MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.
 	myRequest.handleRequest(app, db);
 	
 	console.log('app name = '+myConfig.APP_NAME);
+	console.log('app secret = '+myConfig.SF_CONSUMER_KEY);
 });
 
 /*
