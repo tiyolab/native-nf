@@ -1,4 +1,4 @@
-let 
+var 
 	app_name, 
 	host, 
 	sf_consumer_key, 
