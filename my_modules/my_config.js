@@ -1,7 +1,7 @@
 "use strict";
 
 let os = require('os');
-let ObjectID = require('mongodb').ObjectID;
+let mongo = require('mongodb');
 var 
 	app_name, 
 	host, 
@@ -18,7 +18,7 @@ var
 	
 exports.configure = (db) => {
 	console.log('host = '+os.hostname());
-	console.log('id = '+new ObjectId(os.hostname()));
+	console.log('id = '+new mongo.ObjectID(os.hostname()));
 	
 	var collection = db.collection('app_configuration');
 	collection.findOne({
