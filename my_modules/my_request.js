@@ -25,12 +25,22 @@ exports.handleRequest = (app, db) => {
 		data['host'] = req.headers.host;
 		if(data.status_record === 'new'){
 			collection.insert(data, {w:1}, function(err, result){
-				if(err) data['status']= 0;
-				else data['status']= 0;
+				if(err){
+					data['status']= 0;
+				}else{
+					data['status']= 1;
+				}
 				res.render('configure_change', data);
 			});
 		}else if(data.status_record === 'old'){
-			
+			collection.update({host: req.headers.host}, {$set: data}, {w:1}, function(err, result){
+				if(err){
+					data['status']= 0;
+				}else {
+					data['status']= 1;
+				}
+				res.render('configure_change', data);
+			});
 		}
 	});
 }
