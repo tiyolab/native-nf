@@ -1,5 +1,5 @@
 
-exports.handleRequest(app) => {
+exports.handleRequest = (app) => {
 	/**
 	 * This section for configuration only
 	 * 
