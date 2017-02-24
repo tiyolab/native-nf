@@ -9,11 +9,13 @@ exports.handleRequest = (app, db) => {
 		collection.findOne({
 			app_name: req.headers.host
 		}, function(err, item){
-			console.log('result');
-			console.log(item);
+			if(item){
+				console.log(item);
+				res.render('configure');
+			}else{
+				res.render('configure');
+			}
 		});
-		console.log(req.headers.host);
-		res.render('configure');
 	});
 	
 }
