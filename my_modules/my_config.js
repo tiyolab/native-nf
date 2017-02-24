@@ -18,7 +18,7 @@ var
 exports.configure = (db) => {
 	var collection = db.collection('app_configuration');
 	collection.findOne({
-		_id: os.hostname()
+		_id: new ObjectId(os.hostname())
 	}, function(err, item){
 		if(err){
 			console.log('ERR: cannot load configuration');
