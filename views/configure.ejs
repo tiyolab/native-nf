@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>Configure Application</title>
+	</head>
+	<body>
+		<form method="post" action="/configure">
+			<table>
+				<tr>
+					<td>App Name</td>
+					<td>:</td>
+					<td><input type="text" name="app_name"/></td>
+				</tr>
+			</table>
+			<div>
+				<h3>Salesforce Configuration(Connected App)</h3>
+				<table>
+					<tr>
+						<td>Consumer Key</td>
+						<td>:</td>
+						<td><input type="text" name="consumer_key"/></td>
+					</tr>
+					<tr>
+						<td>Consumer Secret</td>
+						<td>:</td>
+						<td><input type="text" name="consumer_secret"/></td>
+					</tr>
+					<tr>
+						<td>Username</td>
+						<td>:</td>
+						<td><input type="text" name="username"/></td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td>:</td>
+						<td><input type="password" name="password"/></td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<h3>Facebook App Configuration</h3>
+				<table>
+					<tr>
+						<td>App Name</td>
+						<td>:</td>
+						<td><input type="text" name="app_name"/></td>
+					</tr>
+					<tr>
+						<td>App Id</td>
+						<td>:</td>
+						<td><input type="text" name="app_id"/></td>
+					</tr>
+					<tr>
+						<td>App Secret</td>
+						<td>:</td>
+						<td><input type="text" name="app_secret"/></td>
+					</tr>
+					<tr>
+						<td>Webhook Validation Token</td>
+						<td>:</td>
+						<td><input type="text" name="webhook_validation_token"/></td>
+					</tr>
+					<tr>
+						<td>Page Name</td>
+						<td>:</td>
+						<td><input type="text" name="page_name"/></td>
+					</tr>
+					<tr>
+						<td>Page Access Token</td>
+						<td>:</td>
+						<td><input type="text" name="page_access_token"/></td>
+					</tr>
+				</table>
+			</div>
+			<input type="submit" value="Save"/>
+		</form>
+	</body>
+</html>

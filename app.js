@@ -777,6 +777,15 @@ function callSendAPI(messageData) {
   });  
 }
 
+
+/**
+ * This section for configuration only
+ * 
+ */
+app.get('/configure', function(req, res){
+	res.render('configure');
+});
+
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
 // certificate authority.
