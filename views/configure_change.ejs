@@ -1,13 +1,16 @@
 <html>
 	<head>
 		<title>Configure Application</title>
+		<script>
+			var status = <%= status %>;
+			if(status == 1){
+				alert('Operation success');
+			}else if(status == 0){
+				alert('Operation failed');
+			}
+		</script>
 	</head>
 	<body>
-		<% if(status) %>
-		<p>Operation success</p>
-		<% else %>
-		<p>Operation failed</p>
-		
 		<form method="post" action="/configure">
 		<input type="hidden" name="status_record" value="old"/>
 			<table>

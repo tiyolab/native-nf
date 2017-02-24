@@ -10,7 +10,7 @@ exports.handleRequest = (app, db) => {
 			host: req.headers.host
 		}, function(err, item){
 			if(item){
-				item['status'] = true;
+				item['status'] = -1;
 				res.render('configure_change', item);
 			}else{
 				res.render('configure');
@@ -23,10 +23,14 @@ exports.handleRequest = (app, db) => {
 		var data = req.body;
 		
 		data['host'] = req.headers.host;
-		collection.insert(data, {w:1}, function(err, result){
-			if(err) data['status']=false;
-			else data['status']=false;
-			res.render('configure_change', data);
-		});
+		if(data.status_record === 'new'){
+			collection.insert(data, {w:1}, function(err, result){
+				if(err) data['status']= 0;
+				else data['status']= 0;
+				res.render('configure_change', data);
+			});
+		}else if(data.status_record === 'old'){
+			
+		}
 	});
 }
