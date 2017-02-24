@@ -2,7 +2,7 @@
 
 let os = require('os');
 let _package = require('../package.json');
-exports.handleConfigure = (app, db, globalConfig) => {
+exports.handleConfigure = (app, db) => {
 	/**
 	 * This section for configuration only
 	 * 
@@ -52,10 +52,10 @@ exports.handleConfigure = (app, db, globalConfig) => {
 	});
 }
 
-exports.handleRequest = (app, db, config) => {
+exports.handleRequest = (app, db, globalConfig) => {
 	app.get('/ck', function(req, res){
 		console.log('consumer key');
-		console.log(config.salesforce_app.consumer_key);
+		console.log(globalConfig.salesforce_app.consumer_key);
 		res.sendStatus(200);
 	});
 };
