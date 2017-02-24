@@ -52,4 +52,7 @@ exports.handleConfigure = (app, db, globalConfig) => {
 	});
 }
 
-exports.handleRequest = (app, db, config) => {};
+exports.handleRequest = (app, db, config) => {
+	console.log('consumer key');
+	console.log(config.salesforce_app.consumer_key);
+};
