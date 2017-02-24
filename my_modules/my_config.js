@@ -1,3 +1,5 @@
+"use strict";
+
 let os = require('os');
 var 
 	app_name, 

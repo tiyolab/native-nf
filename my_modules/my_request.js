@@ -1,3 +1,5 @@
+"use strict";
+
 let os = require('os');
 exports.handleRequest = (app, db) => {
 	/**
@@ -34,7 +36,7 @@ exports.handleRequest = (app, db) => {
 				res.render('configure_change', data);
 			});
 		}else if(data.status_record === 'old'){
-			collection.update({host: req.headers.host}, {$set: data}, {w:1}, function(err, result){
+			collection.update({_id: os.hostname()}, {$set: data}, {w:1}, function(err, result){
 				if(err){
 					data['status']= 0;
 				}else {
