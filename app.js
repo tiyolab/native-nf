@@ -11,6 +11,7 @@
 'use strict';
 
 var mySession = [];
+var isMongoLoaded = false;
 
 const 
   bodyParser = require('body-parser'),
@@ -18,24 +19,15 @@ const
   crypto = require('crypto'),
   express = require('express'),
   https = require('https'),  
-  request = require('request');
+  request = require('request'),
+  myRequest = request('my-request');
 
 var oauth;
 var nforce = require('nforce');
 var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var MongoDBStore = require('connect-mongodb-session')(session);
-var mongoSessionStore = new MongoDBStore({
-	uri: 'mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb',
-	collection: 'session'
-});
-
-//catch session stored
-mongoSessionStore.on('error', function(error){
-	console.log(error);
-});
+var MongoClient = require('mongodb').MongoClient;
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
@@ -44,15 +36,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use(cookieParser());
-app.use(session({
-	secret: 'd5e79d3c37be21dbe96afca771582b94',
-	cookie: {
-		maxAge: 1000 * 60 * 60 * 24 * 7
-	},
-	store: mongoSessionStore,
-	resave: false,
-	saveUninitialized: false
-}));
+
+MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb', function(err, db){
+	if(err){console.log(err);return;}
+	
+	
+	myRequest.handleRequest(app);
+});
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -776,15 +766,6 @@ function callSendAPI(messageData) {
     }
   });  
 }
-
-
-/**
- * This section for configuration only
- * 
- */
-app.get('/configure', function(req, res){
-	res.render('configure');
-});
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 

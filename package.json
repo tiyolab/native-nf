@@ -22,7 +22,8 @@
 	"redis": "*",
 	"cookie-parser": "*",
 	"connect-mongodb-session": "*",
-	"connect-mongo": "*"
+	"connect-mongo": "*",
+	"mongodb": "*" 
   },
   "engines": {
     "node": "~4.1.2"
