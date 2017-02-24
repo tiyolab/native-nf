@@ -1,4 +1,4 @@
-
+let os = require('os');
 exports.handleRequest = (app, db) => {
 	/**
 	 * This section for configuration only
@@ -7,7 +7,7 @@ exports.handleRequest = (app, db) => {
 	app.get('/configure', function(req, res){
 		var collection = db.collection('app_configuration');
 		collection.findOne({
-			host: req.headers.host
+			_id: os.hostname()
 		}, function(err, item){
 			if(item){
 				item['status'] = -1;
@@ -23,6 +23,7 @@ exports.handleRequest = (app, db) => {
 		var data = req.body;
 		
 		data['host'] = req.headers.host;
+		data['_id'] = os.hostname();
 		if(data.status_record === 'new'){
 			collection.insert(data, {w:1}, function(err, result){
 				if(err){

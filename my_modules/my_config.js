@@ -1,3 +1,4 @@
+let os = require('os');
 var 
 	app_name, 
 	host, 
@@ -15,7 +16,7 @@ var
 exports.configure = (db) => {
 	var collection = db.collection('app_configuration');
 	collection.findOne({
-		host: req.headers.host
+		_id: os.hostname()
 	}, function(err, item){
 		if(err){
 			console.log('ERR: cannot load configuration');
