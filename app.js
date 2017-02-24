@@ -20,7 +20,8 @@ const
   express = require('express'),
   https = require('https'),  
   request = require('request'),
-  myRequest = require('./my_modules/my_request');
+  myRequest = require('./my_modules/my_request'),
+  myConfig = require('./my_modules/my_config');
 
 var oauth;
 var nforce = require('nforce');
@@ -40,7 +41,10 @@ app.use(cookieParser());
 MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb', function(err, db){
 	if(err){console.log(err);return;}
 	
+	myConfig.configure(db);
 	myRequest.handleRequest(app, db);
+	
+	console.log('app name = 'myConfig.APP_NAME);
 });
 
 /*
