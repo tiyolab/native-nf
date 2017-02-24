@@ -3,7 +3,13 @@
 		<title>Configure Application</title>
 	</head>
 	<body>
+		<% if(status) %>
+		<p>Operation success</p>
+		<% else %>
+		<p>Operation failed</p>
+		
 		<form method="post" action="/configure">
+		<input type="hidden" name="status_record" value="old"/>
 			<table>
 				<tr>
 					<td>App Name</td>
