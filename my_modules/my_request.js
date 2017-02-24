@@ -25,6 +25,7 @@ exports.handleRequest = (app, db) => {
 		collection.insert(data, {w:1}, function(err, result){
 			if(err) alert('operation failed');
 			else alert('operation success');
+			res.render('configure_change', data);
 		});
 	});
 }
