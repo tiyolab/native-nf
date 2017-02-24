@@ -25,6 +25,7 @@ exports.configure = (db) => {
 			console.log('ERR: cannot load configuration');
 			return;
 		}else{
+			console.log(item);
 			if(item){
 				app_name 					= item.app_name;
 				host 						= item.host;
