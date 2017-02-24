@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>Configure Application</title>
+	</head>
+	<body>
+		<form method="post" action="/configure">
+			<table>
+				<tr>
+					<td>App Name</td>
+					<td>:</td>
+					<td><input type="text" name="app_name" value="<% if(app_name)app_name; else ""; %>"/></td>
+				</tr>
+			</table>
+			<div>
+				<h3>Salesforce Configuration(Connected App)</h3>
+				<table>
+					<tr>
+						<td>Consumer Key</td>
+						<td>:</td>
+						<td><input type="text" name="salesforce_app.consumer_key" value="<%= salesforce_app.consumer_key %>"/></td>
+					</tr>
+					<tr>
+						<td>Consumer Secret</td>
+						<td>:</td>
+						<td><input type="text" name="salesforce_app.consumer_secret" value="<%= salesforce_app.consumer_secret %>"/></td>
+					</tr>
+					<tr>
+						<td>Username</td>
+						<td>:</td>
+						<td><input type="text" name="salesforce_app.username" value="<%= salesforce_app.username %>"/></td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td>:</td>
+						<td><input type="password" name="salesforce_app.password" value="<%= salesforce_app.password %>"/></td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<h3>Facebook App Configuration</h3>
+				<table>
+					<tr>
+						<td>App Name</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.app_name" value="<%= facebook_app.app_name %>"/></td>
+					</tr>
+					<tr>
+						<td>App Id</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.app_id" value="<%= facebook_app.app_id %>"/></td>
+					</tr>
+					<tr>
+						<td>App Secret</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.app_secret" value="<%= facebook_app.app_secret %>"/></td>
+					</tr>
+					<tr>
+						<td>Webhook Validation Token</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.webhook_validation_token" value="<%= facebook_app.webhook_validation_token %>"/></td>
+					</tr>
+					<tr>
+						<td>Page Name</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.page_name" value="<%= facebook_app.page_name %>"/></td>
+					</tr>
+					<tr>
+						<td>Page Access Token</td>
+						<td>:</td>
+						<td><input type="text" name="facebook_app.page_access_token" value="<%= facebook_app.page_access_token %>"/></td>
+					</tr>
+				</table>
+			</div>
+			<input type="submit" value="Save"/>
+		</form>
+	</body>
+</html>

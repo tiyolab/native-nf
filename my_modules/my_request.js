@@ -10,7 +10,7 @@ exports.handleRequest = (app, db) => {
 			host: req.headers.host
 		}, function(err, item){
 			if(item){
-				res.render('configure', item);
+				res.render('configure_change', item);
 			}else{
 				res.render('configure');
 			}
