@@ -3,6 +3,7 @@
 let os = require('os');
 let _package = require('../package.json');
 exports.handleConfigure = (app, db) => {
+	console.log();
 	/**
 	 * This section for configuration only
 	 * 
