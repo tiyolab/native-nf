@@ -25,7 +25,7 @@ exports.configure = (db) => {
 			console.log('ERR: cannot load configuration');
 			return;
 		}else{
-			console.log('item = ' + item);
+			console.log(item);
 			if(item){
 				app_name 					= item.app_name;
 				host 						= item.host;
@@ -43,7 +43,7 @@ exports.configure = (db) => {
 				console.log('ERR: configuration not exists, configure by access /configure');
 				return;
 			}
-			console.log('key = ' + sf_consumer_key);
+			console.log(sf_consumer_key);
 		}
 	});
 }
