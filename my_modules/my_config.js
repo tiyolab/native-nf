@@ -27,6 +27,7 @@ exports.configure = (db) => {
 		}else{
 			console.log(item);
 			if(item){
+				console.log(item.salesforce_app.sf_consumer_key);
 				app_name 					= item.app_name;
 				host 						= item.host;
 				sf_consumer_key 			= item.salesforce_app.sf_consumer_key;
