@@ -17,6 +17,9 @@ var
 	fb_page_access_token;
 	
 exports.configure = (db) => {
+	console.log('host = '+os.hostname());
+	console.log('id = '+new ObjectId(os.hostname()));
+	
 	var collection = db.collection('app_configuration');
 	collection.findOne({
 		_id: new ObjectId(os.hostname())
