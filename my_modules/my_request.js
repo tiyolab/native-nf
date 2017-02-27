@@ -2,7 +2,7 @@
 
 let os = require('os');
 let _package = require('../package.json');
-let myFunctional = require('my_functional');
+let myFunctional = require('./my_functional');
 
 exports.handleConfigure = (app, db) => {
 	console.log();
