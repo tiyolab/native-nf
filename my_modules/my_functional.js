@@ -115,7 +115,7 @@ exports.receivedMessage = (org, event, req) => {
 			}
 		}else{
 			if(messageText.search(/broker/i) > -1){
-				sendAskForLocation(senderID);
+				exports.sendAskForLocation(senderID);
 			}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 				exports.sendTextMessage(senderID, 'Hi');
 			}else if(messageText.search(/help/i) > -1){
@@ -128,17 +128,17 @@ exports.receivedMessage = (org, event, req) => {
 					MY_SESSION[senderID]['state'] = 'open_case/subject';
 					exports.sendTextMessage(senderID, 'Subject');
 				}else{
-					authMessage(senderID);
+					exports.authMessage(senderID);
 				}
 			}else if(messageText.search(/cancel community/i) > -1){
 				if(MY_SESSION[senderID]){
 					exports.sendTextMessage(senderID, "Please wait. we'll process your request.");
-					processCancelCommunity(MY_SESSION[senderID].s_user_id, senderID);
+					exports.processCancelCommunity(MY_SESSION[senderID].s_user_id, senderID);
 				}else{
 					exports.sendTextMessage(senderID, "You're not our community member yet.");
 				}
 			}else if(messageText.search(/open community/i) > -1){
-				openCommunity(senderID);
+				exports.openCommunity(senderID);
 			}else{
 				exports.sendTextMessage(senderID, messageText);
 			}
@@ -146,7 +146,7 @@ exports.receivedMessage = (org, event, req) => {
 	} else if (messageAttachments) {
 		messageAttachments.forEach(function(attachment){
 			if(attachment.type == 'location'){
-				sendShowBrokerMessageByLocation(
+				exports.sendShowBrokerMessageByLocation(
 				org,
 				{
 					lat: attachment.payload.coordinates.lat,
