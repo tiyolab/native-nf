@@ -51,9 +51,8 @@ exports.handleConfigure = (app, db) => {
 			});
 		}
 		
-		exports.handleRequest(app, db);
-		
 		GLOBAL_CONFIG = data;
+		exports.handleRequest(app, db);
 	});
 }
 
