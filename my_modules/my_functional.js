@@ -1,0 +1,520 @@
+/**
+ * Verify that the callback came from Facebook. Using the App Secret from 
+ * the App Dashboard, we can verify the signature that is sent with each 
+ * callback in the x-hub-signature field, located in the header.
+ *
+ * https://developers.facebook.com/docs/graph-api/webhooks#setup
+ *
+ */
+exports.verifyRequestSignature = (req, res, buf) => {
+	var signature = req.headers["x-hub-signature"];
+
+	if (!signature) {
+		// For testing, let's log an error. In production, you should throw an 
+		// error.
+		console.error("Couldn't validate the signature.");
+	} else {
+		var elements = signature.split('=');
+		var method = elements[0];
+		var signatureHash = elements[1];
+
+		var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+                        .update(buf)
+                        .digest('hex');
+
+		if (signatureHash != expectedHash) {
+			throw new Error("Couldn't validate the request signature.");
+		}
+	}
+}
+
+/**
+ * Message Event
+ *
+ * This event is called when a message is sent to your page. The 'message' 
+ * object format can vary depending on the kind of message that was received.
+ * Read more at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received
+ *
+ * For this example, we're going to echo any text that we get. If we get some 
+ * special keywords ('button', 'generic', 'receipt'), then we'll send back
+ * examples of those bubbles to illustrate the special message bubbles we've 
+ * created. If we receive a message with an attachment (image, video, audio), 
+ * then we'll simply confirm that we've received the attachment.
+ * 
+ */
+export.receivedMessage = (org, event, req) => {
+	var senderID = event.sender.id;
+	var recipientID = event.recipient.id;
+	var timeOfMessage = event.timestamp;
+	var message = event.message;
+
+	console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
+	console.log(JSON.stringify(message));
+
+	var isEcho = message.is_echo;
+	var messageId = message.mid;
+	var appId = message.app_id;
+	var metadata = message.metadata;
+
+	// You may get a text or attachment but not both
+	var messageText = message.text;
+	var messageAttachments = message.attachments;
+	var quickReply = message.quick_reply;
+
+	if (isEcho) {
+		// Just logging message echoes to console
+		console.log("Received echo for message %s and app %d with metadata %s", messageId, appId, metadata);
+		return;
+	} else if (quickReply) {
+		var quickReplyPayload = quickReply.payload;
+		console.log("Quick reply for message %s with payload %s",
+		messageId, quickReplyPayload);
+
+		sendTextMessage(senderID, "Quick reply tapped");
+		return;
+	}
+
+	if (messageText) {
+		var msgState = [];
+		if(MY_SESSION[senderID] && MY_SESSION[senderID]['state'] != ''){
+			msgState = MY_SESSION[senderID]['state'].split('/');
+		}
+	
+		if(msgState.length > 0){
+			if(msgState[0] == 'open_case'){
+				if(msgState[1] == 'subject'){
+					MY_SESSION[senderID]['data']['subject'] = messageText;
+					MY_SESSION[senderID]['state'] = 'open_case/description';
+				
+					sendTextMessage(senderID, 'Description');
+				}else if(msgState[1] == 'description'){
+					MY_SESSION[senderID]['data']['description'] = messageText;
+				
+					var nCase = nforce.createSObject('Case');
+					nCase.set('OwnerId', '' + MY_SESSION[senderID].s_user_id);
+					nCase.set('AccountId', '' + MY_SESSION[senderID].s_account_id);
+					nCase.set('ContactId', '' + MY_SESSION[senderID].s_contact_id);
+					nCase.set('Status', 'New');
+					nCase.set('Origin', 'Web');
+					nCase.set('Subject', MY_SESSION[senderID]['data']['subject']);
+					nCase.set('Description', MY_SESSION[senderID]['data']['description']);
+				
+					org.insert({sobject: nCase}, function(err, res){
+						if(!err){
+							sendTextMessage(senderID, 'Successfully open new case.');
+						}else{
+							console.log(err);
+							sendTextMessage(senderID, 'Failed open new case.');
+						}
+						MY_SESSION[senderID]['state'] = '';
+					});
+				}
+			}
+		}else{
+			if(messageText.search(/broker/i) > -1){
+				sendAskForLocation(senderID);
+			}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
+				sendTextMessage(senderID, 'Hi');
+			}else if(messageText.search(/help/i) > -1){
+				sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
+				'\n2. "Open Case" to open new case.'+
+				'\n3. "Open Community" to open Community.'+
+				'\n4. "Cancel Community" to leave from community.');
+			}else if(messageText.search(/open case/i) > -1){
+				if(MY_SESSION[senderID]){
+					MY_SESSION[senderID]['state'] = 'open_case/subject';
+					sendTextMessage(senderID, 'Subject');
+				}else{
+					authMessage(senderID);
+				}
+			}else if(messageText.search(/cancel community/i) > -1){
+				if(MY_SESSION[senderID]){
+					sendTextMessage(senderID, "Please wait. we'll process your request.");
+					processCancelCommunity(MY_SESSION[senderID].s_user_id, senderID);
+				}else{
+					sendTextMessage(senderID, "You're not our community member yet.");
+				}
+			}else if(messageText.search(/open community/i) > -1){
+				openCommunity(senderID);
+			}else{
+				sendTextMessage(senderID, messageText);
+			}
+		}
+	} else if (messageAttachments) {
+		messageAttachments.forEach(function(attachment){
+			if(attachment.type == 'location'){
+				sendShowBrokerMessageByLocation(
+				org,
+				{
+					lat: attachment.payload.coordinates.lat,
+					lng: attachment.payload.coordinates.long
+				}, senderID);
+			}
+		});
+	}
+}
+
+
+/**
+ * Send plain text message using the Send API.
+ */
+exports.sendTextMessage = (recipientId, messageText) => {
+	var messageData = {
+		recipient: {
+			id: recipientId
+		},
+		message: {
+			text: messageText,
+			metadata: "DEVELOPER_DEFINED_METADATA"
+		}
+	};
+
+	callSendAPI(messageData);
+}
+
+
+/**
+ * Authenticate message for user which chat session not save/registered yet
+ */
+exports.authMessage = (recipientId) => {
+	var messageData = {
+		recipient: {
+			id: recipientId
+		},
+		message:{
+			attachment: {
+				type: "template",
+				payload: {
+					template_type: "generic",
+					elements: [
+						{
+							title: "We need to synchronize first, please click button below.",
+							image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+							buttons: [
+								{
+									type: "account_link",
+									url: GLOBAL_CONFIG.host + "/ssoauth?senderid="+recipientId,
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	}
+
+	callSendAPI(messageData);
+}
+
+
+/**
+ * Message to offer join community for fb user which not joined yet
+ */
+exports.joinMessage = (recipientId) => {
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		message:{
+			attachment: {
+				type: "template",
+				payload: {
+					template_type: "generic",
+					elements: [
+						{
+							title: "it seem you are not our community member. feel free to join us by click button below.",
+							image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+							buttons: [
+								{
+									type: "web_url",
+									url: 'https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1',
+									title:"Join"
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	}
+
+	callSendAPI(messageData);
+}
+
+
+/**
+ * Message to open community page
+ */
+exports.openCommunity = (recipientId) => {
+	var messageData = {
+		recipient: {
+		  id: recipientId
+		},
+		message:{
+			attachment: {
+				type: "template",
+				payload: {
+					template_type: "generic",
+					elements: [
+						{
+							title: "Click button bellow to open community",
+							image_url: "https://raw.githubusercontent.com/tiyolab/bb-event/master/mortgage-central.jpg",
+							buttons: [
+								{
+									type: "web_url",
+									url: 'https://apiai-community-developer-edition.ap4.force.com/mortgagetestv1',
+									title:"Open"
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	}
+
+	callSendAPI(messageData);
+}
+
+/**
+ * message to show broker list
+ */
+exports.sendShowBrokerMessage = (org, recipientId) => {
+	org.query({query : "select Id, Name, BillingStreet, Website, String_Logo__c, Phone from Account limit 10"}, function(errQuery, respQuery){
+		if(errQuery){
+			console.log(errQuery);
+		}else{
+			var elementsAccount = [];
+			respQuery.records.forEach(function(ac){
+				var phone = '';
+                if(ac.get('Phone')){
+                    phone = ac.get('Phone');
+                }
+                
+                
+                var street = '';
+                if(ac.get('BillingStreet')){
+                	street = ac.get('BillingStreet');
+                }
+                elementsAccount.push(
+					{
+					  title: ac.get('Name'),
+					  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" Website: "+ ac.get('Website'),
+					  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8",
+					  buttons: [
+						{
+						  type: "phone_number",
+						  title: "Call",
+						  payload: phone
+						},
+						{
+						  type: "postback",
+						  title: "Refer Me",
+						  payload: "test"
+						}
+					  ]
+					}
+				);
+			})
+			
+			var messageData = {
+				recipient: {
+				  id: recipientId
+				},
+				message:{
+				  attachment: {
+					type: "template",
+					payload: {
+					  template_type: "generic",
+					  elements: elementsAccount
+					}
+				  }
+				}
+			}
+			callSendAPI(messageData);
+		}
+	});
+}
+
+
+/**
+ * message to ask user location
+ */
+exports.sendAskForLocation = (recipientId) => {
+	var messageData = {
+		recipient:{
+			id:	recipientId
+		},
+		message:{
+			text:"Please share your location to find broker in radius 20Km around your location.",
+			quick_replies:[
+				{
+					content_type:"location",
+				}
+			]
+		}	
+	}
+
+	callSendAPI(messageData);
+}
+
+/**
+ * show broker list by nearest location
+ */
+exports.sendShowBrokerMessageByLocation = (org, location, recipientId) => {
+	org.query({query : "select Id, Name, BillingStreet, BillingCity, BillingCountry, String_Logo__c, Location__Latitude__s, Location__Longitude__s, Phone from Account"}, function(errQuery, respQuery){
+		if(errQuery){
+			console.log(errQuery);
+		}else{
+			var elementsAccount = [];
+			respQuery.records.forEach(function(ac){
+				var phone = '-';
+                if(ac.get('Phone')){
+                    phone = ac.get('Phone');
+                }
+                
+                
+                var street = '';
+                if(ac.get('BillingStreet')){
+                	street += ac.get('BillingStreet') + ', ';
+                }
+				
+				if(ac.get('BillingCity')){
+                	street += ac.get('BillingCity') + ', ';
+                }
+				
+				if(ac.get('BillingCountry')){
+                	street += ac.get('BillingCountry');
+                }
+				
+				var distance = harvesine(location, {
+					lat:ac.get('Location__Latitude__s'), 
+					lng:ac.get('Location__Longitude__s')
+				});
+				
+				if(distance <= 20){
+					elementsAccount.push(
+						{
+						  title: ac.get('Name'),
+						  subtitle: "Address: "+ street.replace('\n', ' ').replace('\r',' ') +" \nPhone: "+ phone,
+						  image_url: "https://tiyolab-domain-dev-ed--c.ap4.content.force.com/servlet/servlet.ImageServer?id="+ ac.get('String_Logo__c') +"&oid=00D6F000001N2Q8",
+						  buttons: [
+							{
+							  type: "phone_number",
+							  title: "Call",
+							  payload: phone
+							},
+							{
+							  type: "postback",
+							  title: "Refer Me",
+							  payload: "test"
+							}
+						  ]
+						}
+					);
+				}
+			});
+			
+			var messageToSend = {};
+			if(elementsAccount.length > 0){
+				messageToSend = {
+				  attachment: {
+					type: "template",
+					payload: {
+					  template_type: "generic",
+					  elements: elementsAccount
+					}
+				  }
+				}
+			}else{
+				messageToSend = {
+					text: "No broker available near 20Km arround you"
+				}
+			}
+			
+			var messageData = {
+				recipient: {
+				  id: recipientId
+				},
+				message: messageToSend
+			}
+			callSendAPI(messageData);
+		}
+	});
+}
+
+
+/**
+ * function to calculate distance 2 position
+ */
+exports.harvesine = (point1, point2) => {
+	var R = 3956; // metres
+	var lat1 = point1.lat;
+	var lat2 = point2.lat;
+	var dtLat = (lat2-lat1);
+	var dtLng = (point2.lng-point1.lng);
+
+	var a = Math.sin(dtLat/2) * Math.sin(dtLat/2) +
+        Math.cos(lat1) * Math.cos(lat2) *
+        Math.sin(dtLng/2) * Math.sin(dtLng/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	var d = R * c;
+	return d;
+}
+
+/**
+ * Process cancel community
+ */
+exports.processCancelCommunity = (sUserId, senderId) => {
+	request({
+		method	: 'POST',
+		url		: 'https://tiyolab-developer-edition.ap4.force.com/services/apexrest/mortgagetestv1',
+		json	: {
+			action: 'cancelcommunity',
+			userid: sUserId
+		}
+	}, function(err, res, body){
+		if (!err && res.statusCode == 200) {
+			if(body.status){
+				delete MY_SESSION[senderId];
+				sendTextMessage(senderId, "Success leaving community.");
+			}else{
+				sendTextMessage(senderId, "Failed to leave community.");
+			}
+		}else{
+			console.error("failed to exit community", res.statusCode, res.statusMessage, body.error);
+			sendTextMessage(senderId, "Failed to leave community.");
+		}
+	});
+}
+
+/**
+ * Call the Send API. The message data goes in the body. If successful, we'll 
+ * get the message id in a response 
+ *
+ */
+exports.callSendAPI = (messageData) => {
+	request({
+		uri: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: { access_token: GLOBAL_CONFIG.facebook_app.page_access_token },
+		method: 'POST',
+		json: messageData
+
+	}, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var recipientId = body.recipient_id;
+			var messageId = body.message_id;
+
+			if (messageId) {
+				console.log("Successfully sent message with id %s to recipient %s", 
+				messageId, recipientId);
+			} else {
+				console.log("Successfully called Send API for recipient %s", 
+				recipientId);
+			}
+		} else {
+			console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+		}
+	});  
+}
