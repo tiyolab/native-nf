@@ -72,6 +72,11 @@ exports.handleRequest = (app, db) => {
 		password: GLOBAL_CONFIG.salesforce_app.password
 	});
 	
+	console.log('config');
+	console.log(GLOBAL_CONFIG);
+	console.log('org');
+	console.log(org);
+	
 	
 	/**
 	 * create salesforce authentication
