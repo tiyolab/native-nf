@@ -2,6 +2,8 @@ const os = require('os');
 const _package = require('../package.json');
 const myFunctional = require('./my_functional');
 const nforce = require('nforce');
+const crypto = require('crypto');
+const request = require('request');
 
 exports.handleConfigure = (app, db) => {
 	console.log();

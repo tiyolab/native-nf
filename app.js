@@ -16,9 +16,7 @@ global.GLOBAL_CONFIG = null;
 const 
   bodyParser = require('body-parser'),
   config = require('config'),
-  crypto = require('crypto'),
   express = require('express'),
-  request = require('request'),
   myRequest = require('./my_modules/my_request'),
   myConfig = require('./my_modules/my_config'),
   myFunctional = require('./my_modules/my_functional');
