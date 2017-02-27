@@ -119,7 +119,7 @@ exports.receivedMessage = (org, event, req) => {
 			}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
 				sendTextMessage(senderID, 'Hi');
 			}else if(messageText.search(/help/i) > -1){
-				sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
+				exports.sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
 				'\n2. "Open Case" to open new case.'+
 				'\n3. "Open Community" to open Community.'+
 				'\n4. "Cancel Community" to leave from community.');
