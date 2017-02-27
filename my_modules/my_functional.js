@@ -1,5 +1,6 @@
 const request = require('request');
 const crypto = require('crypto');
+const nforce = require('nforce');
 
 /**
  * Verify that the callback came from Facebook. Using the App Secret from 
