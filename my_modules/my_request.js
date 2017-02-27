@@ -3,6 +3,7 @@ const _package = require('../package.json');
 const myFunctional = require('./my_functional');
 const nforce = require('nforce');
 const request = require('request');
+var org = {};
 
 exports.handleConfigure = (app, db) => {
 	console.log();
@@ -61,7 +62,7 @@ exports.handleRequest = (app, db) => {
 	/**
 	 * create salesforce connection
 	 */
-	var org = nforce.createConnection({
+	org = nforce.createConnection({
 		clientId: GLOBAL_CONFIG.salesforce_app.consumer_key,
 		clientSecret: GLOBAL_CONFIG.salesforce_app.consumer_secret,
 		redirectUri: 'http://localhost:' + app.get('port') + '/oauth/_callback',
