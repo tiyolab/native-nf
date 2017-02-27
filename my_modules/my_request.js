@@ -81,7 +81,9 @@ exports.handleRequest = (app, db) => {
 		if(err){
 			console.error('Error connect to salesforce: ');
 			console.error(err);
-		} 
+		}else{
+			console.log('salesforce auth success');
+		}
 	});
 	
 	
