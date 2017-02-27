@@ -50,6 +50,8 @@ exports.handleConfigure = (app, db) => {
 			});
 		}
 		
+		//handleRequest(app, db);
+		
 		GLOBAL_CONFIG = data;
 	});
 }
