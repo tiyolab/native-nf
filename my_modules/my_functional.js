@@ -450,7 +450,7 @@ exports.sendShowBrokerMessageByLocation = (org, location, recipientId) => {
 /**
  * function to calculate distance 2 position
  */
-exports.harvesine = (point1, point2) => {
+harvesine = (point1, point2) => {
 	var R = 3956; // metres
 	var lat1 = point1.lat;
 	var lat2 = point2.lat;
