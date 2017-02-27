@@ -184,6 +184,9 @@ exports.handleRequest = (app, db) => {
 	 *
 	 */
 	app.post('/webhook', function (req, res) {
+		console.error('Organization');
+		console.error(org);
+		
 		var data = req.body;
 		
 		// Make sure this is a page subscription
