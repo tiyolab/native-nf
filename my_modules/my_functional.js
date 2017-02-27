@@ -1,4 +1,5 @@
 const request = require('request');
+const crypto = require('crypto');
 
 /**
  * Verify that the callback came from Facebook. Using the App Secret from 
@@ -20,7 +21,7 @@ exports.verifyRequestSignature = (req, res, buf) => {
 		var method = elements[0];
 		var signatureHash = elements[1];
 
-		var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+		var expectedHash = crypto.createHmac('sha1', GLOBAL_CONFIG.facebook_app.app_secret)
                         .update(buf)
                         .digest('hex');
 

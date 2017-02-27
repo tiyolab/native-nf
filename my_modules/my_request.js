@@ -2,7 +2,6 @@ const os = require('os');
 const _package = require('../package.json');
 const myFunctional = require('./my_functional');
 const nforce = require('nforce');
-const crypto = require('crypto');
 const request = require('request');
 
 exports.handleConfigure = (app, db) => {
@@ -160,7 +159,7 @@ exports.handleRequest = (app, db) => {
 	 *
 	 */
 	app.get('/webhook', function(req, res) {
-		if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+		if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === GLOBAL_CONFIG.facebook_app.webhook_validation_token) {
 			console.log("Validating webhook");
 			res.status(200).send(req.query['hub.challenge']);
 		} else {
