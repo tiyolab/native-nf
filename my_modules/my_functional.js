@@ -73,7 +73,7 @@ exports.receivedMessage = (org, event, req) => {
 		console.log("Quick reply for message %s with payload %s",
 		messageId, quickReplyPayload);
 
-		sendTextMessage(senderID, "Quick reply tapped");
+		exports.sendTextMessage(senderID, "Quick reply tapped");
 		return;
 	}
 
@@ -89,7 +89,7 @@ exports.receivedMessage = (org, event, req) => {
 					MY_SESSION[senderID]['data']['subject'] = messageText;
 					MY_SESSION[senderID]['state'] = 'open_case/description';
 				
-					sendTextMessage(senderID, 'Description');
+					exports.sendTextMessage(senderID, 'Description');
 				}else if(msgState[1] == 'description'){
 					MY_SESSION[senderID]['data']['description'] = messageText;
 				
@@ -104,10 +104,10 @@ exports.receivedMessage = (org, event, req) => {
 				
 					org.insert({sobject: nCase}, function(err, res){
 						if(!err){
-							sendTextMessage(senderID, 'Successfully open new case.');
+							exports.sendTextMessage(senderID, 'Successfully open new case.');
 						}else{
 							console.log(err);
-							sendTextMessage(senderID, 'Failed open new case.');
+							exports.sendTextMessage(senderID, 'Failed open new case.');
 						}
 						MY_SESSION[senderID]['state'] = '';
 					});
@@ -117,7 +117,7 @@ exports.receivedMessage = (org, event, req) => {
 			if(messageText.search(/broker/i) > -1){
 				sendAskForLocation(senderID);
 			}else if(messageText.search(/hei/i) > -1 || messageText.search(/hi/i) > -1){
-				sendTextMessage(senderID, 'Hi');
+				exports.sendTextMessage(senderID, 'Hi');
 			}else if(messageText.search(/help/i) > -1){
 				exports.sendTextMessage(senderID, '1. "Show Broker" to show all our brokers in the area.'+
 				'\n2. "Open Case" to open new case.'+
@@ -126,21 +126,21 @@ exports.receivedMessage = (org, event, req) => {
 			}else if(messageText.search(/open case/i) > -1){
 				if(MY_SESSION[senderID]){
 					MY_SESSION[senderID]['state'] = 'open_case/subject';
-					sendTextMessage(senderID, 'Subject');
+					exports.sendTextMessage(senderID, 'Subject');
 				}else{
 					authMessage(senderID);
 				}
 			}else if(messageText.search(/cancel community/i) > -1){
 				if(MY_SESSION[senderID]){
-					sendTextMessage(senderID, "Please wait. we'll process your request.");
+					exports.sendTextMessage(senderID, "Please wait. we'll process your request.");
 					processCancelCommunity(MY_SESSION[senderID].s_user_id, senderID);
 				}else{
-					sendTextMessage(senderID, "You're not our community member yet.");
+					exports.sendTextMessage(senderID, "You're not our community member yet.");
 				}
 			}else if(messageText.search(/open community/i) > -1){
 				openCommunity(senderID);
 			}else{
-				sendTextMessage(senderID, messageText);
+				exports.sendTextMessage(senderID, messageText);
 			}
 		}
 	} else if (messageAttachments) {
@@ -172,7 +172,7 @@ exports.sendTextMessage = (recipientId, messageText) => {
 		}
 	};
 
-	callSendAPI(messageData);
+	exports.callSendAPI(messageData);
 }
 
 
@@ -206,7 +206,7 @@ exports.authMessage = (recipientId) => {
 		}
 	}
 
-	callSendAPI(messageData);
+	exports.callSendAPI(messageData);
 }
 
 
@@ -241,7 +241,7 @@ exports.joinMessage = (recipientId) => {
 		}
 	}
 
-	callSendAPI(messageData);
+	exports.callSendAPI(messageData);
 }
 
 
@@ -276,7 +276,7 @@ exports.openCommunity = (recipientId) => {
 		}
 	}
 
-	callSendAPI(messageData);
+	exports.callSendAPI(messageData);
 }
 
 /**
@@ -334,7 +334,7 @@ exports.sendShowBrokerMessage = (org, recipientId) => {
 				  }
 				}
 			}
-			callSendAPI(messageData);
+			exports.callSendAPI(messageData);
 		}
 	});
 }
@@ -358,7 +358,7 @@ exports.sendAskForLocation = (recipientId) => {
 		}	
 	}
 
-	callSendAPI(messageData);
+	exports.callSendAPI(messageData);
 }
 
 /**
@@ -441,7 +441,7 @@ exports.sendShowBrokerMessageByLocation = (org, location, recipientId) => {
 				},
 				message: messageToSend
 			}
-			callSendAPI(messageData);
+			exports.callSendAPI(messageData);
 		}
 	});
 }
@@ -481,13 +481,13 @@ exports.processCancelCommunity = (sUserId, senderId) => {
 		if (!err && res.statusCode == 200) {
 			if(body.status){
 				delete MY_SESSION[senderId];
-				sendTextMessage(senderId, "Success leaving community.");
+				exports.sendTextMessage(senderId, "Success leaving community.");
 			}else{
-				sendTextMessage(senderId, "Failed to leave community.");
+				exports.sendTextMessage(senderId, "Failed to leave community.");
 			}
 		}else{
 			console.error("failed to exit community", res.statusCode, res.statusMessage, body.error);
-			sendTextMessage(senderId, "Failed to leave community.");
+			exports.sendTextMessage(senderId, "Failed to leave community.");
 		}
 	});
 }
