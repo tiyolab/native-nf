@@ -18,25 +18,20 @@ const
   config = require('config'),
   crypto = require('crypto'),
   express = require('express'),
-  https = require('https'),  
   request = require('request'),
   myRequest = require('./my_modules/my_request'),
-  myConfig = require('./my_modules/my_config');
+  myConfig = require('./my_modules/my_config'),
+  myFunctional = require('./my_modules/my_functional');
 
-var oauth;
-var nforce = require('nforce');
 var fs = require('fs');
 var app = express();
-var cookieParser = require('cookie-parser');
 var MongoClient = require('mongodb').MongoClient;
 
 app.set('port', process.env.PORT || 1107);
 app.set('view engine', 'ejs');
-app.use(bodyParser.json({ verify: verifyRequestSignature }));
+app.use(bodyParser.json({ verify: myFunctional.verifyRequestSignature }));
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(express.static('public'));
-
-app.use(cookieParser());
 
 MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.mlab.com:45369/mortgage-testv1-mongodb', function(err, db){
 	if(err){console.log(err);return;}

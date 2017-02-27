@@ -1,8 +1,7 @@
-"use strict";
-
-let os = require('os');
-let _package = require('../package.json');
-let myFunctional = require('./my_functional');
+const os = require('os');
+const _package = require('../package.json');
+const myFunctional = require('./my_functional');
+const nforce = require('nforce');
 
 exports.handleConfigure = (app, db) => {
 	console.log();

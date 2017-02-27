@@ -42,7 +42,7 @@ exports.verifyRequestSignature = (req, res, buf) => {
  * then we'll simply confirm that we've received the attachment.
  * 
  */
-export.receivedMessage = (org, event, req) => {
+exports.receivedMessage = (org, event, req) => {
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
 	var timeOfMessage = event.timestamp;
