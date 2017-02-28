@@ -224,9 +224,9 @@ exports.handleRequest = (app, db) => {
 		var collection = db.collection('response_configuration');
 		collection.find(function(err, data){
 			if(data){
-				res.render('response_configuration', data);
+				res.render('response_configuration', {configuration:data});
 			}else{
-				res.render('response_configuration', []);
+				res.render('response_configuration', {configuration:[]});
 			}
 		});
 	});
