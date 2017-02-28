@@ -544,7 +544,12 @@ function botResponse(event){
 	var isFind = false;
 	
 	console.log('bot configuration');
-	console.log(BOT_CONFIGURATION);
+	BOT_CONFIGURATION.forEach(function(item){
+		console.log(item.requests);
+		item.responses.forEach(function(i){
+			console.log(i)
+		})
+	});
 	
 	BOT_CONFIGURATION.some(function(item, index){
 		isFind = false;
