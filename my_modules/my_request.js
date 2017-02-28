@@ -73,12 +73,6 @@ exports.handleRequest = (app, db) => {
 		password: GLOBAL_CONFIG.salesforce_app.password
 	});
 	
-	console.log('config');
-	console.log(GLOBAL_CONFIG);
-	console.log('org');
-	console.log(org);
-	
-	
 	/**
 	 * create salesforce authentication
 	 */
@@ -185,8 +179,6 @@ exports.handleRequest = (app, db) => {
 	 *
 	 */
 	app.post('/webhook', function (req, res) {
-		console.error('Organization');
-		console.error(org);
 		
 		var data = req.body;
 		
@@ -222,11 +214,63 @@ exports.handleRequest = (app, db) => {
 	 */
 	app.get('/response_configuration', function(req, res){
 		var collection = db.collection('response_configuration');
-		collection.find(function(err, data){
+		collection.findOne({},function(err, data){
 			if(data){
-				res.render('response_configuration', {configuration:data});
+				console.log('data');
+				console.log(data.item);
+			
+				res.render('response_configuration', {
+					configuration: data.item,
+					error_message: ''
+				});
 			}else{
-				res.render('response_configuration', {configuration:[]});
+				res.render('response_configuration', {
+					configuration:[],
+					error_message: 'failed load configuration'
+				});
+			}
+		});
+	});
+	
+	
+	app.post('/response_configuration', function(req, res){
+		//strip empty data
+		req.body.item.forEach(function(o1, i1){
+			var s = -1;
+			o1.requests.forEach(function(o2, i2){
+				if(o2 == ""){
+					s = i2;
+				}
+			});
+			if(s != -1)
+				o1.requests.splice(s, 1);
+			
+			s = -1;
+			o1.responses.forEach(function(o2, i2){
+				if(o2.type == ""){
+					s = i2;
+				}
+			});
+			if(s != -1)
+				o1.responses.splice(s, 1);
+		});
+		
+		var collection = db.collection('response_configuration');
+		collection.remove({}, function(err, result){
+			if(!err){
+				collection.insert(req.body, {w:1}, function(errInsert, resultInsert){
+					if(errInsert){
+						res.render('response_configuration', {
+							configuration: req.body.item,
+							error_message: 'failed save configuration'
+						});
+					}else{
+						res.render('response_configuration', {
+							configuration:req.body.item,
+							error_message: ''
+						});
+					}
+				});
 			}
 		});
 	});

@@ -1,37 +1,185 @@
 <html>
 	<head>
 		<title>Configure Application</title>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+		<script>
+			var INDEX_ROW_CONFIGURATION = 0;
+		</script>
 	</head>
 	<body>
-		<form method="post" action="/configure">
+		<% if(error_message != ""){ %>
+			<h3><%= error_message %></h3>
+		<% } %>
+		<form method="post" action="/response_configuration">
 			<div>
-				<table>
+				<table border='1' style='border-collapse:collapse;padding:5px'>
 					<tr>
 						<th>Request</th>
 						<th>Response</th>
 					</tr>
+					<% 
+					if(configuration.length > 0){ 
+					INDEX_ROW_CONFIGURATION = configuration.length;
+					%>
 					<% configuration.forEach(function(item, indexConfiguration){ %>
 					<tr>
 						<td>
-							<% item.requests.forEach(function(request, indexRequest){ %>
-								<input type = "text" name="<%= "item[" + indexConfiguration + "][requests][" + indexRequest + "]" %>" value="<%= request %>"/>
-							<% }); %>
+							<%
+							var tmpIndexRequest = 0;
+							item.requests.forEach(function(request, indexRequest){ 
+							%>
+								<div id="request_container_<%=indexConfiguration%>_<%=indexRequest%>">
+									<input type = "text" name="<%= "item[" + indexConfiguration + "][requests][" + indexRequest + "]" %>" value="<%= request %>"/><button class="remove_request" first_index="<%=indexConfiguration%>" second_index="<%=indexRequest%>"> - </button>
+								</div>
+							<%
+								tmpIndexRequest = indexRequest;
+							}); 
+							%>
+							<div id="request_container_<%=indexConfiguration%>_<%=(tmpIndexRequest+1)%>">
+								<input type = "text" name="<%= "item[" + indexConfiguration + "][requests][" + (tmpIndexRequest+1) + "]" %>" />
+								<button class="add_new_request" first_index="<%=indexConfiguration%>" second_index="<%=(tmpIndexRequest+1)%>"> + </button>
+							</div>
 						</td>
 						<td>
-							<% item.responses.forEach(function(response, indexResponse){ %>
-								Name: <input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][name]" %>" value="<%= response.name %>"/><br/>
-								Type: <input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][type]" %>" value="<%= response.type %>"/><br/>
+							<% 
+							var tmpIndexResponse = 0;
+							item.responses.forEach(function(response, indexResponse){ 
+							%>
+							<div id="response_container_<%=indexConfiguration%>_<%=indexResponse%>">
+								Type:<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][type]" class="response_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>">
+										<option value="<%=response.type%>"><%= response.type %></option>
+										<option value="text"> text</option>
+									</select><br/>
 								Payload:
-								<% if(response.type == "text"){ %>
-										<input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][payload]" %>" value="<%= response.type %>"/><br/>
-								<% } %>
-							<% }); %>
+								<div id = "container_payload_<%=indexConfiguration%>_<%=indexResponse%>">
+									<% if(response.type == "text"){ %>
+											<input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][payload]" %>" value="<%= response.payload %>"/><br/>
+									<% } %>
+								</div>
+								<button class="remove_response" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> - </button>
+							</div>
+							<% 
+								tmpIndexResponse = indexResponse;
+							}); 
+							%>
+							<div id="response_container_<%=indexConfiguration%>_<%=(tmpIndexResponse+1)%>">
+								Type:<select name="item[<%=indexConfiguration%>][responses][<%=(tmpIndexResponse+1)%>][type]" class="response_type" first_index="<%=indexConfiguration%>" second_index="<%=(tmpIndexResponse+1)%>">
+										<option value="">Select Type response</option>
+										<option value="text"> text</option>
+									</select><br/>
+								Payload:
+								<div id = "container_payload_<%=indexConfiguration%>_<%=(tmpIndexResponse+1)%>"></div>
+								<button class="add_new_response" first_index="<%=indexConfiguration%>" second_index="<%=(tmpIndexResponse+1)%>"> + </button>
+							</div>
 						</td>
 					</tr>
 					<% }); %>
+					<% } %>
+					<tr id = "row_navigation">
+						<td></td>
+						<td>
+							<button id = "button_add_row">New</button>
+						</td>
+					</tr>
 				</table>
 			</div>
 			<input type="submit" value="Save"/>
 		</form>
 	</body>
+	<script>
+		$("#button_add_row").on('click', function(e){
+			$("#row_navigation").before(addNewRow(INDEX_ROW_CONFIGURATION, 0));
+			INDEX_ROW_CONFIGURATION++;
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.add_new_request', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			$("#request_container_"+ firstIndex +"_"+secondIndex).after(addNewRequest(firstIndex, secondIndex+1));
+			
+			$(this).html('-');
+			$(this).attr('class', 'remove_request');
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.remove_request', function(e){
+			$(this).parent().remove();
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.add_new_response', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			$("#response_container_"+ firstIndex +"_"+secondIndex).after(addNewResponse(firstIndex, secondIndex+1));
+			
+			$(this).html('-');
+			$(this).attr('class', 'remove_response');
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.remove_response', function(e){
+			$(this).parent().remove();
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('change', '.response_type', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			if($(this).val() == 'text'){
+				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(textTypePayload(firstIndex, secondIndex));
+			}
+			e.preventDefault();
+		});
+		
+		function addNewRow(firstIndex, secondIndex){
+			var html = '<tr>' +
+							'<td>' +
+								addNewRequest(firstIndex, secondIndex) +
+							'</td>'+
+							'<td>'+
+								addNewResponse(firstIndex, secondIndex)+
+							'</td>'+
+						'</tr>';
+						
+			return html;
+		}
+		
+		function addNewRequest(firstIndex, secondIndex){
+			var request = 		'<div id="request_container_'+ firstIndex +'_'+ secondIndex +'">' +
+									'<input type = "text" name="item[' + firstIndex + '][requests]['+ secondIndex +']" />'+
+									'<button class="add_new_request" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'"> + </button>'+
+								'</div>';
+			return request;
+		}
+		
+		function addNewResponse(firstIndex, secondIndex){
+			var response = '<div id="response_container_'+ firstIndex +'_'+ secondIndex +'">'+
+									'Type: '+ payloadType(firstIndex, secondIndex) +'<br/>'+
+									'Payload: <div id = "container_payload_'+ firstIndex +'_'+ secondIndex +'"></div>'+
+									'<button class="add_new_response" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'"> + </button>'+									
+								'</div>';
+			return response;
+		}
+		
+		function payloadType(firstIndex, secondIndex){
+			var payload = 	'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][type]" class="response_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'">'+
+								'<option value="">Select Type response</option>'+
+								'<option value="text"> text</option>'+
+							'</select>';
+			return payload;
+		}
+		
+		function textTypePayload(firstIndex, secondIndex){
+			var payload = 'text: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload]" />';
+			return payload;
+		}
+	</script>
 </html>
