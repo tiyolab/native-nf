@@ -141,7 +141,8 @@ exports.receivedMessage = (org, event, req) => {
 			}else if(messageText.search(/open community/i) > -1){
 				exports.openCommunity(senderID);
 			}else{
-				exports.sendTextMessage(senderID, messageText);
+				//exports.sendTextMessage(senderID, messageText);
+				botResponse(event);
 			}
 		}
 	} else if (messageAttachments) {
@@ -521,4 +522,49 @@ exports.callSendAPI = (messageData) => {
 			console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 		}
 	});  
+}
+
+function botResponse(event){
+	var senderID = event.sender.id;
+	var recipientID = event.recipient.id;
+	var timeOfMessage = event.timestamp;
+	var message = event.message;
+	
+	var messageText = message.text;
+	var isFind = false;
+	BOT_CONFIGURATION.forEach(function(item, index){
+		isFind = false;
+		
+		item.requests.forEach(function(req, idx){
+			if(messageText.search(new RegExp(req, "i")) > 1){
+				isFind = true;
+				break;
+			}
+		});
+		
+		if(isFind){
+			constructResponse(senderID, item.responses);
+			break;
+		}
+	});
+}
+
+function constructResponse(senderId, responses){
+	responses.forEach(function(res, idx){
+		/**
+		 * text message type
+		 */
+		if(res.type === 'text'){
+			var messageData = {
+				recipient: {
+					id: senderId
+				},
+				message: {
+					text: res.payload
+				}
+			};
+
+			exports.callSendAPI(messageData);
+		}
+	});
 }

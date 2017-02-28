@@ -12,6 +12,7 @@
 
 global.MY_SESSION = [];
 global.GLOBAL_CONFIG = null;
+global.BOT_CONFIGURATION = [];
 
 const 
   bodyParser = require('body-parser'),
