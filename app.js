@@ -38,6 +38,7 @@ MongoClient.connect('mongodb://mortgage-testv1.herokuapp:mortgage12345@ds145369.
 	myConfig.configure(db, function(config){
 		if(config){
 			GLOBAL_CONFIG = config;
+			myFunctional.loadBotResponseConfiguration(db);
 			myRequest.handleRequest(app, db);
 		}
 	});

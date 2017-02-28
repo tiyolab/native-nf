@@ -525,6 +525,15 @@ exports.callSendAPI = (messageData) => {
 	});  
 }
 
+exports.loadBotResponseConfiguration = (db) => {
+		var collection = db.collection('response_configuration');
+		collection.findOne({},function(err, data){
+			if(data){
+				BOT_CONFIGURATION = data.item;
+			}
+		});
+}
+
 function botResponse(event){
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
