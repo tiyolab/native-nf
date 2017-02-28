@@ -142,6 +142,7 @@ exports.receivedMessage = (org, event, req) => {
 				exports.openCommunity(senderID);
 			}else{
 				//exports.sendTextMessage(senderID, messageText);
+				console.log('going to method = ' + messageText);
 				botResponse(event);
 			}
 		}
@@ -532,6 +533,10 @@ function botResponse(event){
 	
 	var messageText = message.text;
 	var isFind = false;
+	
+	console.log('bot configuration');
+	console.log(BOT_CONFIGURATION);
+	
 	BOT_CONFIGURATION.some(function(item, index){
 		isFind = false;
 		
@@ -555,6 +560,7 @@ function constructResponse(senderId, responses){
 		 * text message type
 		 */
 		if(res.type === 'text'){
+			console.log('find response');
 			var messageData = {
 				recipient: {
 					id: senderId
@@ -563,7 +569,7 @@ function constructResponse(senderId, responses){
 					text: res.payload
 				}
 			};
-
+			console.log(messageData);
 			exports.callSendAPI(messageData);
 		}
 	});
