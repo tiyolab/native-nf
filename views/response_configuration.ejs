@@ -3,7 +3,7 @@
 		<title>Configure Application</title>
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 		<script>
-			var INDEX_ROW_CONFIGURATION = 0;
+			var INDEX_ROW_CONFIGURATION = <%=configuration.length;%>;
 		</script>
 	</head>
 	<body>
@@ -16,13 +16,13 @@
 					<tr>
 						<th>Request</th>
 						<th>Response</th>
+						<th>Remove</th>
 					</tr>
 					<% 
-					if(configuration.length > 0){ 
-					INDEX_ROW_CONFIGURATION = configuration.length;
+					if(configuration.length > 0){
 					%>
 					<% configuration.forEach(function(item, indexConfiguration){ %>
-					<tr>
+					<tr id="row_<%=indexConfiguration%>">
 						<td>
 							<%
 							var tmpIndexRequest = 0;
@@ -72,6 +72,9 @@
 								<button class="add_new_response" first_index="<%=indexConfiguration%>" second_index="<%=(tmpIndexResponse+1)%>"> + </button>
 							</div>
 						</td>
+						<td>
+							<button class="button_remove_row" first_index="<%=indexConfiguration%>"> delete </button>
+						</td>
 					</tr>
 					<% }); %>
 					<% } %>
@@ -90,6 +93,14 @@
 		$("#button_add_row").on('click', function(e){
 			$("#row_navigation").before(addNewRow(INDEX_ROW_CONFIGURATION, 0));
 			INDEX_ROW_CONFIGURATION++;
+			e.preventDefault();
+		});
+		
+		$(".button_remove_row").on('click', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			
+			$("#row_" + firstIndex).remove();
+			
 			e.preventDefault();
 		});
 		
@@ -140,13 +151,14 @@
 		});
 		
 		function addNewRow(firstIndex, secondIndex){
-			var html = '<tr>' +
+			var html = '<tr id="row_'+ firstIndex +'">' +
 							'<td>' +
 								addNewRequest(firstIndex, secondIndex) +
 							'</td>'+
 							'<td>'+
 								addNewResponse(firstIndex, secondIndex)+
 							'</td>'+
+							'<td><button class="button_remove_row" first_index="'+ firstIndex +'"> delete </button></td>'+
 						'</tr>';
 						
 			return html;
