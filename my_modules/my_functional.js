@@ -532,19 +532,19 @@ function botResponse(event){
 	
 	var messageText = message.text;
 	var isFind = false;
-	BOT_CONFIGURATION.forEach(function(item, index){
+	BOT_CONFIGURATION.some(function(item, index){
 		isFind = false;
 		
-		item.requests.forEach(function(req, idx){
+		item.requests.some(function(req, idx){
 			if(messageText.search(new RegExp(req, "i")) > 1){
 				isFind = true;
-				break;
+				return true;
 			}
 		});
 		
 		if(isFind){
 			constructResponse(senderID, item.responses);
-			break;
+			return true;
 		}
 	});
 }
