@@ -260,12 +260,12 @@ exports.handleRequest = (app, db) => {
 			if(!err){
 				collection.insert(req.body, {w:1}, function(errInsert, resultInsert){
 					if(errInsert){
-						BOT_CONFIGURATION = req.body.item;
 						res.render('response_configuration', {
 							configuration: req.body.item,
 							error_message: 'failed save configuration'
 						});
 					}else{
+						BOT_CONFIGURATION = req.body.item;
 						res.render('response_configuration', {
 							configuration:req.body.item,
 							error_message: ''
