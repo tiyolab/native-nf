@@ -550,7 +550,7 @@ function botResponse(event){
 		isFind = false;
 		
 		item.requests.some(function(req, idx){
-			if(messageText.search(new RegExp(req, "i")) > 1){
+			if(messageText.search(new RegExp(req, "i")) > -1){
 				isFind = true;
 				return true;
 			}
