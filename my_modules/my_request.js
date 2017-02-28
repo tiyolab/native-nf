@@ -215,4 +215,19 @@ exports.handleRequest = (app, db) => {
 			res.sendStatus(200);
 		}
 	});
+	
+	
+	/**
+	 * configure response
+	 */
+	app.get('/response_configuration', function(req, res){
+		var collection = db.collection('response_configuration');
+		collection.find(function(err, data){
+			if(data){
+				res.render('response_configuration', data);
+			}else{
+				res.render('response_configuration', []);
+			}
+		});
+	});
 };

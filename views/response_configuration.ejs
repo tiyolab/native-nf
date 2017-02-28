@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<title>Configure Application</title>
+	</head>
+	<body>
+		<form method="post" action="/configure">
+			<div>
+				<table>
+					<tr>
+						<th>Request</th>
+						<th>Response</th>
+					</tr>
+					<% configuration.forEach(function(item, indexConfiguration){ %>
+					<tr>
+						<td>
+							<% item.requests.forEach(function(request, indexRequest){ %>
+								<input type = "text" name="<%= "item[" + indexConfiguration + "][requests][" + indexRequest + "]" %>" value="<%= request %>"/>
+							<% }); %>
+						</td>
+						<td>
+							<% item.responses.forEach(function(response, indexResponse){ %>
+								Name: <input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][name]" %>" value="<%= response.name %>"/><br/>
+								Type: <input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][type]" %>" value="<%= response.type %>"/><br/>
+								Payload:
+								<% if(response.type == "text"){ %>
+										<input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][payload]" %>" value="<%= response.type %>"/><br/>
+								<% } %>
+							<% }); %>
+						</td>
+					</tr>
+					<% }); %>
+				</table>
+			</div>
+			<input type="submit" value="Save"/>
+		</form>
+	</body>
+</html>
