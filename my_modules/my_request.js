@@ -235,24 +235,48 @@ exports.handleRequest = (app, db) => {
 	
 	app.post('/response_configuration', function(req, res){
 		//strip empty data
+		var tmpArray = [];
+		var tmpResponseButton = [];
 		req.body.item.forEach(function(o1, i1){
-			var s = -1;
-			o1.requests.forEach(function(o2, i2){
-				if(o2 == ""){
-					s = i2;
-				}
-			});
-			if(s != -1)
-				o1.requests.splice(s, 1);
 			
-			s = -1;
-			o1.responses.forEach(function(o2, i2){
-				if(o2.type == ""){
-					s = i2;
+			/**
+			 * validate request
+			 */
+			tmpArray = o1.requests.filter(function(request){
+				return request != '';
+			});
+			o1.requests = tmpArray;
+			
+			/**
+			 * validate response
+			 */
+			tmpArray = o1.responses.filter(function(response){
+				if(response.type == ''){
+					return false;
+				}else if(response.type == 'button_template' || response.type == 'generic_template'){
+					
+					if(response.type == 'generic_template'){
+						if(response.payload.title == ''){
+							return false;
+						}
+					}					
+					
+					if(response.type == 'button_template'){
+						if(response.payload.text == '' || response.payload.buttons.length == 0){
+							return false;
+						}
+					}
+					
+					tmpResponseButton = response.payload.buttons.filter(function(btn){
+						return btn.type != '';
+					});
+					response.payload.buttons = tmpResponseButton;
+					
+					return true;
 				}
 			});
-			if(s != -1)
-				o1.responses.splice(s, 1);
+			o1.responses = tmpArray;
+				
 		});
 		
 		var collection = db.collection('response_configuration');
