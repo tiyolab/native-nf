@@ -366,7 +366,7 @@
 		function buttonTemplateTypePayload(firstIndex, secondIndex, buttonIndex){
 			var payload = 	'<div class="button_template_payload_container">'+
 								'*Text: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][text]" /><br>'+
-								'button:<br/>'+
+								'*button:<br/>'+
 								'<div class="item_button_template_payload_container">'+
 									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
 										'<option value="">Select button type</option>'+
@@ -385,7 +385,7 @@
 								'*Title: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" /><br>'+
 								'Subtitle: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
 								'Image URL: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
-								'button:<br/>'+
+								'*button:<br/>'+
 								'<div class="item_generic_template_payload_container">'+
 									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
 										'<option value="">Select button type</option>'+
