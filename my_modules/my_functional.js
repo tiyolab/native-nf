@@ -593,6 +593,14 @@ function constructResponse(senderId, responses){
 			
 			exports.callSendAPI(messageData);
 		}else if(res.type === 'generic_template'){
+			var tmpElements = {};
+			tmpElements['title'] = res.payload.title;
+			tmpElements['subtitle'] = res.payload.subtitle;
+			tmpElements['image_url'] = res.payload.image_url;
+			if(res.payload.buttons.length > 0){
+				tmpElements['buttons'] = res.payload.buttons;
+			}
+			
 			var messageData = {
 				recipient: {
 				  id: senderId
@@ -603,7 +611,7 @@ function constructResponse(senderId, responses){
 						payload: {
 							template_type: "generic",
 							elements:[
-								res.payload
+								tmpElements
 							]
 						}
 					}
