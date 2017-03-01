@@ -253,7 +253,23 @@ exports.handleRequest = (app, db) => {
 			tmpArray = o1.responses.filter(function(response){
 				if(response.type == ''){
 					return false;
+				}else if(response.type == 'text'){
+					return response.payload != '';
 				}else if(response.type == 'button_template' || response.type == 'generic_template'){
+					tmpResponseButton = response.payload.buttons.filter(function(btn){
+						if(btn.type == ''){
+							return false;
+						}
+						
+						if(btn.type == 'web_url'){
+							if(btn.title == '' || btn.url == ''){
+								return false;
+							}
+						}
+						
+						return true;
+					});
+					response.payload.buttons = tmpResponseButton;
 					
 					if(response.type == 'generic_template'){
 						if(response.payload.title == ''){
@@ -262,15 +278,14 @@ exports.handleRequest = (app, db) => {
 					}					
 					
 					if(response.type == 'button_template'){
-						if(response.payload.text == '' || response.payload.buttons.length == 0){
+						if(response.payload.text == ''){
+							return false;
+						}
+						
+						if(response.payload.buttons.length == 0){
 							return false;
 						}
 					}
-					
-					tmpResponseButton = response.payload.buttons.filter(function(btn){
-						return btn.type != '';
-					});
-					response.payload.buttons = tmpResponseButton;
 					
 					return true;
 				}
