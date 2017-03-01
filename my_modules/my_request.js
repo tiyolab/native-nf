@@ -300,8 +300,6 @@ exports.handleRequest = (app, db) => {
 			return true;
 		});
 		
-		console.log('item');
-		console.log(tmpBody);
 		req.body.item = tmpBody;
 		
 		var collection = db.collection('response_configuration');
