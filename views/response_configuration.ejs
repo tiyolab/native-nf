@@ -88,7 +88,10 @@
 										<div class="button_template_payload_container">
 											Text: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][text]" value="<%= response.payload.text %>"/><br>
 											
-											<% response.payload.buttons.forEach(function(button, buttonIndex){ %>
+											<%
+											var tmpButtonTemplateIndex = 0;
+											response.payload.buttons.forEach(function(button, buttonIndex){ 
+											%>
 											
 											<div class="item_button_template_payload_container">
 												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
@@ -105,7 +108,20 @@
 												</div>
 											</div>
 											
-											<% }) %>
+											<% 
+											tmpButtonTemplateIndex = buttonIndex + 1;
+											})
+											%>
+											
+											<div class="item_button_template_payload_container">
+												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=tmpButtonTemplateIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=tmpButtonTemplateIndex%>">
+													<option value=""> Select button type</option>
+													<option value="web_url"> URL</option>
+												</select> </br>
+												Button payload : <br>
+												<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=tmpButtonTemplateIndex%>">
+												</div>
+											</div>
 											
 										</div>
 										
@@ -118,7 +134,10 @@
 											
 											Image URL: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][image_url]" value="<%= response.payload.image_url %>"/><br>
 											
-											<% response.payload.buttons.forEach(function(button, buttonIndex){ %>
+											<%
+											var tmpButtonGenericTemplateIndex = 0;
+											response.payload.buttons.forEach(function(button, buttonIndex){ 
+											%>
 											
 											<div class="item_generic_template_payload_container">
 												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
@@ -135,8 +154,20 @@
 												</div>
 											</div>
 											
-											<% }) %>
-											
+											<%
+											tmpButtonGenericTemplateIndex = buttonIndex + 1;
+											}) 
+											%>
+										
+											<div class="item_generic_template_payload_container">
+												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=tmpButtonGenericTemplateIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=tmpButtonGenericTemplateIndex%>">
+													<option value=""> Select button type</option>
+													<option value="web_url"> URL</option>
+												</select> </br>
+												Button payload : <br>
+												<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=tmpButtonGenericTemplateIndex%>">
+												</div>
+											</div>
 										</div>
 										
 									<% } %>
