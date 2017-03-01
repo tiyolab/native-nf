@@ -130,11 +130,11 @@
 										<div class="generic_template_payload_container">
 											*Title: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][title]" value="<%= response.payload.title %>"/><br>
 											
-											Subtitle: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][subtitle]" value="<%= response.payload.subtitle %>"/><br>
+											**Subtitle: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][subtitle]" value="<%= response.payload.subtitle %>"/><br>
 											
-											Image URL: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][image_url]" value="<%= response.payload.image_url %>"/><br>
+											**Image URL: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][image_url]" value="<%= response.payload.image_url %>"/><br>
 											
-											Button:<br/>
+											**Button:<br/>
 											<%
 											var tmpButtonGenericTemplateIndex = 0;
 											response.payload.buttons.forEach(function(button, buttonIndex){ 
@@ -383,9 +383,9 @@
 		function genericTemplateTypePayload(firstIndex, secondIndex, buttonIndex){
 			var payload = 	'<div class="generic_template_payload_container">'+
 								'*Title: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" /><br>'+
-								'Subtitle: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
-								'Image URL: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
-								'*button:<br/>'+
+								'**Subtitle: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
+								'**Image URL: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
+								'**button:<br/>'+
 								'<div class="item_generic_template_payload_container">'+
 									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
 										'<option value="">Select button type</option>'+
