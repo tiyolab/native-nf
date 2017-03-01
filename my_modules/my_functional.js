@@ -574,7 +574,7 @@ function constructResponse(senderId, responses){
 				}
 			};
 			exports.callSendAPI(messageData);
-		}else if(res.type === 'button'){
+		}else if(res.type === 'button_template'){
 			var messageData = {
 				recipient: {
 				  id: senderId

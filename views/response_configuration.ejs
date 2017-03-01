@@ -82,7 +82,7 @@
 											Text: <input type = "text" name="<%= "item[" + indexConfiguration + "][responses][" + indexResponse + "][payload]" %>" value="<%= response.payload %>"/>
 										</div>
 										
-									<% }else if(response.type == "button"){ %>
+									<% }else if(response.type == "button_template"){ %>
 									
 										<div class="button_payload_container">
 											Text: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][text]" value="<%= response.payload.text %>"/><br>
@@ -120,7 +120,7 @@
 								Type:<select name="item[<%=indexConfiguration%>][responses][<%=(tmpIndexResponse+1)%>][type]" class="response_type" first_index="<%=indexConfiguration%>" second_index="<%=(tmpIndexResponse+1)%>">
 										<option value="">Select Type response</option>
 										<option value="text"> Text</option>
-										<option value="button"> Button</option>
+										<option value="button_template"> Button Template</option>
 									</select><br/>
 								Payload:
 								<div id = "container_payload_<%=indexConfiguration%>_<%=(tmpIndexResponse+1)%>"></div>
@@ -219,7 +219,7 @@
 			
 			if($(this).val() == 'text'){
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(textTypePayload(firstIndex, secondIndex));
-			}if($(this).val() == 'button'){
+			}if($(this).val() == 'button_template'){
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(buttonTypePayload(firstIndex, secondIndex, 0));
 			}
 			e.preventDefault();
@@ -284,7 +284,7 @@
 			var payload = 	'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][type]" class="response_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'">'+
 								'<option value="">Select Type response</option>'+
 								'<option value="text"> Text</option>'+
-								'<option value="button"> Button</option>'+
+								'<option value="button_template"> Button Template</option>'+
 							'</select>';
 			return payload;
 		}
