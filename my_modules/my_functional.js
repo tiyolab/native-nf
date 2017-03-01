@@ -618,7 +618,7 @@ function constructResponse(senderId, responses){
 				}
 			}
 			
-			console.log(messageData);
+			console.log(tmpElements);
 			exports.callSendAPI(messageData);
 		}
 	});
