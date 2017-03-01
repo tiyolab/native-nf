@@ -235,9 +235,11 @@ exports.handleRequest = (app, db) => {
 	
 	app.post('/response_configuration', function(req, res){
 		//strip empty data
+		var tmpBody = [];
 		var tmpArray = [];
 		var tmpResponseButton = [];
-		req.body.item.forEach(function(o1, i1){
+		
+		tmpBody = req.body.item.filter(function(o1){
 			
 			/**
 			 * validate request
@@ -246,6 +248,9 @@ exports.handleRequest = (app, db) => {
 				return request != '';
 			});
 			o1.requests = tmpArray;
+			if(o1.requests.length == 0){
+				return false;
+			}
 			
 			/**
 			 * validate response
@@ -291,8 +296,13 @@ exports.handleRequest = (app, db) => {
 				}
 			});
 			o1.responses = tmpArray;
-				
+			
+			return true;
 		});
+		
+		console.log('item');
+		console.log(tmpBody);
+		req.body.item = tmpBody;
 		
 		var collection = db.collection('response_configuration');
 		collection.remove({}, function(err, result){
