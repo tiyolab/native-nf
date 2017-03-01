@@ -142,7 +142,6 @@ exports.receivedMessage = (org, event, req) => {
 				exports.openCommunity(senderID);
 			}else{
 				//exports.sendTextMessage(senderID, messageText);
-				console.log('going to method = ' + messageText);
 				botResponse(event);
 			}
 		}
@@ -543,14 +542,6 @@ function botResponse(event){
 	var messageText = message.text;
 	var isFind = false;
 	
-	console.log('bot configuration');
-	BOT_CONFIGURATION.forEach(function(item){
-		console.log(item.requests);
-		item.responses.forEach(function(i){
-			console.log(i)
-		})
-	});
-	
 	BOT_CONFIGURATION.some(function(item, index){
 		isFind = false;
 		
@@ -574,7 +565,6 @@ function constructResponse(senderId, responses){
 		 * text message type
 		 */
 		if(res.type === 'text'){
-			console.log('find response');
 			var messageData = {
 				recipient: {
 					id: senderId
@@ -583,7 +573,24 @@ function constructResponse(senderId, responses){
 					text: res.payload
 				}
 			};
-			console.log(messageData);
+			exports.callSendAPI(messageData);
+		}else if(res.type === 'button'){
+			var messageData = {
+				recipient: {
+				  id: senderId
+				},
+				message:{
+					attachment: {
+						type: "template",
+						payload: {
+							template_type: "button",
+							text: res.payload.text,
+							buttons: res.payload.button
+						}
+					}
+				}
+			}
+			
 			exports.callSendAPI(messageData);
 		}
 	});
