@@ -618,6 +618,7 @@ function constructResponse(senderId, responses){
 				}
 			}
 			
+			console.log(messageData);
 			exports.callSendAPI(messageData);
 		}
 	});
