@@ -13,14 +13,14 @@
 				padding: 5px;
 			}
 			
-			.button_template_payload_container, .text_payload_container{
+			.button_template_payload_container, .generic_template_payload_container, .text_payload_container{
 				margin:5px;
 				border:2px solid black;
 				background:#009688;
 				padding: 5px;
 			}
 			
-			.item_button_template_payload_container{
+			.item_button_template_payload_container, .item_generic_template_payload_container{
 				margin:5px;
 				border:2px solid black;
 				background:#4caf50;
@@ -72,6 +72,7 @@
 										<option value="<%=response.type%>"><%= response.type %></option>
 										<option value="text"> Text</option>
 										<option value="button_template"> Button Template</option>
+										<option value="generic_template"> Generic Template</option>
 									</select><br/>
 								Payload:
 								<div id = "container_payload_<%=indexConfiguration%>_<%=indexResponse%>">
@@ -87,18 +88,48 @@
 										<div class="button_template_payload_container">
 											Text: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][text]" value="<%= response.payload.text %>"/><br>
 											
-											<% response.payload.button.forEach(function(button, buttonIndex){ %>
+											<% response.payload.buttons.forEach(function(button, buttonIndex){ %>
 											
 											<div class="item_button_template_payload_container">
-												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][button][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
+												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
 													<option value="<%=button.type%>"><%=button.type%></option>
 													<option value="web_url"> URL</option>
 												</select> </br>
 												Button payload : <br>
 												<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=buttonIndex%>">
 													<% if(button.type == "web_url"){ %>
-													URL: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][button][<%=buttonIndex%>][url]" value="<%=button.url%>"></br>
-													Title: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][button][<%=buttonIndex%>][title]" value="<%=button.title%>"></br>
+													URL: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][url]" value="<%=button.url%>"></br>
+													Title: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][title]" value="<%=button.title%>"></br>
+													<button class="add_new_button" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index=" <%=buttonIndex%>"> + </button>
+													<% } %>
+												</div>
+											</div>
+											
+											<% }) %>
+											
+										</div>
+										
+									<% }else if(response.type == "generic_template"){ %>
+									
+										<div class="generic_template_payload_container">
+											Title: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][title]" value="<%= response.payload.title %>"/><br>
+											
+											Subtitle: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][subtitle]" value="<%= response.payload.subtitle %>"/><br>
+											
+											Image URL: <input type = "text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][image_url]" value="<%= response.payload.image_url %>"/><br>
+											
+											<% response.payload.buttons.forEach(function(button, buttonIndex){ %>
+											
+											<div class="item_generic_template_payload_container">
+												<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
+													<option value="<%=button.type%>"><%=button.type%></option>
+													<option value="web_url"> URL</option>
+												</select> </br>
+												Button payload : <br>
+												<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=buttonIndex%>">
+													<% if(button.type == "web_url"){ %>
+													URL: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][url]" value="<%=button.url%>"></br>
+													Title: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][title]" value="<%=button.title%>"></br>
 													<button class="add_new_button" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index=" <%=buttonIndex%>"> + </button>
 													<% } %>
 												</div>
@@ -121,6 +152,7 @@
 										<option value="">Select Type response</option>
 										<option value="text"> Text</option>
 										<option value="button_template"> Button Template</option>
+										<option value="generic_template"> Generic Template</option>
 									</select><br/>
 								Payload:
 								<div id = "container_payload_<%=indexConfiguration%>_<%=(tmpIndexResponse+1)%>"></div>
@@ -219,8 +251,10 @@
 			
 			if($(this).val() == 'text'){
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(textTypePayload(firstIndex, secondIndex));
-			}if($(this).val() == 'button_template'){
+			}else if($(this).val() == 'button_template'){
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(buttonTemplateTypePayload(firstIndex, secondIndex, 0));
+			}else if($(this).val() == 'generic_template'){
+				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(genericTemplateTypePayload(firstIndex, secondIndex, 0));
 			}
 			e.preventDefault();
 		});
@@ -285,6 +319,7 @@
 								'<option value="">Select Type response</option>'+
 								'<option value="text"> Text</option>'+
 								'<option value="button_template"> Button Template</option>'+
+								'<option value="generic_template"> Generic Template</option>'+
 							'</select>';
 			return payload;
 		}
@@ -300,7 +335,7 @@
 			var payload = 	'<div class="button_template_payload_container">'+
 								'Text: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][text]" /><br>'+
 								'<div class="item_button_template_payload_container">'+
-									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][button]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
+									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
 										'<option value="">Select button type</option>'+
 										'<option value="web_url"> URL</option>'+
 									'</select> </br>'+
@@ -313,10 +348,12 @@
 		}
 		
 		function genericTemplateTypePayload(firstIndex, secondIndex, buttonIndex){
-			var payload = 	'<div class="button_template_payload_container">'+
-								'Text: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][text]" /><br>'+
-								'<div class="item_button_template_payload_container">'+
-									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][button]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
+			var payload = 	'<div class="generic_template_payload_container">'+
+								'Title: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" /><br>'+
+								'Subtitle: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
+								'Image URL: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
+								'<div class="item_generic_template_payload_container">'+
+									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
 										'<option value="">Select button type</option>'+
 										'<option value="web_url"> URL</option>'+
 									'</select> </br>'+
@@ -330,8 +367,8 @@
 		
 		function urlButtonType(firstIndex, secondIndex, buttonIndex){
 			var payload = 
-							'URL: <input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][button]['+ buttonIndex +'][url]"></br>'+
-							'Title: <input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][button]['+ buttonIndex +'][title]"></br>'+
+							'URL: <input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][url]"></br>'+
+							'Title: <input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][title]"></br>'+
 							'<button class="add_new_button" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'"> + </button>';
 			return payload;
 		}

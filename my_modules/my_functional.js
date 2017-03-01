@@ -585,7 +585,26 @@ function constructResponse(senderId, responses){
 						payload: {
 							template_type: "button",
 							text: res.payload.text,
-							buttons: res.payload.button
+							buttons: res.payload.buttons
+						}
+					}
+				}
+			}
+			
+			exports.callSendAPI(messageData);
+		}else if(res.type === 'generic_template'){
+			var messageData = {
+				recipient: {
+				  id: senderId
+				},
+				message:{
+					attachment: {
+						type: "template",
+						payload: {
+							template_type: "generic",
+							elements:[
+								res.payload
+							]
 						}
 					}
 				}
