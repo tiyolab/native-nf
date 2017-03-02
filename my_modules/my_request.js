@@ -83,6 +83,7 @@ exports.handleRequest = (app, db) => {
 			console.error(err);
 		}else{
 			console.log('salesforce auth success');
+			console.log(org);
 		}
 	});
 	
@@ -320,6 +321,27 @@ exports.handleRequest = (app, db) => {
 					}
 				});
 			}
+		});
+	});
+	
+	app.get('/s_objects', function(req, res){
+		request({
+			url: org.oauth.instance_url + '/services/data/v20.0/sobjects',
+			headers: {
+				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
+			}
+		}, function(error, response, body){
+			var sObjects = [];
+			if(!error && response.statusCode == 200){
+				body.sobjects.forEach(function(sobject){
+					sObjects.push({
+						label: sobject.label,
+						name: sobject.name
+					});
+				});
+			}
+			
+			res.json(sObjects);
 		});
 	});
 };
