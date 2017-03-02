@@ -142,7 +142,7 @@ exports.receivedMessage = (org, event, req) => {
 				exports.openCommunity(senderID);
 			}else{
 				//exports.sendTextMessage(senderID, messageText);
-				botResponse(event);
+				botResponse(org, event);
 			}
 		}
 	} else if (messageAttachments) {
@@ -533,7 +533,7 @@ exports.loadBotResponseConfiguration = (db) => {
 		});
 }
 
-function botResponse(event){
+function botResponse(org, event){
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
 	var timeOfMessage = event.timestamp;
@@ -553,13 +553,13 @@ function botResponse(event){
 		});
 		
 		if(isFind){
-			constructResponse(senderID, item.responses);
+			constructResponse(org, senderID, item.responses);
 			return true;
 		}
 	});
 }
 
-function constructResponse(senderId, responses){
+function constructResponse(org, senderId, responses){
 	responses.forEach(function(res, idx){
 		/**
 		 * text message type
