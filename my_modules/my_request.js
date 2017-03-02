@@ -235,6 +235,8 @@ exports.handleRequest = (app, db) => {
 	
 	
 	app.post('/response_configuration', function(req, res){
+		//res.json(req.body);
+		//return;
 		//strip empty data
 		var tmpBody = [];
 		var tmpArray = [];
@@ -294,7 +296,60 @@ exports.handleRequest = (app, db) => {
 					}
 					
 					return true;
+				}else if(response.type == 'salesforce_query'){
+					//object required
+					if(response.payload.query.sobject == ''){
+						return false;
+					}
+					
+					//field required
+					var tmpFields = [];
+					console.log('field');
+					console.log(response.payload.query.fields);
+					tmpFields = response.payload.query.fields.filter(function(field){
+						return field != '';
+					});
+					response.payload.query.fields = tmpFields;
+					
+					if(response.payload.query.fields.length == 0){
+						return false;
+					}
+					
+					//where optional
+					var tmpWhere = [];
+					tmpWhere = response.payload.query.where.filter(function(where){
+						if(where.source == '' || where.operator == '' || where.destination == ''){
+							return false;
+						}
+						return true;
+					});
+					response.payload.query.where = tmpWhere;
+					
+					//title mandatory
+					if(response.payload.title == ''){
+						return false;
+					}
+					
+					//button optional
+					tmpResponseButton = response.payload.buttons.filter(function(btn){
+						if(btn.type == ''){
+							return false;
+						}
+						
+						if(btn.type == 'web_url'){
+							if(btn.title == '' || btn.url == ''){
+								return false;
+							}
+						}
+						
+						return true;
+					});
+					response.payload.buttons = tmpResponseButton;
+					
+					return true;
 				}
+				
+				return true;
 			});
 			o1.responses = tmpArray;
 			
@@ -327,6 +382,8 @@ exports.handleRequest = (app, db) => {
 	app.get('/s_objects', function(req, res){
 		request({
 			url: org.oauth.instance_url + '/services/data/v20.0/sobjects',
+			method: 'GET',
+			json: true,
 			headers: {
 				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
 			}
@@ -335,13 +392,36 @@ exports.handleRequest = (app, db) => {
 			if(!error && response.statusCode == 200){
 				body.sobjects.forEach(function(sobject){
 					sObjects.push({
-						label: sobject.label,
 						name: sobject.name
 					});
 				});
 			}
 			
 			res.json(sObjects);
+		});
+	});
+	
+	app.get('/s_object_field', function(req, res){
+		var object = req.query.o;
+		
+		request({
+			url: org.oauth.instance_url + '/services/data/v20.0/sobjects/'+object+'/describe',
+			method: 'GET',
+			json: true,
+			headers: {
+				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
+			}
+		}, function(error, response, body){
+			var fields = [];
+			if(!error && response.statusCode == 200){
+				body.fields.forEach(function(field){
+					fields.push({
+						name: field.name
+					});
+				});
+			}
+			
+			res.json(fields);
 		});
 	});
 };

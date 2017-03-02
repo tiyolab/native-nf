@@ -620,6 +620,89 @@ function constructResponse(senderId, responses){
 			
 			console.log(tmpElements);
 			exports.callSendAPI(messageData);
+		}else if(res.type === 'salesforce_query'){
+			var field = res.payload.query.fields.join();
+			var where = [];
+			if(res.payload.query.where.length > 0){
+				res.payload.query.where.forEach(function(w){
+					where.push(w.source + w.operator +w.destination);
+				});
+			}
+			var strWhere = where.join(' and ');
+			var query = 'select ' + field + ' from ' + res.payload.query.sobject + strWhere;
+			
+			console.log('query');
+			console.log(query);
+			
+			//var replacingTitle = res.payload.match(/\{(.*?)\}/g);
+			
+			org.query({query:query}, function(err, r){
+				if(!err){
+					var elements = [];
+					var buttons = [];
+					r.records.forEach(function(rec){
+						res.payload.query.fields.forEach(function(f){
+							buttons = [];
+							res.payload.buttons.forEach(function(b){
+								if(b.type == 'web_url'){
+									buttons.push({
+										type: b.type,
+										title: replaceRegex(b.title, rec),
+										url: replaceRegex(b.url, rec)
+										
+									});
+								}
+							});
+							
+							elements.push(
+								{
+								  title: replaceRegex(res.payload.title, rec),
+								  subtitle: replaceRegex(res.payload.subtitle, rec),
+								  image_url: replaceRegex(res.payload.image_url, rec),
+								  buttons: buttons
+								}
+							);
+							
+						});
+					});
+					
+					
+					var messageToSend = {};
+					if(elements.length > 0){
+						messageToSend = {
+						  attachment: {
+							type: "template",
+							payload: {
+							  template_type: "generic",
+							  elements: elements
+							}
+						  }
+						}
+					}else{
+						messageToSend = {
+							text: "Failed process your request"
+						}
+					}
+					
+					var messageData = {
+						recipient: {
+						  id: senderId
+						},
+						message: messageToSend
+					}
+					console.log(messageData)
+					exports.callSendAPI(messageData);
+				}
+			});
 		}
 	});
+}
+
+function replaceRegex(str, record){
+	var toReplace = str.match(/\{(.*?)\}/g);
+	toReplace.forEach(function(t){
+		str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
+	});
+	
+	return str;
 }

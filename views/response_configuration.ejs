@@ -4,6 +4,8 @@
 		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 		<script>
 			var INDEX_ROW_CONFIGURATION = <%=configuration.length;%>;
+			var server = 'http://localhost:1107/';
+			var TMP_FIELD = [];
 		</script>
 		<style>
 			.response_container{
@@ -25,6 +27,10 @@
 				border:2px solid black;
 				background:#4caf50;
 				padding: 5px;
+			}
+			
+			.select_fields{
+				height:150px;
 			}
 		</style>
 	</head>
@@ -73,6 +79,7 @@
 										<option value="text"> Text</option>
 										<option value="button_template"> Button Template</option>
 										<option value="generic_template"> Generic Template</option>
+										<option value="salesforce_query"> Query to salesforce</option>
 									</select><br/>
 								Payload:
 								<div id = "container_payload_<%=indexConfiguration%>_<%=indexResponse%>">
@@ -171,6 +178,7 @@
 											</div>
 										</div>
 										
+									<% }else if(response.type == "salesforce_query"){ %>
 									<% } %>
 								</div>
 								<button class="remove_response" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> - </button>
@@ -185,6 +193,7 @@
 										<option value="text"> Text</option>
 										<option value="button_template"> Button Template</option>
 										<option value="generic_template"> Generic Template</option>
+										<option value="salesforce_query"> Query to salesforce</option>
 									</select><br/>
 								Payload:
 								<div id = "container_payload_<%=indexConfiguration%>_<%=(tmpIndexResponse+1)%>"></div>
@@ -277,6 +286,82 @@
 			e.preventDefault();
 		});
 		
+		$(document).on('click', '.add_new_where_clause', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			var whereIndex = parseInt($(this).attr('where_index'));
+			var object = $(this).attr('object');
+			
+			$(this).html('-');
+			$(this).attr('class', 'remove_where_clause');
+			$(this).parent().after(constructWhereClause(object, firstIndex, secondIndex, whereIndex+1));
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.remove_where_clause', function(e){
+			$(this).parent().remove();
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.insert_title', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			var insertId = $(this).attr('for');
+			var textToInsert = '{'+$('#'+insertId).val()+'}';
+			
+			var obj = $('textarea[name="item['+firstIndex+'][responses]['+secondIndex+'][payload][title]"]');
+			var value = obj.val();
+			
+			var cursorPos = obj.prop('selectionStart');
+			var textBefore = value.substring(0,  cursorPos);
+			var textAfter = value.substring(cursorPos, value.length);
+			
+			obj.val(textBefore+''+textToInsert+''+textAfter);
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.insert_subtitle', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			var insertId = $(this).attr('for');
+			var textToInsert = '{'+$('#'+insertId).val()+'}';
+			
+			var obj = $('textarea[name="item['+firstIndex+'][responses]['+secondIndex+'][payload][subtitle]"]');
+			var value = obj.val();
+			
+			var cursorPos = obj.prop('selectionStart');
+			var textBefore = value.substring(0,  cursorPos);
+			var textAfter = value.substring(cursorPos, value.length);
+			
+			obj.val(textBefore+''+textToInsert+''+textAfter);
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.insert_image_url', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			var insertId = $(this).attr('for');
+			var textToInsert = '{'+$('#'+insertId).val()+'}';
+			
+			var obj = $('textarea[name="item['+firstIndex+'][responses]['+secondIndex+'][payload][image_url]"]');
+			var value = obj.val();
+			
+			var cursorPos = obj.prop('selectionStart');
+			var textBefore = value.substring(0,  cursorPos);
+			var textAfter = value.substring(cursorPos, value.length);
+			
+			obj.val(textBefore+''+textToInsert+''+textAfter);
+			
+			e.preventDefault();
+		});
+		
 		$(document).on('change', '.response_type', function(e){
 			var firstIndex = parseInt($(this).attr('first_index'));
 			var secondIndex = parseInt($(this).attr('second_index'));
@@ -287,6 +372,8 @@
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(buttonTemplateTypePayload(firstIndex, secondIndex, 0));
 			}else if($(this).val() == 'generic_template'){
 				$("#container_payload_"+ firstIndex +"_"+ secondIndex).html(genericTemplateTypePayload(firstIndex, secondIndex, 0));
+			}else if($(this).val() == 'salesforce_query'){
+				salesforceQueryPayload($("#container_payload_"+ firstIndex +"_"+ secondIndex), firstIndex, secondIndex);
 			}
 			e.preventDefault();
 		});
@@ -299,6 +386,17 @@
 			if($(this).val() == 'web_url'){
 				$("#container_button_payload_"+ firstIndex +"_"+ secondIndex +"_"+ buttonIndex).html(urlButtonType(firstIndex, secondIndex, buttonIndex));
 			}
+			e.preventDefault();
+		});
+		
+		$(document).on('change', '.select_sobject', function(e){
+			var firstIndex = parseInt($(this).attr('first_index'));
+			var secondIndex = parseInt($(this).attr('second_index'));
+			
+			$('#container_where_clause_'+ firstIndex +'_'+ secondIndex).html('');
+			$('#query_message_template_'+ firstIndex +'_'+ secondIndex).html('');
+			constructField($(this).val(), firstIndex, secondIndex);
+			
 			e.preventDefault();
 		});
 		
@@ -352,6 +450,7 @@
 								'<option value="text"> Text</option>'+
 								'<option value="button_template"> Button Template</option>'+
 								'<option value="generic_template"> Generic Template</option>'+
+								'<option value="salesforce_query"> Query to salesforce</option>'+
 							'</select>';
 			return payload;
 		}
@@ -382,9 +481,9 @@
 		
 		function genericTemplateTypePayload(firstIndex, secondIndex, buttonIndex){
 			var payload = 	'<div class="generic_template_payload_container">'+
-								'*Title: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" /><br>'+
-								'**Subtitle: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
-								'**Image URL: <input type = "text" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
+								'*Title: <textarea rows="2" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" /><br>'+
+								'**Subtitle: <textarea rows="5" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" /><br>'+
+								'**Image URL: <textarea rows="2" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" /><br>'+
 								'**button:<br/>'+
 								'<div class="item_generic_template_payload_container">'+
 									'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">'+
@@ -405,6 +504,151 @@
 							'*Title: <input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][title]"></br>'+
 							'<button class="add_new_button" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'"> + </button>';
 			return payload;
+		}
+		
+		function salesforceQueryPayload(dom, firstIndex, secondIndex){
+			var payload = 	'<div class="generic_template_payload_container">'+
+								'Salesforce Object:	<br/>'+
+								'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][sobject]" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" class="select_sobject">'+
+									'<option class="sobject_loading">Loading...</option>'+
+								'</select><br/>'+
+								'Fields:<br/>'+
+								'<div id="container_field_'+ firstIndex +'_'+ secondIndex +'"></div>'+
+								'Where Clause:<br/>'+
+								'<div id="container_where_clause_'+ firstIndex +'_'+ secondIndex +'"></div>'+
+								'Response message template:<br/>'+
+								'<div id="query_message_template_'+ firstIndex +'_'+ secondIndex +'"></div>'+
+							'</div>';
+			dom.html(payload);
+			getSObjectList(function(sobjects){
+				if(sobjects){
+					$('select[name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][sobject]"]').children('.sobject_loading').remove();
+					$('select[name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][sobject]"]')
+							.append($('<option></option>').attr('value', '').text('Choose Object'));
+					sobjects.forEach(function(object){
+						$('select[name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][sobject]"]')
+							.append($('<option></option>').attr('value', object.name).text(object.name));
+					});
+				}
+			});
+		}
+		
+		function constructField(object, firstIndex, secondIndex){
+			$('#container_field_'+ firstIndex +'_'+ secondIndex).html('Loading...');
+			getSObjectFields(object, function(fields){
+				if(fields){
+					var dom = '<select multiple name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][fields][]" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" object="'+ object +'" class="select_fields">';
+					fields.forEach(function(f){
+						dom += '<option class="option_field" value="'+ f.name +'">'+ f.name +'</option>';
+					});
+					dom += '</select><br/>';
+					
+					$('#container_field_'+ firstIndex +'_'+ secondIndex).html(dom);
+					
+					$('#container_where_clause_'+ firstIndex +'_'+ secondIndex).html(constructWhereClause(object, firstIndex, secondIndex, 0));
+					
+					$('#query_message_template_'+ firstIndex +'_'+ secondIndex).html(constructQueryMessageTemplate(object, firstIndex, secondIndex, 0));
+				}else{
+					$('#container_field_'+ firstIndex +'_'+ secondIndex).html('No field retrieved.');
+				}
+			});
+		}
+		
+		function constructWhereClause(object, firstIndex, secondIndex, whereIndex){
+			var payload = 	'<div id="container_where_clause_'+ firstIndex +'_'+ secondIndex +'_'+ whereIndex +'">';
+			payload += 		'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][where]['+ whereIndex +'][source]">';
+			payload +=			'<option value="">Choose field</option>';
+			TMP_FIELD[object].forEach(function(f){
+				payload += 		'<option value="'+ f.name +'">'+ f.name +'</option>';
+			});
+			payload += 		'</select>';
+			payload +=		'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][where]['+ whereIndex +'][operator]">';
+			payload +=			'<option value="">Choose operator</option>';
+			payload +=			'<option value="=">=</option>';
+			payload +=			'<option value="!=">!=</option>';
+			payload +=			'<option value="<"><</option>';
+			payload +=			'<option value="<="><=</option>';
+			payload +=			'<option value=">">></option>';
+			payload +=			'<option value=">=">>=</option>';
+			payload +=			'<option value="LIKE">like</option>';
+			payload +=			'<option value="IN">in</option>';
+			payload +=			'<option value="NOT IN">not in</option>';
+			payload += 		'</select>';
+			payload +=		'<input type="text" name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][query][where]['+ whereIndex +'][destination]">';
+			payload +=		'<button class="add_new_where_clause" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" where_index="'+ whereIndex +'" object="'+ object +'"> + </button>';
+			payload += 		'</div>';
+			
+			return payload;
+		}
+		
+		function constructQueryMessageTemplate(object, firstIndex, secondIndex, buttonIndex){
+			var payload = 	'<div class="generic_template_payload_container">';
+			payload +=			'*Title:<br/>';
+			payload +=			'<textarea rows="2" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][title]" />';
+			payload += 			'<select id="insert_title_'+ firstIndex +'_'+ secondIndex +'">';
+			payload +=				'<option value="">Choose field</option>';
+			TMP_FIELD[object].forEach(function(f){
+				payload += 			'<option value="'+ f.name +'">'+ f.name +'</option>';
+			});
+			payload += 			'</select>';
+			payload +=			'<button class="insert_title" for="insert_title_'+ firstIndex +'_'+ secondIndex +'" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'"> Insert </button>';
+			payload +=			'<br>';
+			
+			payload += 			'**Subtitle:<br/>';
+			payload +=			'<textarea rows="5" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][subtitle]" />';
+			payload += 			'<select id="insert_subtitle_'+ firstIndex +'_'+ secondIndex +'">';
+			payload +=				'<option value="">Choose field</option>';
+			TMP_FIELD[object].forEach(function(f){
+				payload += 			'<option value="'+ f.name +'">'+ f.name +'</option>';
+			});
+			payload += 			'</select>';
+			payload +=			'<button class="insert_subtitle" for="insert_subtitle_'+ firstIndex +'_'+ secondIndex +'" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'"> Insert </button>';
+			payload +=			'<br>';
+			
+			payload +=			'**Image URL:<br/>';
+			payload +=			'<textarea rows="2" cols="30" name="item[' + firstIndex + '][responses][' + secondIndex + '][payload][image_url]" />';
+			payload += 			'<select id="insert_image_url_'+ firstIndex +'_'+ secondIndex +'">';
+			payload +=				'<option value="">Choose field</option>';
+			TMP_FIELD[object].forEach(function(f){
+				payload += 			'<option value="'+ f.name +'">'+ f.name +'</option>';
+			});
+			payload += 			'</select>';
+			payload +=			'<button class="insert_image_url" for="insert_image_url_'+ firstIndex +'_'+ secondIndex +'" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'"> Insert </button>';
+			payload +=			'<br>';
+			
+			payload +=			'**button:<br/>';
+			payload +=			'<div class="item_generic_template_payload_container">';
+			payload +=				'<select name="item[' + firstIndex + '][responses]['+ secondIndex +'][payload][buttons]['+ buttonIndex +'][type]" class="button_type" first_index="'+ firstIndex +'" second_index="'+ secondIndex +'" button_index="'+ buttonIndex +'">';
+			payload +=					'<option value="">Select button type</option>';
+			payload +=					'<option value="web_url"> URL</option>';
+			payload +=				'</select> </br>';
+			payload +=				'Button payload : <br>';
+			payload +=				'<div id="container_button_payload_'+firstIndex+'_'+secondIndex+'_'+buttonIndex+'"></div>';
+			payload +=			'</div>';
+			payload +=		'</div>';
+							
+			return payload;
+		}
+		
+		function getSObjectList(callback){
+			$.get(server + 's_objects', function(data, status){
+				if(status == 'success'){
+					callback(data);
+				}else{
+					callback(false);
+				}
+			});
+		}
+		
+		function getSObjectFields(object, callback){
+			$.get(server + 's_object_field?o='+object, function(data, status){
+				if(status == 'success'){
+					TMP_FIELD[object] = data;
+					callback(data);
+				}else{
+					callback(false);
+				}
+			});
 		}
 	</script>
 </html>
