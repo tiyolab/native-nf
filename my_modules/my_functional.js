@@ -721,6 +721,8 @@ function constructResponse(org, senderId, responses){
 								);
 							}
 							
+							console.log('elements item');
+							console.log(elements);
 							
 						});
 					});
