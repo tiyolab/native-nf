@@ -755,7 +755,11 @@ function constructResponse(org, senderId, responses){
 					exports.callSendAPI(messageData);
 				}else{
 					console.log(err);
-					exports.sendTextMessage(senderId, "Sorry i can't help your.");
+					exports.sendTextMessage(senderId, "Error");
+					exports.sendTextMessage(senderId, "Developer mode: ");
+					err.body.forEach(function(m){
+						exports.sendTextMessage(senderId, m.message);
+					});
 				}
 			});
 		}
