@@ -764,11 +764,12 @@ function replaceRegex(str, record){
 	
 	if(str != ''){
 		var toReplace = str.match(/\{(.*?)\}/g);
-		console.log('toreplace');
-		console.log(toReplace);
-		toReplace.forEach(function(t){
-			str = str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
-		});
+		
+		if(toReplace){
+			toReplace.forEach(function(t){
+				str = str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
+			});
+		}
 	}
 	return str;
 }
