@@ -649,19 +649,30 @@ function constructResponse(org, senderId, responses){
 										type: b.type,
 										title: replaceRegex(b.title, rec),
 										url: replaceRegex(b.url, rec)
-										
 									});
 								}
 							});
 							
-							elements.push(
-								{
-								  title: replaceRegex(res.payload.title, rec),
-								  subtitle: replaceRegex(res.payload.subtitle, rec),
-								  image_url: replaceRegex(res.payload.image_url, rec),
-								  buttons: buttons
-								}
-							);
+							
+							if(buttons.length > 0){
+								elements.push(
+									{
+									  title: replaceRegex(res.payload.title, rec),
+									  subtitle: replaceRegex(res.payload.subtitle, rec),
+									  image_url: replaceRegex(res.payload.image_url, rec),
+									  buttons: buttons
+									}
+								);
+							}else{
+								elements.push(
+									{
+									  title: replaceRegex(res.payload.title, rec),
+									  subtitle: replaceRegex(res.payload.subtitle, rec),
+									  image_url: replaceRegex(res.payload.image_url, rec),
+									}
+								);
+							}
+							
 							
 						});
 					});
