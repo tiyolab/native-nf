@@ -224,7 +224,7 @@
 											}); 
 											%>
 												<div id="container_where_clause_<%=indexConfiguration%>_<%=indexResponse%>_whereIndex">
-													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=tmpWhereIndex%>][source]">
+													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=tmpWhereIndex%>][source]" class="new_where_fields" object="<%= response.payload.query.sobject %>">
 														<option>Loading...</option>
 													</select>
 													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=tmpWhereIndex%>][operator]">
@@ -357,6 +357,7 @@
 		constructSObjectList();
 		constructSObjectFieldsList();
 		constructWhereFieldsList();
+		constructNewWhereFieldsList();
 		
 		$("#button_add_row").on('click', function(e){
 			$("#row_navigation").before(addNewRow(INDEX_ROW_CONFIGURATION, 0));
@@ -878,6 +879,21 @@
 						}else{
 							dom.append($('<option></option>').attr('value', f.name).text(f.name));
 						}
+					});
+				});
+			});
+		}
+		
+		function constructNewWhereFieldsList(){
+			$('.new_where_fields').each(function(index){
+				var dom = $(this);
+				
+				getSObjectFields(dom.attr('object'), function(fields){
+					dom.html('');
+					dom.append($('<option ></option>').text('Choose field'));
+					
+					fields.forEach(function(f){
+						dom.append($('<option></option>').attr('value', f.name).text(f.name));
 					});
 				});
 			});
