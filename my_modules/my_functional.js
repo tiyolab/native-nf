@@ -629,7 +629,7 @@ function constructResponse(org, senderId, responses){
 				});
 			}
 			var strWhere = where.join(' and ');
-			var query = 'select ' + field + ' from ' + res.payload.query.sobject + strWhere;
+			var query = 'select ' + field + ' from ' + res.payload.query.sobject + strWhere + ' limit 10';
 			
 			console.log('query');
 			console.log(query);
@@ -653,8 +653,6 @@ function constructResponse(org, senderId, responses){
 									});
 								}
 							});
-							console.log('buttons');
-							console.log(buttons);
 							
 							elements.push(
 								{
@@ -664,9 +662,6 @@ function constructResponse(org, senderId, responses){
 								  buttons: buttons
 								}
 							);
-							
-							console.log('element');
-							console.log(elements);
 							
 						});
 					});
@@ -704,9 +699,19 @@ function constructResponse(org, senderId, responses){
 }
 
 function replaceRegex(str, record){
+	console.log('record');
+	console.log(record);
+	
 	if(str != ''){
 		var toReplace = str.match(/\{(.*?)\}/g);
+		console.log('string = ' + str);
+		console.log('to replace');
+		console.log(toReplace);
+		
 		toReplace.forEach(function(t){
+			console.log('text = ' + t);
+			console.log('value = ');
+			console.log(t.match(/\{(.*)\}/));
 			str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
 		});
 	}
