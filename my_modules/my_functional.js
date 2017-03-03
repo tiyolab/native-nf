@@ -672,7 +672,11 @@ function constructResponse(org, senderId, responses){
 					where.push(w.source + w.operator +w.destination);
 				});
 			}
-			var strWhere = where.join(' and ');
+			
+			var strWhere = '';
+			if(where.length > 0){
+				strWhere = ' where ' + where.join(' and ')
+			}
 			var query = 'select ' + field + ' from ' + res.payload.query.sobject + strWhere + ' limit 10';
 			
 			console.log('query');
