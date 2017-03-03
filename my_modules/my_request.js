@@ -217,9 +217,6 @@ exports.handleRequest = (app, db) => {
 		var collection = db.collection('response_configuration');
 		collection.findOne({},function(err, data){
 			if(data){
-				console.log('data');
-				console.log(data.item);
-			
 				res.render('response_configuration', {
 					configuration: data.item,
 					error_message: ''
@@ -380,23 +377,7 @@ exports.handleRequest = (app, db) => {
 	});
 	
 	app.get('/s_objects', function(req, res){
-		request({
-			url: org.oauth.instance_url + '/services/data/v20.0/sobjects',
-			method: 'GET',
-			json: true,
-			headers: {
-				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
-			}
-		}, function(error, response, body){
-			var sObjects = [];
-			if(!error && response.statusCode == 200){
-				body.sobjects.forEach(function(sobject){
-					sObjects.push({
-						name: sobject.name
-					});
-				});
-			}
-			
+		myFunctional.getSObject(org, function(sObjects){
 			res.json(sObjects);
 		});
 	});
@@ -404,23 +385,7 @@ exports.handleRequest = (app, db) => {
 	app.get('/s_object_field', function(req, res){
 		var object = req.query.o;
 		
-		request({
-			url: org.oauth.instance_url + '/services/data/v20.0/sobjects/'+object+'/describe',
-			method: 'GET',
-			json: true,
-			headers: {
-				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
-			}
-		}, function(error, response, body){
-			var fields = [];
-			if(!error && response.statusCode == 200){
-				body.fields.forEach(function(field){
-					fields.push({
-						name: field.name
-					});
-				});
-			}
-			
+		myFunctional.getSObjectFields(object, org, function(fields){
 			res.json(fields);
 		});
 	});

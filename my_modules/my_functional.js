@@ -533,6 +533,50 @@ exports.loadBotResponseConfiguration = (db) => {
 		});
 }
 
+exports.getSObject = (org, callback) => {
+		request({
+			url: org.oauth.instance_url + '/services/data/v20.0/sobjects',
+			method: 'GET',
+			json: true,
+			headers: {
+				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
+			}
+		}, function(error, response, body){
+			var sObjects = [];
+			if(!error && response.statusCode == 200){
+				body.sobjects.forEach(function(sobject){
+					sObjects.push({
+						name: sobject.name
+					});
+				});
+			}
+			
+			callback(sObjects);
+		});
+}
+
+exports.getSObjectFields = (object, org, callback) => {
+		request({
+			url: org.oauth.instance_url + '/services/data/v20.0/sobjects/'+object+'/describe',
+			method: 'GET',
+			json: true,
+			headers: {
+				'Authorization': org.oauth.token_type + ' ' + org.oauth.access_token
+			}
+		}, function(error, response, body){
+			var fields = [];
+			if(!error && response.statusCode == 200){
+				body.fields.forEach(function(field){
+					fields.push({
+						name: field.name
+					});
+				});
+			}
+			
+			callback(fields);
+		});
+}
+
 function botResponse(org, event){
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
@@ -701,7 +745,7 @@ function constructResponse(org, senderId, responses){
 						},
 						message: messageToSend
 					}
-					console.log(messageData.message.attachment.payload);
+					
 					exports.callSendAPI(messageData);
 				}
 			});

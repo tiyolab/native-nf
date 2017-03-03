@@ -6,6 +6,7 @@
 			var INDEX_ROW_CONFIGURATION = <%=configuration.length;%>;
 			var server = 'http://localhost:1107/';
 			var TMP_FIELD = [];
+			var TMP_OBJECT = [];
 		</script>
 		<style>
 			.response_container{
@@ -179,6 +180,115 @@
 										</div>
 										
 									<% }else if(response.type == "salesforce_query"){ %>
+										<div class="generic_template_payload_container">
+											Salesforce Object:	<br/>
+											<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][sobject]" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" class="select_sobject" object="<%= response.payload.query.sobject %>">
+												<option class="<%= response.payload.query.sobject %>"><%= response.payload.query.sobject %></option>
+												<option class="">Loading...</option>
+											</select><br/>
+											Fields:<br/>
+											<div id="container_field_<%=indexConfiguration%>_<%=indexResponse%>">
+												<select multiple name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][fields][]" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" object="<%= response.payload.query.sobject %>" class="select_fields" fields="<%= response.payload.query.fields %>">
+													<option class="">Loading...</option>
+												</select>
+											</div>
+											Where Clause:<br/>
+											<div id="container_where_clause_<%=indexConfiguration%>_<%=indexResponse%>">
+											
+											<% response.payload.query.where.forEach(function(wf, whereIndex){ %>
+												<div id="container_where_clause_<%=indexConfiguration%>_<%=indexResponse%>_whereIndex">;
+													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][source]" class="where_fields" object="<%= response.payload.query.sobject %>" field="<%= wf.source %>">;
+														<option>Loading...</option>
+													</select>;
+													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][operator]">;
+														<option value="<%= wf.operator %>"><%= wf.operator %></option>;
+														<option value="=">=</option>;
+														<option value="!=">!=</option>;
+														<option value="<"><</option>;
+														<option value="<="><=</option>;
+														<option value=">">></option>;
+														<option value=">=">>=</option>;
+														<option value="LIKE">LIKE</option>;
+														<option value="IN">IN</option>;
+														<option value="NOT IN">NOT IN</option>;
+													</select>;
+													<input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][destination]" value="<%= wf.destination %>">;
+													<button class="remove_where_clause" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" where_index="whereIndex" object="<%= response.payload.query.sobject %>"> - </button>;
+												</div>;
+											<% }); %>
+											
+											</div>
+											Response message template:<br/>
+											<div id="query_message_template_<%=indexConfiguration%>_<%=indexResponse%>">
+											
+												<div class="generic_template_payload_container">
+													*Title:<br/>
+													<textarea rows="2" cols="30" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][title]"><%= response.payload.title %></textarea>
+													
+													<select id="insert_title_<%=indexConfiguration%>_<%=indexResponse%>" class="insert_title_<%= response.payload.query.sobject %>">
+														<option value="">Loading...</option>
+										
+													</select>
+													<button class="insert_title" for="insert_title_<%=indexConfiguration%>_<%=indexResponse%>" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> Insert </button>
+													<br>
+										
+													**Subtitle:<br/>
+													<textarea rows="5" cols="30" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][subtitle]"><%= response.payload.subtitle %></textarea>
+													<select id="insert_subtitle_<%=indexConfiguration%>_<%=indexResponse%>" class="insert_subtitle_<%= response.payload.query.sobject %>">
+														<option value="">Loading...</option>
+										
+													</select>
+													<button class="insert_subtitle" for="insert_subtitle_<%=indexConfiguration%>_<%=indexResponse%>" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> Insert </button>
+													<br>
+										
+													**Image URL:<br/>
+													<textarea rows="2" cols="30" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][image_url]"><%= response.payload.image_url %></textarea>
+													<select id="insert_image_url_<%=indexConfiguration%>_<%=indexResponse%>" class="insert_image_url_<%= response.payload.query.sobject %>">
+														<option value="">Loading...</option>
+										
+													</select>
+													<button class="insert_image_url" for="insert_image_url_<%=indexConfiguration%>_<%=indexResponse%>" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> Insert </button>
+													<br>
+										
+													**button:<br/>
+													<%
+													var tmpButtonSalesforceQueryTemplateIndex = 0;
+													response.payload.buttons.forEach(function(button, buttonIndex){ 
+													%>
+													
+													<div class="item_generic_template_payload_container">
+														<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=buttonIndex%>">
+															<option value="<%=button.type%>"><%=button.type%></option>
+															<option value="web_url"> URL</option>
+														</select> </br>
+														Button payload : <br>
+														<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=buttonIndex%>">
+															<% if(button.type == "web_url"){ %>
+															URL: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][url]" value="<%=button.url%>"></br>
+															Title: <input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=buttonIndex%>][title]" value="<%=button.title%>"></br>
+															<button class="remove_button" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index=" <%=buttonIndex%>"> - </button>
+															<% } %>
+														</div>
+													</div>
+													
+													<%
+													tmpButtonSalesforceQueryTemplateIndex = buttonIndex + 1;
+													}) 
+													%>
+												
+													<div class="item_generic_template_payload_container">
+														<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][buttons][<%=tmpButtonSalesforceQueryTemplateIndex%>][type]" class="button_type" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" button_index="<%=tmpButtonSalesforceQueryTemplateIndex%>">
+															<option value=""> Select button type</option>
+															<option value="web_url"> URL</option>
+														</select> </br>
+														Button payload : <br>
+														<div id="container_button_payload_<%=indexConfiguration%>_<%=indexResponse%>_<%=tmpButtonSalesforceQueryTemplateIndex%>">
+														</div>
+													</div>
+												</div>
+											
+											</div>
+										</div>
 									<% } %>
 								</div>
 								<button class="remove_response" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>"> - </button>
@@ -218,6 +328,10 @@
 		</form>
 	</body>
 	<script>
+		constructSObjectList();
+		constructSObjectFieldsList();
+		constructWhereFieldsList();
+		
 		$("#button_add_row").on('click', function(e){
 			$("#row_navigation").before(addNewRow(INDEX_ROW_CONFIGURATION, 0));
 			INDEX_ROW_CONFIGURATION++;
@@ -358,6 +472,23 @@
 			var textAfter = value.substring(cursorPos, value.length);
 			
 			obj.val(textBefore+''+textToInsert+''+textAfter);
+			
+			e.preventDefault();
+		});
+		
+		$(document).on('click', '.option_field', function(e){
+			var firstIndex = parseInt($(this).parent().attr('first_index'));
+			var secondIndex = parseInt($(this).parent().attr('second_index'));
+			var options = $(this).parent().val();
+			var strOptions = '<option value="">Choose field</option>';
+			
+			options.forEach(function(f){
+				strOptions += '<option value="'+ f +'">'+ f +'</option>';
+			});
+			
+			$('#insert_title_'+ firstIndex +'_'+secondIndex).html(strOptions);
+			$('#insert_subtitle_'+ firstIndex +'_'+secondIndex).html(strOptions);
+			$('#insert_image_url_'+ firstIndex +'_'+secondIndex).html(strOptions);
 			
 			e.preventDefault();
 		});
@@ -631,23 +762,98 @@
 		}
 		
 		function getSObjectList(callback){
-			$.get(server + 's_objects', function(data, status){
-				if(status == 'success'){
-					callback(data);
-				}else{
-					callback(false);
+			if(TMP_OBJECT.length != 0){
+				callback(TMP_OBJECT);
+			}else{
+				$.get(server + 's_objects', function(data, status){
+					if(status == 'success'){
+						TMP_OBJECT = data;
+						callback(data);
+					}else{
+						callback(false);
+					}
+				});
+			}
+		}
+		
+		function getSObjectFields(object, callback){
+			if(TMP_FIELD[object]){
+				callback(TMP_FIELD[object]);
+			}else{
+				$.get(server + 's_object_field?o='+object, function(data, status){
+					if(status == 'success'){
+						TMP_FIELD[object] = data;
+						callback(data);
+					}else{
+						callback(false);
+					}
+				});
+			}
+		}
+		
+		function constructSObjectList(){
+			getSObjectList(function(sObjects){
+				if(sObjects){
+					var options = '';
+					
+					sObjects.forEach(function(o){
+						options += '<option value="'+ o.name +'">'+ o.name +'</option>';
+					});
+					
+					$('.select_sobject').each(function(index){
+						if($(this).attr('object')){
+							var tmpOption = '<option value="'+$(this).attr('object')+'">'+$(this).attr('object')+'</option>' + options;
+							$(this).html(tmpOption);
+						}
+					});
 				}
 			});
 		}
 		
-		function getSObjectFields(object, callback){
-			$.get(server + 's_object_field?o='+object, function(data, status){
-				if(status == 'success'){
-					TMP_FIELD[object] = data;
-					callback(data);
-				}else{
-					callback(false);
-				}
+		function constructSObjectFieldsList(){
+			$('.select_fields').each(function(index){
+				var selectedFields = $(this).attr('fields').split(',');
+				var dom = $(this);
+				
+				getSObjectFields(dom.attr('object'), function(fields){
+					dom.html('');
+					var options = '<option value="">Choose field</option>';
+					
+					fields.forEach(function(f){
+						if(selectedFields.indexOf(f.name) > -1){
+							dom.append($('<option class="option_field"></option>').attr('value', f.name).text(f.name).prop('selected', true));
+							options += '<option value="'+ f.name +'">'+ f.name +'</option>';
+						}else{
+							dom.append($('<option class="option_field"></option>').attr('value', f.name).text(f.name));
+						}
+					});
+					
+					//insert title message template
+					$('.insert_title_' + dom.attr('object')).html(options);
+					//insert subtitle message template
+					$('.insert_subtitle_' + dom.attr('object')).html(options);
+					//insert image url message template
+					$('.insert_image_url_' + dom.attr('object')).html(options);
+				});
+			});
+		}
+		
+		function constructWhereFieldsList(){
+			$('.where_fields').each(function(index){
+				var selectedField = $(this).attr('field');
+				var dom = $(this);
+				
+				getSObjectFields(dom.attr('object'), function(fields){
+					dom.html('');
+					
+					fields.forEach(function(f){
+						if(selectedField == f.name){
+							dom.append($('<option></option>').attr('value', f.name).text(f.name).prop('selected', true));
+						}else{
+							dom.append($('<option></option>').attr('value', f.name).text(f.name));
+						}
+					});
+				});
 			});
 		}
 	</script>
