@@ -711,7 +711,9 @@ function replaceRegex(str, record){
 		toReplace.forEach(function(t){
 			console.log('text = ' + t);
 			console.log('value = ');
-			console.log(t.match(/\{(.*)\}/));
+			console.log(t.match(/\{(.*)\}/)[1]);
+			console.log('get');
+			console.log(record.get(t.match(/\{(.*)\}/)[1]));
 			str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
 		});
 	}
