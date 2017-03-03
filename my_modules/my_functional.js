@@ -752,7 +752,7 @@ function constructResponse(org, senderId, responses){
 					
 					exports.callSendAPI(messageData);
 				}else{
-					console.log(érr);
+					console.log(err);
 					exports.sendTextMessage(senderId, "Sorry i can't help your.");
 				}
 			});
