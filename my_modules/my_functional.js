@@ -699,24 +699,14 @@ function constructResponse(org, senderId, responses){
 }
 
 function replaceRegex(str, record){
-	console.log('record');
-	console.log(record);
 	
 	if(str != ''){
 		var toReplace = str.match(/\{(.*?)\}/g);
-		console.log('string = ' + str);
-		console.log('to replace');
-		console.log(toReplace);
 		
 		toReplace.forEach(function(t){
-			console.log('text = ' + t);
-			console.log('value = ');
-			console.log(t.match(/\{(.*)\}/)[1]);
-			console.log('get');
-			console.log(record.get(t.match(/\{(.*)\}/)[1]));
-			str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
+			str = str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
 		});
 	}
-	
+	console.log('string result = ' + str);
 	return str;
 }
