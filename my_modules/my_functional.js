@@ -690,7 +690,7 @@ function constructResponse(org, senderId, responses){
 						},
 						message: messageToSend
 					}
-					console.log(messageData)
+					console.log(messageData.message.payload);
 					exports.callSendAPI(messageData);
 				}
 			});
@@ -707,6 +707,5 @@ function replaceRegex(str, record){
 			str = str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
 		});
 	}
-	console.log('string result = ' + str);
 	return str;
 }
