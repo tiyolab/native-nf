@@ -653,6 +653,8 @@ function constructResponse(org, senderId, responses){
 									});
 								}
 							});
+							console.log('buttons');
+							console.log(buttons);
 							
 							elements.push(
 								{
@@ -662,6 +664,9 @@ function constructResponse(org, senderId, responses){
 								  buttons: buttons
 								}
 							);
+							
+							console.log('element');
+							console.log(elements);
 							
 						});
 					});
