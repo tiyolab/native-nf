@@ -690,7 +690,7 @@ function constructResponse(org, senderId, responses){
 						},
 						message: messageToSend
 					}
-					console.log(messageData.message.payload);
+					console.log(messageData.message.attachment.payload);
 					exports.callSendAPI(messageData);
 				}
 			});
