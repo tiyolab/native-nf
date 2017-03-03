@@ -198,10 +198,10 @@
 											
 											<% response.payload.query.where.forEach(function(wf, whereIndex){ %>
 												<div id="container_where_clause_<%=indexConfiguration%>_<%=indexResponse%>_whereIndex">;
-													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][source]" class="where_fields" object="<%= response.payload.query.sobject %>" field="<%= wf.source %>">;
+													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=whereIndex%>][source]" class="where_fields" object="<%= response.payload.query.sobject %>" field="<%= wf.source %>">;
 														<option>Loading...</option>
 													</select>;
-													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][operator]">;
+													<select name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=whereIndex%>][operator]">;
 														<option value="<%= wf.operator %>"><%= wf.operator %></option>;
 														<option value="=">=</option>;
 														<option value="!=">!=</option>;
@@ -213,8 +213,8 @@
 														<option value="IN">IN</option>;
 														<option value="NOT IN">NOT IN</option>;
 													</select>;
-													<input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][whereIndex][destination]" value="<%= wf.destination %>">;
-													<button class="remove_where_clause" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" where_index="whereIndex" object="<%= response.payload.query.sobject %>"> - </button>;
+													<input type="text" name="item[<%=indexConfiguration%>][responses][<%=indexResponse%>][payload][query][where][<%=whereIndex%>][destination]" value="<%= wf.destination %>">;
+													<button class="remove_where_clause" first_index="<%=indexConfiguration%>" second_index="<%=indexResponse%>" where_index="<%=whereIndex%>" object="<%= response.payload.query.sobject %>"> - </button>;
 												</div>;
 											<% }); %>
 											

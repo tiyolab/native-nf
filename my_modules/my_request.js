@@ -302,7 +302,7 @@ exports.handleRequest = (app, db) => {
 					//field required
 					var tmpFields = [];
 					console.log('field');
-					console.log(response.payload.query.fields);
+					console.log(response.payload.query.where);
 					tmpFields = response.payload.query.fields.filter(function(field){
 						return field != '';
 					});
