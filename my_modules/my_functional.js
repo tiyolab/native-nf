@@ -669,7 +669,7 @@ function constructResponse(org, senderId, responses){
 			var where = [];
 			if(res.payload.query.where.length > 0){
 				res.payload.query.where.forEach(function(w){
-					where.push(w.source +' '+ w.operator +' "'+ w.destination+'"');
+					where.push(w.source +' '+ w.operator +" '"+ w.destination+"'");
 				});
 			}
 			
