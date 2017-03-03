@@ -699,10 +699,12 @@ function constructResponse(org, senderId, responses){
 }
 
 function replaceRegex(str, record){
-	var toReplace = str.match(/\{(.*?)\}/g);
-	toReplace.forEach(function(t){
-		str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
-	});
+	if(str != ''){
+		var toReplace = str.match(/\{(.*?)\}/g);
+		toReplace.forEach(function(t){
+			str.replace(t, record.get(t.match(/\{(.*)\}/)[1]));
+		});
+	}
 	
 	return str;
 }
