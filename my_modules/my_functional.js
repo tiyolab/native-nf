@@ -689,7 +689,7 @@ function constructResponse(org, senderId, responses){
 					var elements = [];
 					var buttons = [];
 					r.records.forEach(function(rec){
-						res.payload.query.fields.forEach(function(f){
+						//res.payload.query.fields.forEach(function(f){
 							buttons = [];
 							res.payload.buttons.forEach(function(b){
 								if(b.type == 'web_url'){
@@ -724,7 +724,7 @@ function constructResponse(org, senderId, responses){
 							console.log('elements item');
 							console.log(elements);
 							
-						});
+						//});
 					});
 					
 					
