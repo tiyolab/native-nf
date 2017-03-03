@@ -669,7 +669,7 @@ function constructResponse(org, senderId, responses){
 			var where = [];
 			if(res.payload.query.where.length > 0){
 				res.payload.query.where.forEach(function(w){
-					where.push(w.source + w.operator +w.destination);
+					where.push(w.source +' '+ w.operator +' "'+ w.destination+'"');
 				});
 			}
 			
@@ -739,7 +739,7 @@ function constructResponse(org, senderId, responses){
 						}
 					}else{
 						messageToSend = {
-							text: "Failed process your request"
+							text: "Sorry i can't help your."
 						}
 					}
 					
@@ -751,6 +751,9 @@ function constructResponse(org, senderId, responses){
 					}
 					
 					exports.callSendAPI(messageData);
+				}else{
+					console.log(érr);
+					exports.sendTextMessage(senderId, "Sorry i can't help your.");
 				}
 			});
 		}
